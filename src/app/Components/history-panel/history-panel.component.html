@@ -1,0 +1,9 @@
+<div class="history-panel">
+    <h2>Conversation History</h2>
+    <div class="history-container">
+      <div class="history-item" *ngFor="let item of history$ | async">
+        <div class="history-question">{{ item.question }}</div>
+        <div class="history-answer">{{ item.answer }}</div>
+      </div>
+    </div>
+  </div>

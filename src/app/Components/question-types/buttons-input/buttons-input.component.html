@@ -1,0 +1,8 @@
+<div class="buttons-container">
+    <button 
+      *ngFor="let option of question.options" 
+      class="option-btn"
+      (click)="selectOption(option)">
+      {{ option.text }}
+    </button>
+  </div>

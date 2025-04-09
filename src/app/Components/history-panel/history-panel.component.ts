@@ -9,13 +9,14 @@ import { ConversationService } from '../../Services/conversation.service';
   templateUrl: './history-panel.component.html',
   styleUrl: './history-panel.component.css'
 })
-export class HistoryPanelComponent implements OnInit {
+export class HistoryPanelComponent implements OnInit 
+{
   history$: Observable<HistoryItem[]>;
 
-  constructor(private conversationService: ConversationService) {
+  constructor(private conversationService: ConversationService) 
+  {
     this.history$ = this.conversationService.history$;
   }
 
   ngOnInit(): void {}
-
 }

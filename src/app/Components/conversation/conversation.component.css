@@ -2,10 +2,11 @@
     display: flex;
     height: 100vh;
   
-    @media (max-width: 768px) {
+    @media (max-width: 768px) 
+    {
       flex-direction: column;
-  
-      app-history-panel {
+      app-history-panel 
+      {
         height: 30%;
       }
     }

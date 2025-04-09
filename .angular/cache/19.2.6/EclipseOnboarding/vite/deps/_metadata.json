@@ -1,30 +1,50 @@
 {
+<<<<<<< HEAD
   "hash": "f2f36de1",
   "configHash": "00ef03bb",
   "lockfileHash": "6a11727b",
   "browserHash": "6af0bbdd",
+=======
+  "hash": "35b45db8",
+  "configHash": "2e065f13",
+  "lockfileHash": "6a11727b",
+  "browserHash": "34464067",
+>>>>>>> 0a4261fe42e8978b2b1d3d54cf9078289f85d6f3
   "optimized": {
     "@angular/common": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
       "file": "@angular_common.js",
+<<<<<<< HEAD
       "fileHash": "fa16b937",
+=======
+      "fileHash": "34353811",
+>>>>>>> 0a4261fe42e8978b2b1d3d54cf9078289f85d6f3
       "needsInterop": false
     },
     "@angular/core": {
       "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
       "file": "@angular_core.js",
+<<<<<<< HEAD
       "fileHash": "497c6dd4",
+=======
+      "fileHash": "f01e5c05",
+>>>>>>> 0a4261fe42e8978b2b1d3d54cf9078289f85d6f3
       "needsInterop": false
     },
     "@angular/forms": {
       "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
       "file": "@angular_forms.js",
+<<<<<<< HEAD
       "fileHash": "7fcb4a5d",
+=======
+      "fileHash": "8cf65121",
+>>>>>>> 0a4261fe42e8978b2b1d3d54cf9078289f85d6f3
       "needsInterop": false
     },
     "@angular/platform-browser": {
       "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
       "file": "@angular_platform-browser.js",
+<<<<<<< HEAD
       "fileHash": "3eaf7da9",
       "needsInterop": false
     },
@@ -38,10 +58,20 @@
       "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
       "file": "@angular_router.js",
       "fileHash": "17758db2",
+=======
+      "fileHash": "708797c2",
+      "needsInterop": false
+    },
+    "rxjs": {
+      "src": "../../../../../../node_modules/rxjs/dist/esm5/index.js",
+      "file": "rxjs.js",
+      "fileHash": "8ccb42bb",
+>>>>>>> 0a4261fe42e8978b2b1d3d54cf9078289f85d6f3
       "needsInterop": false
     }
   },
   "chunks": {
+<<<<<<< HEAD
     "chunk-ERUYBTT2": {
       "file": "chunk-ERUYBTT2.js"
     },
@@ -51,6 +81,14 @@
     "chunk-YCA54VN2": {
       "file": "chunk-YCA54VN2.js"
     },
+=======
+    "chunk-4EREAO4C": {
+      "file": "chunk-4EREAO4C.js"
+    },
+    "chunk-YCA54VN2": {
+      "file": "chunk-YCA54VN2.js"
+    },
+>>>>>>> 0a4261fe42e8978b2b1d3d54cf9078289f85d6f3
     "chunk-S35MAB2V": {
       "file": "chunk-S35MAB2V.js"
     }

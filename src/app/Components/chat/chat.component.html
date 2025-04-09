@@ -1,0 +1,32 @@
+<div class="chat-container">
+    <div class="chat-header">
+      Interactive Conversation
+    </div>
+    
+    <div class="chat-messages">
+      <div class="message" 
+           *ngFor="let message of messages; trackBy: trackByFn" 
+           [ngClass]="message.type === 'bot' ? 'bot-message' : 'user-message'">
+        {{ message.text }}
+      </div>
+    </div>
+    
+    <div class="options-container" *ngIf="currentQuestion$ | async as currentQuestion">
+      <ng-container *ngIf="currentQuestion.options && currentQuestion.options.length > 0; else endOfConversation">
+        <button class="option-btn" 
+                *ngFor="let option of currentQuestion.options" 
+                [class.selected]="selectedOption === option"
+                (click)="selectOption(option)">
+          {{ option.text }}
+        </button>
+      </ng-container>
+      
+      <ng-template #endOfConversation>
+        <div class="end-message">End of conversation path. Thank you!</div>
+      </ng-template>
+    </div>
+    
+    <div class="chat-input">
+      <button [disabled]="!selectedOption" (click)="confirmSelection()">Continue</button>
+    </div>
+  </div>

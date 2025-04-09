@@ -3,12 +3,16 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ChatComponent } from './chat/chat.component';
+import { ChatComponent} from './Components/chat/chat.component';
+import { HistoryPanelComponent } from './Components/history-panel/history-panel.component';
+import { ConversationComponent } from './Components/conversation/conversation.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ChatComponent
+    ChatComponent,
+    HistoryPanelComponent,
+    ConversationComponent
   ],
   imports: [
     BrowserModule,

@@ -7,7 +7,7 @@ import { Question } from '../../Models/conversation.model';
 export abstract class BaseQuestionComponent {
   @Input() question!: Question;
   @Output() answerSubmitted = new EventEmitter<any>();
-  
+
   protected submitAnswer(answer: any): void {
     this.answerSubmitted.emit(answer);
   }

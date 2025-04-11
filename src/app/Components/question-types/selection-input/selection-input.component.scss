@@ -1,0 +1,26 @@
+/* src/app/components/question-types/selection-input/selection-input.component.scss */
+.selection-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  
+  .selection-option {
+    padding: 1rem;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background-color: #e9f0f9;
+      border-color: #4a6fa5;
+    }
+    
+    &:active {
+      transform: translateY(1px);
+      background-color: #d9e5f5;
+    }
+  }
+}

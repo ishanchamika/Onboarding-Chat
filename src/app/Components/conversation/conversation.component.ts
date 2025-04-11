@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 
 @Component({
+  templateUrl: './conversation.component.html',
   selector: 'app-conversation',
   standalone: false,
-  templateUrl: './conversation.component.html',
   styleUrl: './conversation.component.css'
 })
 export class ConversationComponent 

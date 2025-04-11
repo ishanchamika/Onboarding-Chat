@@ -1,15 +1,28 @@
 <div class="chat-container">
   <div class="chat-header">
-    Interactive Conversation
+    <h2>Interactive Conversation</h2>
+    <button 
+      class="reset-button" 
+      (click)="resetConversation()"
+      [disabled]="loading">
+      Start Over
+    </button>
   </div>
   
-  <div class="chat-messages">
-    <div class="message" 
-         *ngFor="let message of messages; trackBy: trackByFn" 
-         [ngClass]="message.type === 'bot' ? 'bot-message' : 'user-message'">
-      {{ message.text }}
+  <div class="chat-body">
+    <!-- History Display -->
+    <app-history-panel [history]="history"></app-history-panel>
+    
+    <!-- Current Question -->
+    <div class="current-question" *ngIf="currentQuestion && !loading">
+      <div class="question-text">{{ currentQuestion.questionText }}</div>
+      <ng-container #questionContainer></ng-container>
+    </div>
+    
+    <!-- Loading State -->
+    <div class="loading-indicator" *ngIf="loading">
+      <div class="spinner"></div>
+      <span>Processing...</span>
     </div>
   </div>
-  
-  <ng-template #questionContainer></ng-template>
 </div>

@@ -1,9 +1,31 @@
-<div class="history-panel">
-    <h2>Conversation History</h2>
-    <div class="history-container">
-      <div class="history-item" *ngFor="let item of history$ | async">
-        <div class="history-question">{{ item.question }}</div>
-        <div class="history-answer">{{ item.answer }}</div>
+<!-- src/app/components/history/history.component.html -->
+<div class="history-container" *ngIf="history.length > 0">
+  <div class="history-header">
+    <h3>Conversation History</h3>
+    <button class="toggle-button" *ngIf="history.length > 3" (click)="toggleHistoryView()">
+      {{ showFullHistory ? 'Show Less' : 'Show All' }}
+    </button>
+  </div>
+  
+  <div class="history-items">
+    <div class="history-item" *ngFor="let item of displayHistory">
+      <div class="question">
+        <span class="icon">Q</span>
+        <div class="content">
+          <div class="text">{{ item.questionText }}</div>
+          <div class="timestamp">{{ getFormattedTime(item.timestamp) }}</div>
+        </div>
+      </div>
+      <div class="answer">
+        <span class="icon">A</span>
+        <div class="content">
+          <div class="text">{{ item.answer }}</div>
+        </div>
       </div>
     </div>
   </div>
+  
+  <div class="more-indicator" *ngIf="!showFullHistory && history.length > 3">
+    <span>{{ history.length - 3 }} more items</span>
+  </div>
+</div>

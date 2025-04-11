@@ -1,7 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { HistoryItem } from '../../Models/conversation.model';
-import { ConversationService } from '../../Services/conversation.service';
 
 @Component({
   selector: 'app-history-panel',
@@ -9,14 +7,37 @@ import { ConversationService } from '../../Services/conversation.service';
   templateUrl: './history-panel.component.html',
   styleUrl: './history-panel.component.css'
 })
-export class HistoryPanelComponent implements OnInit 
+export class HistoryPanelComponent implements OnChanges 
 {
-  history$: Observable<HistoryItem[]>;
-
-  constructor(private conversationService: ConversationService) 
-  {
-    this.history$ = this.conversationService.history$;
+  @Input() history: HistoryItem[] = [];
+  displayHistory: HistoryItem[] = [];
+  showFullHistory = false;
+  
+  constructor() {}
+  
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['history']) {
+      // Keep only the last 3 items for condensed view
+      this.updateDisplayHistory();
+    }
   }
-
-  ngOnInit(): void {}
+  
+  updateDisplayHistory(): void {
+    if (this.showFullHistory || this.history.length <= 3) {
+      this.displayHistory = [...this.history];
+    } else {
+      this.displayHistory = this.history.slice(-3);
+    }
+  }
+  
+  toggleHistoryView(): void {
+    this.showFullHistory = !this.showFullHistory;
+    this.updateDisplayHistory();
+  }
+  
+  getFormattedTime(date: Date): string {
+    return date instanceof Date 
+      ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+      : '';
+  }
 }

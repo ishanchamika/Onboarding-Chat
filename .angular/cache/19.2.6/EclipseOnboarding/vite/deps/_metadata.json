@@ -1,5 +1,6 @@
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
   "hash": "f2f36de1",
   "configHash": "00ef03bb",
   "lockfileHash": "6a11727b",
@@ -10,20 +11,31 @@
   "lockfileHash": "6a11727b",
   "browserHash": "34464067",
 >>>>>>> 0a4261fe42e8978b2b1d3d54cf9078289f85d6f3
+=======
+  "hash": "1c048aba",
+  "configHash": "aa6b91e9",
+  "lockfileHash": "6a11727b",
+  "browserHash": "23ece3bd",
+>>>>>>> akf-initial
   "optimized": {
     "@angular/common": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
       "file": "@angular_common.js",
 <<<<<<< HEAD
+<<<<<<< HEAD
       "fileHash": "fa16b937",
 =======
       "fileHash": "34353811",
 >>>>>>> 0a4261fe42e8978b2b1d3d54cf9078289f85d6f3
+=======
+      "fileHash": "3e4a7074",
+>>>>>>> akf-initial
       "needsInterop": false
     },
     "@angular/core": {
       "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
       "file": "@angular_core.js",
+<<<<<<< HEAD
 <<<<<<< HEAD
       "fileHash": "497c6dd4",
 =======
@@ -39,11 +51,15 @@
 =======
       "fileHash": "8cf65121",
 >>>>>>> 0a4261fe42e8978b2b1d3d54cf9078289f85d6f3
+=======
+      "fileHash": "fe52d2cb",
+>>>>>>> akf-initial
       "needsInterop": false
     },
     "@angular/platform-browser": {
       "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
       "file": "@angular_platform-browser.js",
+<<<<<<< HEAD
 <<<<<<< HEAD
       "fileHash": "3eaf7da9",
       "needsInterop": false
@@ -52,11 +68,15 @@
       "src": "../../../../../../node_modules/rxjs/dist/esm5/index.js",
       "file": "rxjs.js",
       "fileHash": "bb0f9e87",
+=======
+      "fileHash": "b66314ef",
+>>>>>>> akf-initial
       "needsInterop": false
     },
     "@angular/router": {
       "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
       "file": "@angular_router.js",
+<<<<<<< HEAD
       "fileHash": "17758db2",
 =======
       "fileHash": "708797c2",
@@ -67,6 +87,9 @@
       "file": "rxjs.js",
       "fileHash": "8ccb42bb",
 >>>>>>> 0a4261fe42e8978b2b1d3d54cf9078289f85d6f3
+=======
+      "fileHash": "ac279b74",
+>>>>>>> akf-initial
       "needsInterop": false
     }
   },

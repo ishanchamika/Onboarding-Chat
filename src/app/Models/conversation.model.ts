@@ -9,7 +9,7 @@ export interface Option {
 export interface Question {
   id: string;
   question: string;
-  type: QuestionType;
+  type: QuestionType; 
   options?: Option[];  // Required for radio, dropdown, and buttons
   placeholder?: string; // For text and number inputs
   validation?: {        // Optional validation rules

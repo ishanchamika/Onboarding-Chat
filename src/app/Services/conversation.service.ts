@@ -1,117 +1,100 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Question, HistoryItem, Option, QuestionType } from '../Models/conversation.model';
+import { Question, HistoryItem, Option, QuestionType, Conversation } from '../Models/conversation.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ConversationService 
-{
-  // Sample conversation tree with different question types
-  private readonly conversationTree: Question = {
-    id: 'q1',
-    question: 'Hello! What would you like to know about?',
-    type: 'buttons',
-    options: [
-      {
-        text: 'Products',
-        next: {
-          id: 'q2',
-          question: 'Which product category are you interested in?',
-          type: 'radio',
-          options: [
-            {
-              text: 'Electronics',
-              next: {
-                id: 'q4',
-                question: 'What kind of electronics are you looking for?',
-                type: 'dropdown',
-                options: [
-                  {
-                    text: 'Smartphones',
-                    next: {
-                      id: 'q7',
-                      question: 'What is your budget for a smartphone?',
-                      type: 'number',
-                      placeholder: 'Enter amount in dollars',
-                      validation: {
-                        required: true,
-                        min: 100,
-                        max: 2000
-                      },
-                      next: {
-                        id: 'q9',
-                        question: 'What features are most important to you?',
-                        type: 'text',
-                        placeholder: 'Describe what you need',
-                        next: null
-                      }
-                    }
-                  },
-                  {
-                    text: 'Laptops',
-                    next: {
-                      id: 'q8',
-                      question: 'What will you primarily use the laptop for?',
-                      type: 'buttons',
-                      options: [
-                        { text: 'Work/Business', next: null },
-                        { text: 'Gaming', next: null },
-                        { text: 'Student Use', next: null }
-                      ]
-                    }
-                  },
-                  { text: 'Audio Devices', next: null }
-                ]
-              }
-            },
-            {
-              text: 'Home Goods',
-              next: {
-                id: 'q5',
-                question: 'What type of home goods are you interested in?',
-                type: 'buttons',
-                options: [
-                  { text: 'Kitchen Appliances', next: null },
-                  { text: 'Furniture', next: null },
-                  { text: 'Decor', next: null }
-                ]
-              }
-            },
-            { text: 'Clothing', next: null }
-          ]
-        }
+export class ConversationService {
+  // New conversation structure with a questions map
+  private readonly conversation: Conversation = {
+    conversationId: '8631d9f7-1d59-45d3-9566-c12263800746',
+    currentQuestionId: 'Q1',
+    questions: {
+      'Q1': {
+        questionId: 'Q1',
+        questionText: 'What is the business partner type?',
+        inputType: 'buttons', // Mapping 'selection' to 'buttons'
+        options: [
+          { text: 'Individual', nextQuestionId: 'Q2' },
+          { text: 'Corporate', nextQuestionId: 'Q3' }
+        ]
       },
-      {
-        text: 'Services',
-        next: {
-          id: 'q3',
-          question: 'Which service are you interested in learning about?',
-          type: 'buttons',
-          options: [
-            {
-              text: 'Delivery',
-              next: {
-                id: 'q6',
-                question: 'What would you like to know about our delivery service?',
-                type: 'buttons',
-                options: [
-                  { text: 'Delivery Areas', next: null },
-                  { text: 'Shipping Costs', next: null },
-                  { text: 'Delivery Times', next: null }
-                ]
-              }
-            },
-            { text: 'Installation', next: null },
-            { text: 'Support', next: null }
-          ]
-        }
+      'Q2': {
+        questionId: 'Q2',
+        questionText: 'What is your full name?',
+        inputType: 'text',
+        placeholder: 'Enter your full name',
+        nextQuestionId: 'Q4'
       },
-      { text: 'Contact Info', next: null }
-    ]
+      'Q3': {
+        questionId: 'Q3',
+        questionText: 'What is your company name?',
+        inputType: 'text',
+        placeholder: 'Enter company name',
+        nextQuestionId: 'Q4'
+      },
+      'Q4': {
+        questionId: 'Q4',
+        questionText: 'What is your annual revenue?',
+        inputType: 'number',
+        placeholder: 'Enter amount in dollars',
+        validation: {
+          required: true,
+          min: 0
+        },
+        nextQuestionId: 'Q5'
+      },
+      'Q5': {
+        questionId: 'Q5',
+        questionText: 'Which industry do you operate in?',
+        inputType: 'dropdown',
+        options: [
+          { text: 'Technology', nextQuestionId: 'Q6' },
+          { text: 'Healthcare', nextQuestionId: 'Q6' },
+          { text: 'Finance', nextQuestionId: 'Q6' },
+          { text: 'Retail', nextQuestionId: 'Q6' },
+          { text: 'Other', nextQuestionId: 'Q6' }
+        ]
+      },
+      'Q6': {
+        questionId: 'Q6',
+        questionText: 'How many employees do you have?',
+        inputType: 'radio',
+        options: [
+          { text: '1-10', nextQuestionId: 'Q7' },
+          { text: '11-50', nextQuestionId: 'Q7' },
+          { text: '51-200', nextQuestionId: 'Q7' },
+          { text: '201-1000', nextQuestionId: 'Q7' },
+          { text: '1000+', nextQuestionId: 'Q7' }
+        ]
+      },
+      'Q7': {
+        questionId: 'Q7',
+        questionText: 'What services are you interested in?',
+        inputType: 'buttons',
+        options: [
+          { text: 'Consulting', nextQuestionId: 'END' },
+          { text: 'Software Development', nextQuestionId: 'END' },
+          { text: 'Cloud Services', nextQuestionId: 'END' },
+          { text: 'Support', nextQuestionId: 'END' }
+        ]
+      },
+      'END': {
+        questionId: 'END',
+        questionText: 'Thank you for your responses! Is there anything else I can help you with?',
+        inputType: 'buttons',
+        options: [
+          { text: 'Start Over', nextQuestionId: 'Q1' },
+          { text: 'No, I\'m done', nextQuestionId: null }
+        ]
+      }
+    }
   };
 
-  private currentQuestionSubject = new BehaviorSubject<Question>(this.conversationTree);
+  private currentQuestionSubject = new BehaviorSubject<Question>(
+    this.conversation.questions[this.conversation.currentQuestionId]
+  );
   private historySubject = new BehaviorSubject<HistoryItem[]>([]);
 
   constructor() {}
@@ -131,44 +114,38 @@ export class ConversationService
   handleAnswer(answer: any): void {
     const current = this.currentQuestion;
     let answerText: string;
-    let nextQuestion: Question | null = null;
-    
+    let nextQuestionId: string | null = null;
+
     // Handle different answer types
     if (typeof answer === 'string' || typeof answer === 'number') {
       answerText = answer.toString();
-      nextQuestion = current.next || null;
+      nextQuestionId = current.nextQuestionId || null;
     } else {
       // It's an Option object
       answerText = answer.text;
-      nextQuestion = answer.next;
+      nextQuestionId = answer.nextQuestionId;
     }
-    
+
     // Add to history
     const historyItems = this.historySubject.getValue();
     historyItems.push({
-      question: current.question,
+      question: current.questionText,
       answer: answerText
     });
     this.historySubject.next(historyItems);
 
     // Set next question if available
-    if (nextQuestion) {
+    if (nextQuestionId) {
+      const nextQuestion = this.conversation.questions[nextQuestionId];
       this.currentQuestionSubject.next(nextQuestion);
     } else {
       // End of conversation path
       const endQuestion: Question = {
-        id: 'end',
-        question: 'Thank you for your responses! Is there anything else I can help you with?',
-        type: 'buttons',
+        questionId: 'final',
+        questionText: 'Conversation ended. Thank you!',
+        inputType: 'buttons',
         options: [
-          { 
-            text: 'Start Over', 
-            next: this.conversationTree 
-          },
-          { 
-            text: 'No, I\'m done', 
-            next: null 
-          }
+          { text: 'Start Over', nextQuestionId: this.conversation.currentQuestionId }
         ]
       };
       this.currentQuestionSubject.next(endQuestion);
@@ -176,7 +153,8 @@ export class ConversationService
   }
 
   resetConversation(): void {
-    this.currentQuestionSubject.next(this.conversationTree);
+    const initialQuestion = this.conversation.questions[this.conversation.currentQuestionId];
+    this.currentQuestionSubject.next(initialQuestion);
     this.historySubject.next([]);
   }
 }

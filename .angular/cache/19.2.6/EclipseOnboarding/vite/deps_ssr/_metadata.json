@@ -1,15 +1,8 @@
 {
-<<<<<<< HEAD
-  "hash": "74d9ad5e",
-  "configHash": "71df5367",
-  "lockfileHash": "6a11727b",
-  "browserHash": "21586fe3",
-=======
   "hash": "68437e95",
   "configHash": "00d592f3",
   "lockfileHash": "6a11727b",
   "browserHash": "e043aa81",
->>>>>>> akf-initial
   "optimized": {},
   "chunks": {}
 }

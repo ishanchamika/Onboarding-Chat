@@ -1,24 +1,30 @@
-export type QuestionType = 'text' | 'number' | 'radio' | 'dropdown' | 'buttons';
+export type QuestionType = 'text' | 'number' | 'radio' | 'dropdown' | 'buttons'; // 'selection' mapped to 'buttons'
 
 export interface Option {
   text: string;
   value?: string | number; // Optional value if different from text
-  next: Question | null;
+  nextQuestionId: string | null; // Changed from next: Question | null
 }
 
 export interface Question {
-  id: string;
-  question: string;
-  type: QuestionType; 
-  options?: Option[];  // Required for radio, dropdown, and buttons
+  questionId: string; // Changed from id
+  questionText: string; // Changed from question
+  inputType: QuestionType; // Changed from type
+  options?: Option[]; // For radio, dropdown, buttons
   placeholder?: string; // For text and number inputs
-  validation?: {        // Optional validation rules
+  validation?: {
     required?: boolean;
     min?: number;
     max?: number;
     pattern?: string;
   };
-  next?: Question | null; // For text/number inputs that always go to the same next question
+  nextQuestionId?: string | null; // Changed from next: Question | null, used for text/number inputs
+}
+
+export interface Conversation {
+  conversationId: string;
+  currentQuestionId: string;
+  questions: { [key: string]: Question };
 }
 
 export interface HistoryItem {
@@ -26,6 +32,7 @@ export interface HistoryItem {
   answer: string;
 }
 
+// Answer interface unchanged, included for completeness
 export interface Answer {
   type: QuestionType;
   value: string | number | Option;

@@ -32,10 +32,10 @@ export class QuestionComponentService
   {
     container.clear();
     
-    const componentType = this.componentMap.get(question.type);
-    if(!componentType) 
+    const componentType = this.componentMap.get(question.inputType); // Changed to inputType
+    if (!componentType) 
     {
-      throw new Error(`No component registered for question type: ${question.type}`);
+      throw new Error(`No component registered for question type: ${question.inputType}`); // Changed to inputType
     }
     
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentType);

@@ -29,10 +29,10 @@ export class ChatComponent implements OnInit
     this.currentQuestion$.subscribe(question => {
       // Add the bot message with the question
       if (this.messages.length === 0 || 
-          this.messages[this.messages.length - 1].text !== question.question) {
+          this.messages[this.messages.length - 1].text !== question.questionText) { // Changed to questionText
         this.messages.push({
           type: 'bot',
-          text: question.question
+          text: question.questionText // Changed to questionText
         });
       }
       

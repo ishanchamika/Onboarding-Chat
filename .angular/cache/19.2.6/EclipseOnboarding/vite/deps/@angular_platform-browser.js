@@ -77,15 +77,6 @@ import {
   withEventReplay,
   withI18nSupport,
   withIncrementalHydration,
-<<<<<<< HEAD
-  withNoHttpTransferCache
-} from "./chunk-ERUYBTT2.js";
-import {
-  getDOM
-} from "./chunk-4EREAO4C.js";
-import "./chunk-YCA54VN2.js";
-import "./chunk-S35MAB2V.js";
-=======
   ɵɵdefineInjectable,
   ɵɵdefineInjector,
   ɵɵdefineNgModule,
@@ -4403,7 +4394,6 @@ function provideClientHydration(...features) {
   return makeEnvironmentProviders([typeof ngDevMode !== "undefined" && ngDevMode ? provideZoneJsCompatibilityDetector() : [], withDomHydration(), featuresKind.has(HydrationFeatureKind.NoHttpTransferCache) || hasHttpTransferCacheOptions ? [] : withHttpTransferCache({}), providers]);
 }
 var VERSION = new Version("19.2.5");
->>>>>>> 0a4261fe42e8978b2b1d3d54cf9078289f85d6f3
 export {
   BrowserModule,
   By,

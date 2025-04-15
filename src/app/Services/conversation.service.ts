@@ -12,14 +12,20 @@ export class ConversationService {
     currentQuestionId: 'Q1',
     questions: {
       'Q1': {
-        questionId: 'Q1',
-        questionText: 'What is the business partner type?',
-        inputType: 'buttons', // Mapping 'selection' to 'buttons'
-        options: [
-          { text: 'Individual', nextQuestionId: 'Q2' },
-          { text: 'Corporate', nextQuestionId: 'Q3' }
-        ]
-      },
+      questionId: 'Q1',
+      questionText: 'Please select a date: (D/M/Y)',
+      inputType: 'calendar',
+      nextQuestionId: 'Q2'
+    },
+      // 'Q1': {
+      //   questionId: 'Q1',
+      //   questionText: 'What is the business partner type?',
+      //   inputType: 'buttons', // Mapping 'selection' to 'buttons'
+      //   options: [
+      //     { text: 'Individual', nextQuestionId: 'Q2' },
+      //     { text: 'Corporate', nextQuestionId: 'Q3' }
+      //   ]
+      // },
       'Q2': {
         questionId: 'Q2',
         questionText: 'What is your full name?',
@@ -117,7 +123,11 @@ export class ConversationService {
     let nextQuestionId: string | null = null;
 
     // Handle different answer types
-    if (typeof answer === 'string' || typeof answer === 'number') {
+    if (answer instanceof Date) {
+      answerText = answer.toLocaleDateString();
+      nextQuestionId = current.nextQuestionId || null;
+    }
+    else if (typeof answer === 'string' || typeof answer === 'number') {
       answerText = answer.toString();
       nextQuestionId = current.nextQuestionId || null;
     } else {

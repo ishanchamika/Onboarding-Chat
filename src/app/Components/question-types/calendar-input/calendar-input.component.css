@@ -1,0 +1,24 @@
+.calendar-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+  
+  :host ::ng-deep .mat-form-field {
+    width: 300px;
+  }
+  
+  :host ::ng-deep .mat-datepicker-toggle {
+    color: #4a6fa5;
+  }
+  
+  :host ::ng-deep .mat-form-field-appearance-fill .mat-form-field-flex {
+    background-color: #e9f0f9;
+    border: 1px solid #4a6fa5;
+    border-radius: 20px;
+    padding: 0.5rem;
+  }
+  
+  :host ::ng-deep .mat-form-field:hover .mat-form-field-flex {
+    background-color: #d1e0f5;
+  }

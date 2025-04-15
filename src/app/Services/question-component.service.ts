@@ -6,6 +6,7 @@ import { RadioInputComponent } from '../Components/question-types/radio-input/ra
 import { DropdownInputComponent } from '../Components/question-types/dropdown-input/dropdown-input.component';
 import { ButtonsInputComponent } from '../Components/question-types/buttons-input/buttons-input.component';
 import { BaseQuestionComponent } from '../Components/question-types/base-question.component';
+import { CalendarInputComponent } from '../Components/question-types/calendar-input/calendar-input.component';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,8 @@ export class QuestionComponentService
     this.componentMap.set('radio', RadioInputComponent);
     this.componentMap.set('dropdown', DropdownInputComponent);
     this.componentMap.set('buttons', ButtonsInputComponent);
+    this.componentMap.set('calendar', CalendarInputComponent);
+
   }
   
   loadQuestionComponent(question: Question, container: ViewContainerRef): BaseQuestionComponent 

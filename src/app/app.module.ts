@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 import { AppComponent } from './app.component';
 import { ChatComponent } from './Components/chat/chat.component';
@@ -11,6 +12,11 @@ import { NumberInputComponent } from './Components/question-types/number-input/n
 import { RadioInputComponent } from './Components/question-types/radio-input/radio-input.component';
 import { DropdownInputComponent } from './Components/question-types/dropdown-input/dropdown-input.component';
 import { ButtonsInputComponent } from './Components/question-types/buttons-input/buttons-input.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { CalendarInputComponent } from './Components/question-types/calendar-input/calendar-input.component';
 
 @NgModule({
   declarations: [
@@ -22,11 +28,18 @@ import { ButtonsInputComponent } from './Components/question-types/buttons-input
     NumberInputComponent,
     RadioInputComponent,
     DropdownInputComponent,
-    ButtonsInputComponent
+    ButtonsInputComponent,
+    CalendarInputComponent,
+    
   ],
   imports: [
     BrowserModule,
-    FormsModule
+    CommonModule,
+    FormsModule,
+    MatDatepickerModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatNativeDateModule
   ],
   providers: [],
   bootstrap: [AppComponent]

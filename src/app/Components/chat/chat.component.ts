@@ -57,7 +57,10 @@ export class ChatComponent implements OnInit
     let answerText: string;
     
     // Handle different answer types
-    if (typeof answer === 'string' || typeof answer === 'number') {
+    if (answer instanceof Date) {
+      answerText = answer.toLocaleDateString(); // Format the date for display
+    }
+    else if (typeof answer === 'string' || typeof answer === 'number') {
       answerText = answer.toString();
     } else {
       // It's an Option object

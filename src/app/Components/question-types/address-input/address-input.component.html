@@ -1,0 +1,19 @@
+<div class="address-form">
+    <div class="form-row" *ngFor="let subQuestion of subQuestions; let i = index">
+      <ng-container [ngSwitch]="subQuestion.inputType">
+        <app-text-input
+          *ngSwitchCase="'text'"
+          [question]="subQuestion"
+          #inputs>
+        </app-text-input>
+        <app-dropdown-input
+          *ngSwitchCase="'dropdown'"
+          [question]="subQuestion"
+          #inputs>
+        </app-dropdown-input>
+      </ng-container>
+    </div>
+    <div class="form-actions">
+        <button [disabled]="!isFormValid()">Submit</button>
+    </div>
+  </div>

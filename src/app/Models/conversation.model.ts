@@ -1,24 +1,25 @@
-export type QuestionType = 'text' | 'number' | 'radio' | 'dropdown' | 'buttons' | 'calendar'; // 'selection' mapped to 'buttons'
+export type QuestionType = 'text' | 'number' | 'radio' | 'dropdown' | 'buttons' | 'calendar' | 'address'; // 'selection' mapped to 'buttons'
 
 export interface Option {
   text: string;
   value?: string | number; // Optional value if different from text
-  nextQuestionId: string | null; // Changed from next: Question | null
+  nextQuestionId?: string | null; 
 }
 
 export interface Question {
-  questionId: string; // Changed from id
-  questionText: string; // Changed from question
-  inputType: QuestionType; // Changed from type
+  questionId: string; 
+  questionText?: string; 
+  inputType: QuestionType; 
   options?: Option[]; // For radio, dropdown, buttons
-  placeholder?: string; // For text and number inputs
+  placeholder?: string;
   validation?: {
     required?: boolean;
     min?: number;
     max?: number;
     pattern?: string;
   };
-  nextQuestionId?: string | null; // Changed from next: Question | null, used for text/number inputs
+  nextQuestionId?: string | null; 
+  subQuestions?: { [key: string]: Question };
 }
 
 export interface Conversation {
@@ -32,7 +33,6 @@ export interface HistoryItem {
   answer: string;
 }
 
-// Answer interface unchanged, included for completeness
 export interface Answer {
   type: QuestionType;
   value: string | number | Option;

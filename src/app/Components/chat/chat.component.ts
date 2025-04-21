@@ -32,7 +32,7 @@ export class ChatComponent implements OnInit
           this.messages[this.messages.length - 1].text !== question.questionText) { // Changed to questionText
         this.messages.push({
           type: 'bot',
-          text: question.questionText // Changed to questionText
+          text: question.questionText || '' // Changed to questionText
         });
       }
       
@@ -62,9 +62,12 @@ export class ChatComponent implements OnInit
     }
     else if (typeof answer === 'string' || typeof answer === 'number') {
       answerText = answer.toString();
-    } else {
-      // It's an Option object
+    }
+    else if (answer.text) {
+      // Handle Option or address objects
       answerText = answer.text;
+     } else {
+      answerText = 'Unknown answer';
     }
     
     // Add user message

@@ -16,7 +16,7 @@ export class ConversationService {
       questionText: 'Please select a date: (D/M/Y)',
       inputType: 'calendar',
       nextQuestionId: 'Q2',
-      customValidation: 'custom validation'
+      validationKey:''
     },
       // 'Q1': {
       //   questionId: 'Q1',

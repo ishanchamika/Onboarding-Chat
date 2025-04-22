@@ -6,6 +6,7 @@ import { DropdownInputComponent } from '../Components/question-types/dropdown-in
 import { ButtonsInputComponent } from '../Components/question-types/buttons-input/buttons-input.component';
 import { BaseQuestionComponent } from '../Components/question-types/base-question.component';
 import { CalendarInputComponent } from '../Components/question-types/calendar-input/calendar-input.component';
+import { DatePickerIconDemo } from '../Components/question-types/date-picker/datePicker';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,7 @@ export class QuestionComponentService
     this.componentMap.set('dropdown', DropdownInputComponent);
     this.componentMap.set('buttons', ButtonsInputComponent);
     this.componentMap.set('calendar', CalendarInputComponent);
-
+    this.componentMap.set('datepicker', DatePickerIconDemo);
   }
   
   loadQuestionComponent(question: Question, container: ViewContainerRef): BaseQuestionComponent 

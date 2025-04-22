@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { BaseQuestionComponent } from '../base-question.component';
+import { ValidationRules, ValidationRule } from '../../validation-rules/validation-rules';
 
 @Component({
   standalone: false,
@@ -7,7 +8,7 @@ import { BaseQuestionComponent } from '../base-question.component';
   templateUrl: './text-input.component.html',
   styleUrls: ['./text-input.component.css']
 })
-export class TextInputComponent extends BaseQuestionComponent 
+export class TextInputComponent extends BaseQuestionComponent implements OnInit
 {
   value: string = '';
   

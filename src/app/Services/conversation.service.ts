@@ -17,12 +17,64 @@ export class ConversationService {
     conversationId: '8631d9f7-1d59-45d3-9566-c12263800746',
     currentQuestionId: 'Q1',
     questions: {
-      Q1: {
-        questionId: 'Q1',
-        questionText: 'Please select a date: (D/M/Y)',
-        inputType: 'calendar',
-        nextQuestionId: 'Q2',
+        'Q1': {
+          questionId: 'Q1',
+          questionText: 'What is the business partner type?',
+          inputType: 'buttons',
+          options: [
+            { text: 'Individual', nextQuestionId: 'Q2' },
+            { text: 'Corporate', nextQuestionId: 'Q3' }
+          ],
+          requiresSubmitButton: false
+        },
+        'Q2': {
+        questionId: 'Q2',
+        questionText: 'Please enter your address:',
+        inputType: 'address',
+        subQuestions: {
+          streetName: {
+            questionId: 'Q2-streetName',
+            inputType: 'text',
+            placeholder: 'Enter street name',
+            validation: { required: true }
+          },
+          
+          city: {
+            questionId: 'Q2-city',
+            inputType: 'dropdown',
+            options: [
+              { text: 'New York', value: 'NY' },
+              { text: 'Los Angeles', value: 'LA' },
+              { text: 'Chicago', value: 'CHI' }
+            ],
+            validation: { required: true }
+          },
+          houseNumber: {
+            questionId: 'Q2-houseNumber',
+            inputType: 'text',
+            placeholder: 'Enter house number',
+            validation: { required: true }
+          },
+          state: {
+            questionId: 'Q2-state',
+            inputType: 'dropdown',
+            options: [
+              { text: 'California', value: 'CA' },
+              { text: 'Texas', value: 'TX' },
+              { text: 'Florida', value: 'FL' }
+            ],
+            validation: { required: true }
+          }
+        },
+        nextQuestionId: 'Q4',
+        requiresSubmitButton: true
       },
+      // Q1: {
+      //   questionId: 'Q1',
+      //   questionText: 'Please select a date: (D/M/Y)',
+      //   inputType: 'calendar',
+      //   nextQuestionId: 'Q2',
+      // },
       // 'Q1': {
       //   questionId: 'Q1',
       //   questionText: 'What is the business partner type?',
@@ -37,101 +89,103 @@ export class ConversationService {
       //   questionText: 'What is your full name?',
       //   inputType: 'text',
       //   placeholder: 'Enter your full name',
+      //   nextQuestionId: 'Q4',
+      //   requiresSubmitButton: true
+      // },
+      // 'Q2': {
+      //   questionId: 'Q2',
+      //   questionText: 'Please enter your address:',
+      //   inputType: 'address',
+      //   subQuestions: {
+      //     streetName: {
+      //       questionId: 'Q2-streetName',
+      //       inputType: 'text',
+      //       placeholder: 'Enter street name',
+      //       validation: { required: true }
+      //     },
+      //     houseNumber: {
+      //       questionId: 'Q2-houseNumber',
+      //       inputType: 'text',
+      //       placeholder: 'Enter house number',
+      //       validation: { required: true }
+      //     },
+      //     city: {
+      //       questionId: 'Q2-city',
+      //       inputType: 'dropdown',
+      //       options: [
+      //         { text: 'New York', value: 'NY' },
+      //         { text: 'Los Angeles', value: 'LA' },
+      //         { text: 'Chicago', value: 'CHI' }
+      //       ],
+      //       validation: { required: true }
+      //     },
+      //     state: {
+      //       questionId: 'Q2-state',
+      //       inputType: 'dropdown',
+      //       options: [
+      //         { text: 'California', value: 'CA' },
+      //         { text: 'Texas', value: 'TX' },
+      //         { text: 'Florida', value: 'FL' }
+      //       ],
+      //       validation: { required: true }
+      //     }
+      //   },
       //   nextQuestionId: 'Q4'
       // },
-      'Q2': {
-        questionId: 'Q2',
-        questionText: 'Please enter your address:',
-        inputType: 'address',
-        subQuestions: {
-          streetName: {
-            questionId: 'Q2-streetName',
-            inputType: 'text',
-            placeholder: 'Enter street name',
-            validation: { required: true }
-          },
-          houseNumber: {
-            questionId: 'Q2-houseNumber',
-            inputType: 'text',
-            placeholder: 'Enter house number',
-            validation: { required: true }
-          },
-          city: {
-            questionId: 'Q2-city',
-            inputType: 'dropdown',
-            options: [
-              { text: 'New York', value: 'NY' },
-              { text: 'Los Angeles', value: 'LA' },
-              { text: 'Chicago', value: 'CHI' }
-            ],
-            validation: { required: true }
-          },
-          state: {
-            questionId: 'Q2-state',
-            inputType: 'dropdown',
-            options: [
-              { text: 'California', value: 'CA' },
-              { text: 'Texas', value: 'TX' },
-              { text: 'Florida', value: 'FL' }
-            ],
-            validation: { required: true }
-          }
-        },
-        nextQuestionId: 'Q4'
-      },
       Q3: {
         questionId: 'Q3',
         questionText: 'What is your company name?',
         inputType: 'text',
         placeholder: 'Enter company name',
         nextQuestionId: 'Q4',
+        requiresSubmitButton: true
       },
-      Q4: {
-        questionId: 'Q4',
-        questionText: 'What is your annual revenue?',
-        inputType: 'number',
-        placeholder: 'Enter amount in dollars',
-        validation: {
-          required: true,
-          min: 0,
-        },
-        nextQuestionId: 'Q5',
-      },
-      Q5: {
-        questionId: 'Q5',
-        questionText: 'Which industry do you operate in?',
-        inputType: 'dropdown',
-        options: [
-          { text: 'Technology', nextQuestionId: 'Q6' },
-          { text: 'Healthcare', nextQuestionId: 'Q6' },
-          { text: 'Finance', nextQuestionId: 'Q6' },
-          { text: 'Retail', nextQuestionId: 'Q6' },
-          { text: 'Other', nextQuestionId: 'Q6' },
-        ],
-      },
-      Q6: {
-        questionId: 'Q6',
-        questionText: 'How many employees do you have?',
-        inputType: 'radio',
-        options: [
-          { text: '1-10', nextQuestionId: 'Q7' },
-          { text: '11-50', nextQuestionId: 'Q7' },
-          { text: '51-200', nextQuestionId: 'Q7' },
-          { text: '201-1000', nextQuestionId: 'Q7' },
-          { text: '1000+', nextQuestionId: 'Q7' },
-        ],
-      },
-      Q7: {
-        questionId: 'Q7',
-        questionText: 'What services are you interested in?',
-        inputType: 'buttons',
-        options: [
-          { text: 'Consulting', nextQuestionId: 'END' },
-          { text: 'Software Development', nextQuestionId: 'END' },
-          { text: 'Cloud Services', nextQuestionId: 'END' },
-          { text: 'Support', nextQuestionId: 'END' },
-        ],
-      },
+      // Q4: {
+      //   questionId: 'Q4',
+      //   questionText: 'What is your annual revenue?',
+      //   inputType: 'number',
+      //   placeholder: 'Enter amount in dollars',
+      //   validation: {
+      //     required: true,
+      //     min: 0,
+      //   },
+      //   nextQuestionId: 'Q5',
+      // },
+      // Q5: {
+      //   questionId: 'Q5',
+      //   questionText: 'Which industry do you operate in?',
+      //   inputType: 'dropdown',
+      //   options: [
+      //     { text: 'Technology', nextQuestionId: 'Q6' },
+      //     { text: 'Healthcare', nextQuestionId: 'Q6' },
+      //     { text: 'Finance', nextQuestionId: 'Q6' },
+      //     { text: 'Retail', nextQuestionId: 'Q6' },
+      //     { text: 'Other', nextQuestionId: 'Q6' },
+      //   ],
+      // },
+      // Q6: {
+      //   questionId: 'Q6',
+      //   questionText: 'How many employees do you have?',
+      //   inputType: 'radio',
+      //   options: [
+      //     { text: '1-10', nextQuestionId: 'Q7' },
+      //     { text: '11-50', nextQuestionId: 'Q7' },
+      //     { text: '51-200', nextQuestionId: 'Q7' },
+      //     { text: '201-1000', nextQuestionId: 'Q7' },
+      //     { text: '1000+', nextQuestionId: 'Q7' },
+      //   ],
+      // },
+      // Q7: {
+      //   questionId: 'Q7',
+      //   questionText: 'What services are you interested in?',
+      //   inputType: 'buttons',
+      //   options: [
+      //     { text: 'Consulting', nextQuestionId: 'END' },
+      //     { text: 'Software Development', nextQuestionId: 'END' },
+      //     { text: 'Cloud Services', nextQuestionId: 'END' },
+      //     { text: 'Support', nextQuestionId: 'END' },
+      //   ],
+      // },
       END: {
         questionId: 'END',
         questionText:
@@ -180,7 +234,6 @@ export class ConversationService {
       answerText = answer.text;
       nextQuestionId = current.nextQuestionId || null;
     } else {
-      // It's an Option object
       answerText = answer.text;
       nextQuestionId = answer.nextQuestionId;
     }
@@ -209,6 +262,7 @@ export class ConversationService {
             nextQuestionId: this.conversation.currentQuestionId,
           },
         ],
+        requiresSubmitButton: false
       };
       this.currentQuestionSubject.next(endQuestion);
     }

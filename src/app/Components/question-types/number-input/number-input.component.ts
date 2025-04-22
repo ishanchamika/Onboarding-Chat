@@ -11,12 +11,18 @@ export class NumberInputComponent extends BaseQuestionComponent
 {
   value: number | null = null;
   
-  onSubmit(): void 
-  {
-    if(this.value !== null) 
-    {
+  onSubmitButtonClicked(): void {
+    if (this.canSubmit()) {
       this.submitAnswer(this.value);
       this.value = null;
     }
+  }
+
+  canSubmit(): boolean {
+    if (!this.value) return false;
+    if (this.question.validation?.required && !this.value) return false;
+    if (this.question.validation?.min && this.value < this.question.validation.min) return false;
+    if (this.question.validation?.max && this.value > this.question.validation.max) return false;
+    return true;
   }
 }

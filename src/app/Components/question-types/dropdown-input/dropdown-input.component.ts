@@ -28,10 +28,14 @@ export class DropdownInputComponent extends BaseQuestionComponent implements OnI
     }
   }
   
-  onSubmit(): void {
+  onSubmitButtonClicked(): void {
     if (this.selectedOption) {
       this.submitAnswer(this.selectedOption);
-      this.selectedOption = null;
+      this.selectedOption = null; // Reset after submission
     }
+  }
+
+  canSubmit(): boolean {
+    return !!this.selectedOption;
   }
 }

@@ -11,12 +11,14 @@ export class TextInputComponent extends BaseQuestionComponent
 {
   value: string = '';
   
-  onSubmit(): void 
-  {
-    if (this.value.trim())
-    {
+  onSubmitButtonClicked(): void {
+    if (this.canSubmit()) {
       this.submitAnswer(this.value);
-      this.value = '';
+      this.value = ''; // Reset after submission
     }
+  }
+
+  canSubmit(): boolean {
+    return this.question.validation?.required ? !!this.value.trim() : true;
   }
 }

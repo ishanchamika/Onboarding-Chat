@@ -20,6 +20,7 @@ export interface Question {
   };
   nextQuestionId?: string | null; 
   subQuestions?: { [key: string]: Question };
+  requiresSubmitButton?: boolean;
 }
 
 export interface Conversation {

@@ -11,4 +11,6 @@ export abstract class BaseQuestionComponent {
   protected submitAnswer(answer: any): void {
     this.answerSubmitted.emit(answer);
   }
+  abstract onSubmitButtonClicked(): void; // Called when ChatComponent's submit button is clicked
+  abstract canSubmit(): boolean;
 }

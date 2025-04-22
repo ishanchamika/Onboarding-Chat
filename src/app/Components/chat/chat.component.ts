@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { Question, Option } from '../../Models/conversation.model';
 import { ConversationService } from '../../Services/conversation.service';
 import { QuestionComponentService } from '../../Services/question-component.service';
+import { BaseQuestionComponent } from '../question-types/base-question.component';
 
 @Component({
   selector: 'app-chat',
@@ -16,7 +17,10 @@ export class ChatComponent implements OnInit
   questionContainer!: ViewContainerRef;
   
   currentQuestion$: Observable<Question>;
+  currentQuestion: Question | null = null; // Declare currentQuestion
+  currentQuestionComponent: BaseQuestionComponent | null = null; // Declare currentQuestionComponent
   messages: { type: 'bot' | 'user', text: string }[] = [];
+  isSubmitButton: any = false;
   
   constructor(
     private conversationService: ConversationService,
@@ -27,6 +31,7 @@ export class ChatComponent implements OnInit
   
   ngOnInit(): void {
     this.currentQuestion$.subscribe(question => {
+      
       // Add the bot message with the question
       if (this.messages.length === 0 || 
           this.messages[this.messages.length - 1].text !== question.questionText) { // Changed to questionText
@@ -34,8 +39,9 @@ export class ChatComponent implements OnInit
           type: 'bot',
           text: question.questionText || '' // Changed to questionText
         });
+
       }
-      
+      this.isSubmitButton = question.requiresSubmitButton;
       // Load the appropriate component when the view is ready
       setTimeout(() => {
         if (this.questionContainer) {
@@ -78,6 +84,12 @@ export class ChatComponent implements OnInit
     
     // Process the selection in conversation service
     this.conversationService.handleAnswer(answer);
+  }
+
+  submitCurrentAnswer(): void {
+    if (this.currentQuestionComponent) {
+      this.currentQuestionComponent.onSubmitButtonClicked();
+    }
   }
   
   trackByFn(index: number): number {

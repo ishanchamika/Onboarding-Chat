@@ -12,4 +12,12 @@
   </div>
   
   <ng-template #questionContainer></ng-template>
+  
+  <div class="chat-input" *ngIf="isSubmitButton">
+    <button 
+      (click)="submitCurrentAnswer()" 
+      [disabled]="!currentQuestionComponent?.canSubmit()">
+      Send
+    </button>
+  </div>
 </div>

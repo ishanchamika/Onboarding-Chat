@@ -1,10 +1,8 @@
 <div class="dropdown-container">
-    <select class="dropdown-select" (change)="onSelectionChange($event)">
-      <option value="-1" selected disabled>Please select an option</option>
-      <option *ngFor="let option of question.options; let i = index" [value]="i">
-        {{ option.text }}
-      </option>
-    </select>
-    
-    <button [disabled]="!selectedOption" (click)="onSubmit()">Submit</button>
-  </div>
+  <select class="dropdown-select" (change)="onSelectionChange($event)">
+    <option value="-1" selected disabled>Please select an option</option>
+    <option *ngFor="let option of question.options; let i = index" [value]="i">
+      {{ option.text }}
+    </option>
+  </select>
+</div>

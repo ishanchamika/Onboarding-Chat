@@ -22,17 +22,17 @@ export class AddressInputComponent extends BaseQuestionComponent implements OnIn
     }
   }
 
-  submitAddress(): void {
-    const addressParts = this.inputComponents.toArray().map(component => {
-      if (component instanceof TextInputComponent) {
-        return component.value || '';
-      } else if (component instanceof DropdownInputComponent) {
-        return component.selectedOption?.text || '';
-      }
-      return '';
-    });
-  
-    if (this.isFormValid()) {
+  onSubmitButtonClicked(): void {
+    if (this.canSubmit()) {
+      const addressParts = this.inputComponents.toArray().map(component => {
+        if (component instanceof TextInputComponent) {
+          return component.value || '';
+        } else if (component instanceof DropdownInputComponent) {
+          return component.selectedOption?.text || '';
+        }
+        return '';
+      });
+
       const addressString = addressParts.join(', ');
       const addressObject = {
         streetName: addressParts[0],
@@ -41,12 +41,10 @@ export class AddressInputComponent extends BaseQuestionComponent implements OnIn
         state: addressParts[3]
       };
       this.submitAnswer({ text: addressString, value: addressObject });
-    } else {
-      console.warn('Address form is invalid');
     }
   }
-  
-  isFormValid(): boolean {
+
+  canSubmit(): boolean {
     if (!this.inputComponents) return false;
     const parts = this.inputComponents.toArray().map(component => {
       if (component instanceof TextInputComponent) {

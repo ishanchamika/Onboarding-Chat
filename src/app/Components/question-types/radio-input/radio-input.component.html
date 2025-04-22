@@ -1,15 +1,13 @@
 <div class="radio-container">
-    <div *ngFor="let option of question.options" class="radio-option">
-      <label [class.selected]="selectedOption === option">
-        <input 
-          type="radio" 
-          name="radioGroup" 
-          [value]="option.value || option.text" 
-          [checked]="selectedOption === option"
-          (change)="selectOption(option)">
-        {{ option.text }}
-      </label>
-    </div>
-    
-    <button [disabled]="!selectedOption" (click)="onSubmit()">Submit</button>
+  <div *ngFor="let option of question.options" class="radio-option">
+    <label [class.selected]="selectedOption === option">
+      <input 
+        type="radio" 
+        name="radioGroup" 
+        [value]="option.value || option.text" 
+        [checked]="selectedOption === option"
+        (change)="selectOption(option)">
+      {{ option.text }}
+    </label>
   </div>
+</div>

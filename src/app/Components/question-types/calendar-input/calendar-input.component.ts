@@ -18,4 +18,12 @@ export class CalendarInputComponent extends BaseQuestionComponent implements OnI
     this.selectedDate = date;
     this.submitAnswer(date); // Submit the selected date as the answer
   }
+
+  onSubmitButtonClicked(): void {
+    // Not used since buttons submit directly
+  }
+
+  canSubmit(): boolean {
+    return false; // Submit button not shown
+  }
 }

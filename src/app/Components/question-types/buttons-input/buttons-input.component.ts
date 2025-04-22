@@ -20,4 +20,12 @@ export class ButtonsInputComponent extends BaseQuestionComponent implements OnIn
   selectOption(option: Option): void {
     this.submitAnswer(option);
   }
+
+  onSubmitButtonClicked(): void {
+    // Not used since buttons submit directly
+  }
+
+  canSubmit(): boolean {
+    return false; // Submit button not shown
+  }
 }

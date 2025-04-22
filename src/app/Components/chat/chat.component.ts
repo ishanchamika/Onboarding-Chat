@@ -46,6 +46,7 @@ export class ChatComponent implements OnInit
           
           // Subscribe to answer events
           component.answerSubmitted.subscribe(answer => {
+            console.log('xxxx',answer);
             this.handleAnswer(answer);
           });
         }

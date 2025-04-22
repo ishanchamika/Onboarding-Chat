@@ -15,7 +15,8 @@ export class ConversationService {
       questionId: 'Q1',
       questionText: 'Please select a date: (D/M/Y)',
       inputType: 'calendar',
-      nextQuestionId: 'Q2'
+      nextQuestionId: 'Q2',
+      customValidation: 'custom validation'
     },
       // 'Q1': {
       //   questionId: 'Q1',
@@ -31,25 +32,28 @@ export class ConversationService {
         questionText: 'What is your full name?',
         inputType: 'text',
         placeholder: 'Enter your full name',
-        nextQuestionId: 'Q4'
+        nextQuestionId: 'Q4',
+        validationKey: 'name'
       },
       'Q3': {
         questionId: 'Q3',
         questionText: 'What is your company name?',
         inputType: 'text',
         placeholder: 'Enter company name',
-        nextQuestionId: 'Q4'
+        nextQuestionId: 'Q4',
+        validationKey:''
       },
       'Q4': {
         questionId: 'Q4',
         questionText: 'What is your annual revenue?',
-        inputType: 'number',
+        inputType: 'text',
         placeholder: 'Enter amount in dollars',
         validation: {
           required: true,
           min: 0
         },
-        nextQuestionId: 'Q5'
+        nextQuestionId: 'Q5',
+        validationKey:'salary'
       },
       'Q5': {
         questionId: 'Q5',
@@ -119,6 +123,7 @@ export class ConversationService {
 
   handleAnswer(answer: any): void {
     const current = this.currentQuestion;
+    console.log('bbbbbb', current);
     let answerText: string;
     let nextQuestionId: string | null = null;
 

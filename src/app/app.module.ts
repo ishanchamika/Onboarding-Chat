@@ -8,7 +8,7 @@ import { ChatComponent } from './Components/chat/chat.component';
 import { HistoryPanelComponent } from './Components/history-panel/history-panel.component';
 import { ConversationComponent } from './Components/conversation/conversation.component';
 import { TextInputComponent } from './Components/question-types/text-input/text-input.component';
-import { NumberInputComponent } from './Components/question-types/number-input/number-input.component';
+// import { NumberInputComponent } from './Components/question-types/number-input/number-input.component';
 import { RadioInputComponent } from './Components/question-types/radio-input/radio-input.component';
 import { DropdownInputComponent } from './Components/question-types/dropdown-input/dropdown-input.component';
 import { ButtonsInputComponent } from './Components/question-types/buttons-input/buttons-input.component';
@@ -25,7 +25,7 @@ import { CalendarInputComponent } from './Components/question-types/calendar-inp
     HistoryPanelComponent,
     ConversationComponent,
     TextInputComponent,
-    NumberInputComponent,
+    // NumberInputComponent,
     RadioInputComponent,
     DropdownInputComponent,
     ButtonsInputComponent,

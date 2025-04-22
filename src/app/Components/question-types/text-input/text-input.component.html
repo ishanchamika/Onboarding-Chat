@@ -1,9 +1,14 @@
 <div class="input-container">
-    <input 
-      type="text" 
-      [(ngModel)]="value" 
-      [placeholder]="question.placeholder || 'Enter your answer...'" 
-      class="text-input"
-      (keyup.enter)="onSubmit()">
-    <button [disabled]="!value.trim()" (click)="onSubmit()">Submit</button>
+  <input 
+    type="text" 
+    [(ngModel)]="value" 
+    [placeholder]="question.placeholder || 'Enter your answer...'" 
+    class="text-input"
+    (keyup.enter)="onSubmit()">
+  
+  <button [disabled]="!isValid" (click)="onSubmit()">Submit</button>
+
+  <div class="error-message" *ngIf="value && !isValid">
+    {{ validationRule?.message }}
   </div>
+</div>

@@ -18,6 +18,8 @@ export interface Question {
     max?: number;
     pattern?: string;
   };
+  customValidation?:any;
+  validationKey?:string;
   nextQuestionId?: string | null; // Changed from next: Question | null, used for text/number inputs
 }
 

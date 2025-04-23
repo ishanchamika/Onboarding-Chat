@@ -41,7 +41,8 @@ export class ChatComponent implements OnInit
         });
 
       }
-      this.isSubmitButton = question.requiresSubmitButton;
+
+    this.isSubmitButton = question.requiresSubmitButton;
     setTimeout(() => {
       if (this.questionContainer) {
         const component = this.questionComponentService.loadQuestionComponent(

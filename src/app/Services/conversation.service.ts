@@ -138,7 +138,8 @@ export class ConversationService {
         inputType: 'text',
         placeholder: 'Enter company name',
         nextQuestionId: 'Q4',
-        requiresSubmitButton: true
+        requiresSubmitButton: true,
+        validationKey:'name'
       },
       Q4: {
         questionId: 'Q4',
@@ -151,7 +152,6 @@ export class ConversationService {
         },
         nextQuestionId: 'Q5',
         requiresSubmitButton: true
-
       },
       // Q5: {
       //   questionId: 'Q5',

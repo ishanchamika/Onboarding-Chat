@@ -17,6 +17,7 @@
     <button 
       (click)="submitCurrentAnswer()" 
       [disabled]="!currentQuestionComponent?.canSubmit()">
+      {{!currentQuestionComponent?.canSubmit()}}
       Send
     </button>
   </div>

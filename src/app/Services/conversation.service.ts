@@ -34,14 +34,21 @@ export class ConversationService {
         subQuestions: {
           streetName: {
             questionId: 'Q2-streetName',
+            questionText:'Street Name',
             inputType: 'text',
             placeholder: 'Enter street name',
             validation: { required: true }
           },
+          date: {
+            questionId: 'Q2-date',
+            questionText: 'Please select a date: (D/M/Y)',
+            inputType: 'calendar',
+          },
           
           city: {
             questionId: 'Q2-city',
-            inputType: 'dropdown',
+            questionText:'City Name',
+            inputType: 'radio',
             options: [
               { text: 'Colombo', value: 'CB' },
               { text: 'Kandy', value: 'KD' },
@@ -51,12 +58,14 @@ export class ConversationService {
           },
           houseNumber: {
             questionId: 'Q2-houseNumber',
+            questionText:'House Name',
             inputType: 'text',
             placeholder: 'Enter house number',
             validation: { required: true }
           },
           state: {
             questionId: 'Q2-state',
+            questionText:'State Name',
             inputType: 'dropdown',
             options: [
               { text: 'Western', value: 'WP' },
@@ -69,6 +78,7 @@ export class ConversationService {
         nextQuestionId: 'Q4',
         requiresSubmitButton: true
       },
+      
       // Q1: {
       //   questionId: 'Q1',
       //   questionText: 'Please select a date: (D/M/Y)',

@@ -1,8 +1,8 @@
-export type QuestionType = 'text' | 'number' | 'radio' | 'dropdown' | 'buttons' | 'calendar' | 'datepicker' | 'address'; // 'selection' mapped to 'buttons'
+export type QuestionType = 'text' | 'number' | 'radio' | 'dropdown' | 'buttons' | 'calendar' | 'datepicker' | 'address';
 
 export interface Option {
   text: string;
-  value?: string | number; // Optional value if different from text
+  value?: string | number;
   nextQuestionId?: string | null; 
 }
 
@@ -10,7 +10,7 @@ export interface Question {
   questionId: string; 
   questionText?: string; 
   inputType: QuestionType; 
-  options?: Option[]; // For radio, dropdown, buttons
+  options?: Option[]; 
   placeholder?: string;
   validation?: {
     required?: boolean;

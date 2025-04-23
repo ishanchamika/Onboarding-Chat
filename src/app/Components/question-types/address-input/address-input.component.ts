@@ -3,6 +3,9 @@ import { BaseQuestionComponent } from '../base-question.component';
 import { Question, Option } from '../../../Models/conversation.model';
 import { TextInputComponent } from '../text-input/text-input.component';
 import { DropdownInputComponent } from '../dropdown-input/dropdown-input.component';
+import { RadioInputComponent } from '../radio-input/radio-input.component';
+import { ButtonsInputComponent } from '../buttons-input/buttons-input.component';
+import { CalendarInputComponent } from '../calendar-input/calendar-input.component';
 
 @Component({
   selector: 'app-address-input',
@@ -11,7 +14,10 @@ import { DropdownInputComponent } from '../dropdown-input/dropdown-input.compone
   styleUrls: ['./address-input.component.css']
 })
 export class AddressInputComponent extends BaseQuestionComponent implements OnInit {
-  @ViewChildren('inputs') inputComponents!: QueryList<TextInputComponent | DropdownInputComponent>;
+  @ViewChildren('inputs') inputComponents!: QueryList<
+  TextInputComponent | DropdownInputComponent | RadioInputComponent | CalendarInputComponent
+  // any
+  >;
   subQuestions!: Question[];
 
   ngOnInit(): void {
@@ -23,24 +29,56 @@ export class AddressInputComponent extends BaseQuestionComponent implements OnIn
   }
 
   onSubmitButtonClicked(): void {
+    // if (this.canSubmit()) {
+    //   const addressParts = this.inputComponents.toArray().map(component => {
+    //     if (component instanceof TextInputComponent) {
+    //       return component.value || '';
+    //     } else if (component instanceof DropdownInputComponent) {
+    //       return component.selectedOption?.text || '';
+    //     }
+    //     return '';
+    //   });
+
+    //   const addressString = addressParts.join(', ');
+    //   const addressObject = {
+    //     streetName: addressParts[0],
+    //     houseNumber: addressParts[1],
+    //     city: addressParts[2],
+    //     state: addressParts[3]
+    //   };
+    //   this.submitAnswer({ text: addressString, value: addressObject });
+    // }
     if (this.canSubmit()) {
-      const addressParts = this.inputComponents.toArray().map(component => {
+      const inputParts: string[] = [];
+      const inputObject: { [key: string]: any } = {};
+
+      this.inputComponents.toArray().forEach((component, index) => {
+        const subQuestion = this.subQuestions[index];
+        let value: any;
+
+        // Extract value based on component type
         if (component instanceof TextInputComponent) {
-          return component.value || '';
+          value = component.value || '';
         } else if (component instanceof DropdownInputComponent) {
-          return component.selectedOption?.text || '';
+          value = component.selectedOption?.text || '';
+        } else if (component instanceof RadioInputComponent) {
+          value = component.selectedOption?.text || ''; 
+        } else if (component instanceof CalendarInputComponent) {
+          value = component.selectedDate || null;
+        } else {
+          value = ''; 
+          console.warn(`Unrecognized input type for subQuestion: ${subQuestion.questionId}`);
         }
-        return '';
+
+        //text representation
+        inputParts.push(String(value));
+
+        //questionId as key in the output object
+        inputObject[subQuestion.questionId] = value;
       });
 
-      const addressString = addressParts.join(', ');
-      const addressObject = {
-        streetName: addressParts[0],
-        houseNumber: addressParts[1],
-        city: addressParts[2],
-        state: addressParts[3]
-      };
-      this.submitAnswer({ text: addressString, value: addressObject });
+      const inputString = inputParts.join(', ');
+      this.submitAnswer({ text: inputString, value: inputObject });
     }
   }
 
@@ -67,19 +105,4 @@ export class AddressInputComponent extends BaseQuestionComponent implements OnIn
     return true;
   }
 
-  // isFormValid(): boolean {
-  //   if (!this.inputComponents) return false;
-  //   const parts = this.inputComponents.toArray().map(component => {
-  //     if (component instanceof TextInputComponent) {
-  //       return component.value || '';
-  //     } else if (component instanceof DropdownInputComponent) {
-  //       return component.selectedOption?.text || '';
-  //     }
-  //     return '';
-  //   });
-  //   return parts.every((part, index) => {
-  //     const subQuestion = this.subQuestions[index];
-  //     return subQuestion.validation?.required ? !!part : true;
-  //   });
-  // }
 }

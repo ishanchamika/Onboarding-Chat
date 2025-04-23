@@ -9,8 +9,8 @@ import { BaseQuestionComponent } from '../base-question.component';
 })
 export class CalendarInputComponent extends BaseQuestionComponent implements OnInit {
   selectedDate: Date | null = null;
-  minDate!: Date;
-  maxDate!: Date;
+  minDate!: Date | null;
+  maxDate!: Date | null;
 
   ngOnInit(): void 
   {
@@ -27,8 +27,10 @@ export class CalendarInputComponent extends BaseQuestionComponent implements OnI
     if(!this.minDate || !this.maxDate) 
     {
       const today = new Date();
-      this.minDate ??= new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
-      this.maxDate ??= new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7);
+      // this.minDate ??= new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+      // this.maxDate ??= new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7);
+      this.minDate = null;
+      this.maxDate = null;
     }
   }
 

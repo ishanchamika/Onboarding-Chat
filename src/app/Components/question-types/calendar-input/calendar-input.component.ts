@@ -9,21 +9,64 @@ import { BaseQuestionComponent } from '../base-question.component';
 })
 export class CalendarInputComponent extends BaseQuestionComponent implements OnInit {
   selectedDate: Date | null = null;
+  minDate!: Date;
+  maxDate!: Date;
 
-  ngOnInit(): void {
-    // Initialization logic if needed
+  ngOnInit(): void 
+  {
+    if(this.question?.minDate) 
+    {
+      this.minDate = new Date(this.question.minDate);
+    }
+
+    if(this.question?.maxDate) 
+    {
+      this.maxDate = new Date(this.question.maxDate);
+    }
+
+    if(!this.minDate || !this.maxDate) 
+    {
+      const today = new Date();
+      this.minDate ??= new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+      this.maxDate ??= new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7);
+    }
   }
 
-  onDateSelected(date: Date): void {
+  onDateSelected(date: Date): void 
+  {
     this.selectedDate = date;
-    this.submitAnswer(date); // Submit the selected date as the answer
+  }
+  
+  canSubmit(): boolean 
+  {
+    if(!this.selectedDate)
+    { 
+      return false;
+    } 
+    const selected = this.toDateOnly(this.selectedDate);
+    const min = this.minDate ? this.toDateOnly(this.minDate) : null;
+    const max = this.maxDate ? this.toDateOnly(this.maxDate) : null;
+
+    const afterMin = !min || selected.getTime() >= min.getTime();
+    const beforeMax = !max || selected.getTime() <= max.getTime();
+
+    return afterMin && beforeMax;
   }
 
-  onSubmitButtonClicked(): void {
-    // Not used since buttons submit directly
+
+  toDateOnly(date: Date): Date 
+  {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
   }
 
-  canSubmit(): boolean {
-    return false; // Submit button not shown
+  
+  onSubmitButtonClicked(): void 
+  {
+    if(this.canSubmit()) 
+    {
+      this.submitAnswer(this.selectedDate);
+      this.selectedDate = null;
+    }
   }
+
 }

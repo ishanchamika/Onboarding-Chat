@@ -19,11 +19,12 @@ export interface Question {
     pattern?: string;
   };
   customValidation?:any;
-  validationKey?:string;
   nextQuestionId?: string | null; 
   subQuestions?: { [key: string]: Question };
   requiresSubmitButton?: boolean;
   validationKey?: string;
+  minDate?: string;
+  maxDate?: string;
 }
 
 export interface Conversation {

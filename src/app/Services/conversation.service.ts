@@ -151,32 +151,48 @@ export class ConversationService {
           min: 0,
         },
         nextQuestionId: 'Q5',
+        requiresSubmitButton: true,
+        validationKey: 'salary'
+      },
+      Q5: {
+        questionId: 'Q5',
+        questionText: 'Which industry do you operate in?',
+        inputType: 'dropdown',
+        options: [
+          { text: 'Technology', nextQuestionId: 'Q6' },
+          { text: 'Healthcare', nextQuestionId: 'Q6' },
+          { text: 'Finance', nextQuestionId: 'Q6' },
+          { text: 'Retail', nextQuestionId: 'Q6' },
+          { text: 'Other', nextQuestionId: 'Q6' },
+        ],
+        validationKey: 'no',
         requiresSubmitButton: true
       },
-      // Q5: {
-      //   questionId: 'Q5',
-      //   questionText: 'Which industry do you operate in?',
-      //   inputType: 'dropdown',
-      //   options: [
-      //     { text: 'Technology', nextQuestionId: 'Q6' },
-      //     { text: 'Healthcare', nextQuestionId: 'Q6' },
-      //     { text: 'Finance', nextQuestionId: 'Q6' },
-      //     { text: 'Retail', nextQuestionId: 'Q6' },
-      //     { text: 'Other', nextQuestionId: 'Q6' },
-      //   ],
-      // },
-      // Q6: {
-      //   questionId: 'Q6',
-      //   questionText: 'How many employees do you have?',
-      //   inputType: 'radio',
-      //   options: [
-      //     { text: '1-10', nextQuestionId: 'Q7' },
-      //     { text: '11-50', nextQuestionId: 'Q7' },
-      //     { text: '51-200', nextQuestionId: 'Q7' },
-      //     { text: '201-1000', nextQuestionId: 'Q7' },
-      //     { text: '1000+', nextQuestionId: 'Q7' },
-      //   ],
-      // },
+      Q6: {
+        questionId: 'Q10',
+        questionText: 'Please select a date: (D/M/Y)',
+        inputType: 'calendar',
+        nextQuestionId: 'Q10',
+        validationKey: 'no',
+        requiresSubmitButton: true,
+        minDate: '2025-04-19',
+        maxDate: '2025-04-29'
+      },
+      Q10: {
+        questionId: 'Q6',
+        questionText: 'How many employees do you have?',
+        inputType: 'radio',
+        options: [
+          { text: '1-10', nextQuestionId: 'Q7' },
+          { text: '11-50', nextQuestionId: 'Q7' },
+          { text: '51-200', nextQuestionId: 'Q7' },
+          { text: '201-1000', nextQuestionId: 'Q7' },
+          { text: '1000+', nextQuestionId: 'Q7' },
+        ],
+        validationKey: 'no',
+        requiresSubmitButton: true
+      },
+      
       // Q7: {
       //   questionId: 'Q7',
       //   questionText: 'What services are you interested in?',

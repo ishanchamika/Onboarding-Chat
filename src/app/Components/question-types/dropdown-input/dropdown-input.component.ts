@@ -36,6 +36,11 @@ export class DropdownInputComponent extends BaseQuestionComponent implements OnI
   }
 
   canSubmit(): boolean {
-    return !!this.selectedOption;
+    if(this.selectedOption)
+    {
+      return true;
+    } 
+    return false;
+    // return !!this.selectedOption;
   }
 }

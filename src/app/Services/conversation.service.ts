@@ -220,6 +220,7 @@ export class ConversationService {
 
   handleAnswer(answer: any): void {
     const current = this.currentQuestion;
+    console.log('bbbbbb', current);
     let answerText: string;
     let nextQuestionId: string | null = null;
 

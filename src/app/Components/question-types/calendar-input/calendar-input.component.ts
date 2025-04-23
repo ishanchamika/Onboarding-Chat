@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseQuestionComponent } from '../base-question.component';
-import { DatePickerModule } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-calendar-input',

@@ -140,17 +140,19 @@ export class ConversationService {
         nextQuestionId: 'Q4',
         requiresSubmitButton: true
       },
-      // Q4: {
-      //   questionId: 'Q4',
-      //   questionText: 'What is your annual revenue?',
-      //   inputType: 'number',
-      //   placeholder: 'Enter amount in dollars',
-      //   validation: {
-      //     required: true,
-      //     min: 0,
-      //   },
-      //   nextQuestionId: 'Q5',
-      // },
+      Q4: {
+        questionId: 'Q4',
+        questionText: 'What is your annual revenue?',
+        inputType: 'text',
+        placeholder: 'Enter amount in dollars',
+        validation: {
+          required: true,
+          min: 0,
+        },
+        nextQuestionId: 'Q5',
+        requiresSubmitButton: true
+
+      },
       // Q5: {
       //   questionId: 'Q5',
       //   questionText: 'Which industry do you operate in?',

@@ -38,10 +38,15 @@ export class ConversationService {
             placeholder: 'Enter street name',
             validation: { required: true }
           },
+          date: {
+            questionId: 'Q2-date',
+            questionText: 'Please select a date: (D/M/Y)',
+            inputType: 'calendar',
+          },
           
           city: {
             questionId: 'Q2-city',
-            inputType: 'dropdown',
+            inputType: 'radio',
             options: [
               { text: 'Colombo', value: 'CB' },
               { text: 'Kandy', value: 'KD' },
@@ -69,6 +74,7 @@ export class ConversationService {
         nextQuestionId: 'Q4',
         requiresSubmitButton: true
       },
+      
       // Q1: {
       //   questionId: 'Q1',
       //   questionText: 'Please select a date: (D/M/Y)',

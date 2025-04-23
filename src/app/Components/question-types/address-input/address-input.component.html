@@ -5,25 +5,23 @@
       <app-text-input
         *ngSwitchCase="'text'"
         [question]="subQuestion"
-        #inputs>
-      </app-text-input>
+        #inputs
+      ></app-text-input>
       <app-dropdown-input
         *ngSwitchCase="'dropdown'"
         [question]="subQuestion"
-        #inputs>
-      </app-dropdown-input>
+        #inputs
+      ></app-dropdown-input>
       <app-radio-input
         *ngSwitchCase="'radio'"
         [question]="subQuestion"
-        #inputs>
-      </app-radio-input>
+        #inputs
+      ></app-radio-input>
       <app-calendar-input
         *ngSwitchCase="'calendar'"
         [question]="subQuestion"
-        #inputs>
-      </app-calendar-input>
-     
-      
+        #inputs
+      ></app-calendar-input>
     </ng-container>
   </div>
 </div>

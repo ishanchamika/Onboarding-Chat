@@ -47,7 +47,7 @@ export class ConversationService {
           
           city: {
             questionId: 'Q2-city',
-            questionText:'city Name',
+            questionText:'City Name',
             inputType: 'radio',
             options: [
               { text: 'Colombo', value: 'CB' },
@@ -58,14 +58,14 @@ export class ConversationService {
           },
           houseNumber: {
             questionId: 'Q2-houseNumber',
-            questionText:'house Name',
+            questionText:'House Name',
             inputType: 'text',
             placeholder: 'Enter house number',
             validation: { required: true }
           },
           state: {
             questionId: 'Q2-state',
-            questionText:'state Name',
+            questionText:'State Name',
             inputType: 'dropdown',
             options: [
               { text: 'Western', value: 'WP' },

@@ -11,19 +11,20 @@ export class CalendarInputComponent extends BaseQuestionComponent implements OnI
   selectedDate: Date | null = null;
 
   ngOnInit(): void {
-    // Initialization logic if needed
+    
   }
 
   onDateSelected(date: Date): void {
     this.selectedDate = date;
-    this.submitAnswer(date); // Submit the selected date as the answer
+    const formattedDate = date.toISOString().split('T')[0]; 
+    this.submitAnswer(formattedDate);
   }
 
   onSubmitButtonClicked(): void {
-    // Not used since buttons submit directly
+    
   }
 
   canSubmit(): boolean {
-    return false; // Submit button not shown
+    return false; 
   }
 }

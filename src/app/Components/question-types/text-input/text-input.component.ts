@@ -8,7 +8,7 @@ import { ValidationRules, ValidationRule } from '../../validation-rules/validati
   templateUrl: './text-input.component.html',
   styleUrls: ['./text-input.component.css']
 })
-export class TextInputComponent extends BaseQuestionComponent implements OnInit
+export class TextInputComponent extends BaseQuestionComponent
 {
   value: string = '';
   

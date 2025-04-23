@@ -64,7 +64,8 @@ export class AddressInputComponent extends BaseQuestionComponent implements OnIn
         } else if (component instanceof RadioInputComponent) {
           value = component.selectedOption?.text || ''; 
         } else if (component instanceof CalendarInputComponent) {
-          value = component.selectedDate || null;
+          const date = component.selectedDate;
+          value = date ? date.toISOString().split('T')[0] : null;
         } else {
           value = ''; 
           console.warn(`Unrecognized input type for subQuestion: ${subQuestion.questionId}`);

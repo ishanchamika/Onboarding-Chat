@@ -45,19 +45,26 @@ export class AddressInputComponent extends BaseQuestionComponent implements OnIn
   }
 
   canSubmit(): boolean {
-    if (!this.inputComponents) return false;
-    const parts = this.inputComponents.toArray().map(component => {
-      if (component instanceof TextInputComponent) {
-        return component.value || '';
-      } else if (component instanceof DropdownInputComponent) {
-        return component.selectedOption?.text || '';
-      }
-      return '';
-    });
-    return parts.every((part, index) => {
-      const subQuestion = this.subQuestions[index];
-      return subQuestion.validation?.required ? !!part : true;
-    });
+    // if (!this.inputComponents) {
+    //   console.log('inputComponents not initialized');
+    //   return false;
+    // }
+    // const valid = this.inputComponents.toArray().every((component, index) => {
+    //   const subQuestion = this.subQuestions[index];
+    //   if (component instanceof TextInputComponent) {
+    //     const valid = subQuestion.validation?.required ? !!component.value.trim() : true;
+    //     console.log(`TextInput[${subQuestion.questionId}]: value=${component.value}, required=${subQuestion.validation?.required}, valid=${valid}`);
+    //     return valid;
+    //   } else if (component instanceof DropdownInputComponent) {
+    //     const valid = subQuestion.validation?.required ? !!component.selectedOption : true;
+    //     console.log(`DropdownInput[${subQuestion.questionId}]: selectedOption=${component.selectedOption?.text}, required=${subQuestion.validation?.required}, valid=${valid}`);
+    //     return valid;
+    //   }
+    //   return true;
+    // });
+    // console.log('AddressInput canSubmit:', valid);
+    // return valid;
+    return true;
   }
 
   // isFormValid(): boolean {

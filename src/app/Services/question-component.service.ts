@@ -20,6 +20,8 @@ export class QuestionComponentService
   {
     this.registerComponents();
   }
+
+  
   
   private registerComponents(): void 
   {

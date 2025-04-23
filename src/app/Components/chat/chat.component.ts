@@ -41,23 +41,39 @@ export class ChatComponent implements OnInit
         });
 
       }
-      this.isSubmitButton = question.requiresSubmitButton;
-      // Load the appropriate component when the view is ready
-      setTimeout(() => {
-        if (this.questionContainer) {
-          const component = this.questionComponentService.loadQuestionComponent(
-            question, 
-            this.questionContainer
-          );
+    //   this.isSubmitButton = question.requiresSubmitButton;
+    //   // Load the appropriate component when the view is ready
+    //   setTimeout(() => {
+    //     if (this.questionContainer) {
+    //       const component = this.questionComponentService.loadQuestionComponent(
+    //         question, 
+    //         this.questionContainer
+    //       );
           
-          // Subscribe to answer events
-          component.answerSubmitted.subscribe(answer => {
+    //       // Subscribe to answer events
+    //       component.answerSubmitted.subscribe(answer => {
+    //         this.handleAnswer(answer);
+    //       });
+    //     }
+    //   });
+    // });
+    this.isSubmitButton = question.requiresSubmitButton;
+    setTimeout(() => {
+      if (this.questionContainer) {
+        const component = this.questionComponentService.loadQuestionComponent(
+          question, 
+          this.questionContainer
+        );
+        // Assign the component instance
+        this.currentQuestionComponent = component;
+        // Subscribe to answer events
+        component.answerSubmitted.subscribe(answer => {
             console.log('xxxx',answer);
-            this.handleAnswer(answer);
-          });
-        }
-      });
+          this.handleAnswer(answer);
+        });
+      }
     });
+  });
   }
   
   handleAnswer(answer: any): void {

@@ -27,7 +27,7 @@ export class ConversationService {
           ],
           requiresSubmitButton: false
         },
-        'Q2': {
+        'Q4': {
         questionId: 'Q2',
         questionText: 'Please enter your address:',
         inputType: 'address',
@@ -75,7 +75,7 @@ export class ConversationService {
             validation: { required: true }
           }
         },
-        nextQuestionId: 'Q4',
+        nextQuestionId: 'Q5',
         requiresSubmitButton: true
       },
       
@@ -94,14 +94,15 @@ export class ConversationService {
       //     { text: 'Corporate', nextQuestionId: 'Q3' }
       //   ]
       // },
-      // 'Q2': {
-      //   questionId: 'Q2',
-      //   questionText: 'What is your full name?',
-      //   inputType: 'text',
-      //   placeholder: 'Enter your full name',
-      //   nextQuestionId: 'Q4',
-      //   requiresSubmitButton: true
-      // },
+      'Q2': {
+        questionId: 'Q2',
+        questionText: 'What is your full name?',
+        inputType: 'text',
+        placeholder: 'Enter your full name',
+        validationKey: 'name',
+        nextQuestionId: 'Q4',
+        requiresSubmitButton: true
+      },
       // 'Q2': {
       //   questionId: 'Q2',
       //   questionText: 'Please enter your address:',
@@ -151,8 +152,8 @@ export class ConversationService {
         requiresSubmitButton: true,
         validationKey:'name'
       },
-      Q4: {
-        questionId: 'Q4',
+      Q5: {
+        questionId: 'Q5',
         questionText: 'What is your annual revenue?',
         inputType: 'text',
         placeholder: 'Enter amount in dollars',
@@ -160,26 +161,26 @@ export class ConversationService {
           required: true,
           min: 0,
         },
-        nextQuestionId: 'Q5',
+        nextQuestionId: 'Q6',
         requiresSubmitButton: true,
         validationKey: 'salary'
       },
-      Q5: {
-        questionId: 'Q5',
+      Q6: {
+        questionId: 'Q6',
         questionText: 'Which industry do you operate in?',
         inputType: 'dropdown',
         options: [
-          { text: 'Technology', nextQuestionId: 'Q6' },
-          { text: 'Healthcare', nextQuestionId: 'Q6' },
-          { text: 'Finance', nextQuestionId: 'Q6' },
-          { text: 'Retail', nextQuestionId: 'Q6' },
-          { text: 'Other', nextQuestionId: 'Q6' },
+          { text: 'Technology', nextQuestionId: 'Q7' },
+          { text: 'Healthcare', nextQuestionId: 'Q7' },
+          { text: 'Finance', nextQuestionId: 'Q7' },
+          { text: 'Retail', nextQuestionId: 'Q7' },
+          { text: 'Other', nextQuestionId: 'Q7' },
         ],
         validationKey: 'no',
         requiresSubmitButton: true
       },
-      Q6: {
-        questionId: 'Q10',
+      Q7: {
+        questionId: 'Q7',
         questionText: 'Please select a date: (D/M/Y)',
         inputType: 'calendar',
         nextQuestionId: 'Q10',
@@ -189,31 +190,31 @@ export class ConversationService {
         maxDate: '2025-04-29'
       },
       Q10: {
-        questionId: 'Q6',
+        questionId: 'Q10',
         questionText: 'How many employees do you have?',
         inputType: 'radio',
         options: [
-          { text: '1-10', nextQuestionId: 'Q7' },
-          { text: '11-50', nextQuestionId: 'Q7' },
-          { text: '51-200', nextQuestionId: 'Q7' },
-          { text: '201-1000', nextQuestionId: 'Q7' },
-          { text: '1000+', nextQuestionId: 'Q7' },
+          { text: '1-10', nextQuestionId: 'Q8' },
+          { text: '11-50', nextQuestionId: 'Q8' },
+          { text: '51-200', nextQuestionId: 'Q8' },
+          { text: '201-1000', nextQuestionId: 'Q8' },
+          { text: '1000+', nextQuestionId: 'Q8' },
         ],
         validationKey: 'no',
         requiresSubmitButton: true
       },
       
-      // Q7: {
-      //   questionId: 'Q7',
-      //   questionText: 'What services are you interested in?',
-      //   inputType: 'buttons',
-      //   options: [
-      //     { text: 'Consulting', nextQuestionId: 'END' },
-      //     { text: 'Software Development', nextQuestionId: 'END' },
-      //     { text: 'Cloud Services', nextQuestionId: 'END' },
-      //     { text: 'Support', nextQuestionId: 'END' },
-      //   ],
-      // },
+      Q8: {
+        questionId: 'Q8',
+        questionText: 'What services are you interested in?',
+        inputType: 'buttons',
+        options: [
+          { text: 'Consulting', nextQuestionId: 'END' },
+          { text: 'Software Development', nextQuestionId: 'END' },
+          { text: 'Cloud Services', nextQuestionId: 'END' },
+          { text: 'Support', nextQuestionId: 'END' },
+        ],
+      },
       END: {
         questionId: 'END',
         questionText:

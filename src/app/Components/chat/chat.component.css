@@ -5,6 +5,7 @@
     background-color: white;
     height: auto;
     width: auto;
+    min-width: 600px;
   }
   
   .chat-header {

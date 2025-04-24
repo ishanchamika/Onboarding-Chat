@@ -11,7 +11,6 @@ import { Option } from '../../../Models/conversation.model';
 export class ButtonsInputComponent extends BaseQuestionComponent implements OnInit {
   
   ngOnInit(): void {
-    // Ensure options exist
     if (!this.question.options || this.question.options.length === 0) {
       console.error('Buttons input requires options but none were provided');
     }
@@ -22,10 +21,10 @@ export class ButtonsInputComponent extends BaseQuestionComponent implements OnIn
   }
 
   onSubmitButtonClicked(): void {
-    // Not used since buttons submit directly
+   
   }
 
   canSubmit(): boolean {
-    return false; // Submit button not shown
+    return false; 
   }
 }

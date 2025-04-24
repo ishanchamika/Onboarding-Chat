@@ -12,7 +12,7 @@ import {
   providedIn: 'root',
 })
 export class ConversationService {
-  // New conversation structure with a questions map
+  //conversation structure
   private readonly conversation: Conversation = {
     conversationId: '8631d9f7-1d59-45d3-9566-c12263800746',
     currentQuestionId: 'Q1',

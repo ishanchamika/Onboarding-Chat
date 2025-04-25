@@ -97,14 +97,13 @@ export class AddressInputComponent extends BaseQuestionComponent implements OnIn
     }
     const valid = this.inputComponents.toArray().every((component, index) => 
     {
-      const subQuestion = this.subQuestions[index];
+      console.log('rrr',this.inputComponents);
+
       if(component instanceof TextInputComponent) 
       { 
-        const key = subQuestion?.validationKey;
-        if(key && ValidationRules[key])
+        if(component.validationRule?.pattern)
         {
-          this.validationRule = ValidationRules[key];
-          return this.validationRule.pattern.test(component.value);
+          return component.validationRule?.pattern.test(component.value);
         }
         else
         {
@@ -114,8 +113,17 @@ export class AddressInputComponent extends BaseQuestionComponent implements OnIn
       } 
       else if(component instanceof DropdownInputComponent) 
       {
-        const valid = subQuestion.validation?.required ? !!component.selectedOption : true;
-        // console.log(`DropdownInput[${subQuestion.questionId}]: selectedOption=${component.selectedOption?.text}, required=${subQuestion.validation?.required}, valid=${valid}`);
+        const valid = component.question.validation?.required ? !!component.selectedOption : true;
+        return valid;
+      }
+      else if(component instanceof CalendarInputComponent)
+      {
+        const valid = component.question.validation?.required ? !!component.selectedDate : true;
+        return valid;
+      }
+      else if(component instanceof RadioInputComponent)
+      {
+        const valid = component.question.validation?.required ? !!component.selectedOption : true;
         return valid;
       }
       return true;

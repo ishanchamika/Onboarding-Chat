@@ -45,7 +45,9 @@ export class ConversationService {
             questionText: 'Please select a date: (D/M/Y)',
             inputType: 'calendar',
             minDate: '2025-04-20',
-            maxDate: '2025-04-30'
+            maxDate: '2025-04-30',
+            validation: { required: true },
+            validationKey: ''
           },
           
           city: {

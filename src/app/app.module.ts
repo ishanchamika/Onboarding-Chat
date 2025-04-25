@@ -22,6 +22,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { CalendarInputComponent } from './Components/question-types/calendar-input/calendar-input.component';
 import { AddressInputComponent } from './Components/question-types/address-input/address-input.component';
 import { SubmitButtonComponent } from './Components/question-types/submit-button/submit-button.component';
+import { Secondary2x2InputComponent } from './Components/question-types/secondary2x2-input/secondary2x2-input.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { SubmitButtonComponent } from './Components/question-types/submit-button
     CalendarInputComponent,
     AddressInputComponent,
     SubmitButtonComponent,
+    Secondary2x2InputComponent,
     
   ],
   imports: [

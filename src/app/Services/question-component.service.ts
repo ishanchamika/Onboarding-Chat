@@ -7,6 +7,7 @@ import { ButtonsInputComponent } from '../Components/question-types/buttons-inpu
 import { BaseQuestionComponent } from '../Components/question-types/base-question.component';
 import { CalendarInputComponent } from '../Components/question-types/calendar-input/calendar-input.component';
 import { AddressInputComponent } from '../Components/question-types/address-input/address-input.component';
+import { Secondary2x2InputComponent } from '../Components/question-types/secondary2x2-input/secondary2x2-input.component';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +31,8 @@ export class QuestionComponentService
     this.componentMap.set('buttons', ButtonsInputComponent);
     this.componentMap.set('calendar', CalendarInputComponent);
     this.componentMap.set('address', AddressInputComponent);
+    this.componentMap.set('secondary2x2', Secondary2x2InputComponent);
+
   }
   
   loadQuestionComponent(question: Question, container: ViewContainerRef): BaseQuestionComponent 

@@ -6,6 +6,7 @@ import { DropdownInputComponent } from '../dropdown-input/dropdown-input.compone
 import { RadioInputComponent } from '../radio-input/radio-input.component';
 import { ButtonsInputComponent } from '../buttons-input/buttons-input.component';
 import { CalendarInputComponent } from '../calendar-input/calendar-input.component';
+import { ValidationRules, ValidationRule } from '../../validation-rules/validation-rules';
 
 @Component({
   selector: 'app-address-input',
@@ -19,6 +20,8 @@ export class AddressInputComponent extends BaseQuestionComponent implements OnIn
   // any
   >;
   subQuestions!: Question[];
+  validationRule?: ValidationRule;
+
 
   ngOnInit(): void {
     if (this.question && this.question.subQuestions) {
@@ -48,11 +51,13 @@ export class AddressInputComponent extends BaseQuestionComponent implements OnIn
     //   };
     //   this.submitAnswer({ text: addressString, value: addressObject });
     // }
-    if (this.canSubmit()) {
+    if(this.canSubmit()) 
+    {
       const inputParts: string[] = [];
       const inputObject: { [key: string]: any } = {};
 
-      this.inputComponents.toArray().forEach((component, index) => {
+      this.inputComponents.toArray().forEach((component, index) => 
+      {
         const subQuestion = this.subQuestions[index];
         let value: any;
 
@@ -83,27 +88,39 @@ export class AddressInputComponent extends BaseQuestionComponent implements OnIn
     }
   }
 
-  canSubmit(): boolean {
-    // if (!this.inputComponents) {
-    //   console.log('inputComponents not initialized');
-    //   return false;
-    // }
-    // const valid = this.inputComponents.toArray().every((component, index) => {
-    //   const subQuestion = this.subQuestions[index];
-    //   if (component instanceof TextInputComponent) {
-    //     const valid = subQuestion.validation?.required ? !!component.value.trim() : true;
-    //     console.log(`TextInput[${subQuestion.questionId}]: value=${component.value}, required=${subQuestion.validation?.required}, valid=${valid}`);
-    //     return valid;
-    //   } else if (component instanceof DropdownInputComponent) {
-    //     const valid = subQuestion.validation?.required ? !!component.selectedOption : true;
-    //     console.log(`DropdownInput[${subQuestion.questionId}]: selectedOption=${component.selectedOption?.text}, required=${subQuestion.validation?.required}, valid=${valid}`);
-    //     return valid;
-    //   }
-    //   return true;
-    // });
-    // console.log('AddressInput canSubmit:', valid);
-    // return valid;
-    return true;
+  canSubmit(): boolean 
+  {
+    if(!this.inputComponents) 
+    {
+      console.log('inputComponents not initialized');
+      return false;
+    }
+    const valid = this.inputComponents.toArray().every((component, index) => 
+    {
+      const subQuestion = this.subQuestions[index];
+      if(component instanceof TextInputComponent) 
+      { 
+        const key = subQuestion?.validationKey;
+        if(key && ValidationRules[key])
+        {
+          this.validationRule = ValidationRules[key];
+          return this.validationRule.pattern.test(component.value);
+        }
+        else
+        {
+          console.log('Not validation key found from validation rules');
+          return false;
+        }
+      } 
+      else if(component instanceof DropdownInputComponent) 
+      {
+        const valid = subQuestion.validation?.required ? !!component.selectedOption : true;
+        // console.log(`DropdownInput[${subQuestion.questionId}]: selectedOption=${component.selectedOption?.text}, required=${subQuestion.validation?.required}, valid=${valid}`);
+        return valid;
+      }
+      return true;
+    });
+    return valid;
   }
 
 }

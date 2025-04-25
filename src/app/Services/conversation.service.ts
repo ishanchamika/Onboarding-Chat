@@ -37,12 +37,15 @@ export class ConversationService {
             questionText:'Street Name',
             inputType: 'text',
             placeholder: 'Enter street name',
-            validation: { required: true }
+            validation: { required: true },
+            validationKey: 'name'
           },
           date: {
             questionId: 'Q2-date',
             questionText: 'Please select a date: (D/M/Y)',
             inputType: 'calendar',
+            minDate: '2025-04-20',
+            maxDate: '2025-04-30'
           },
           
           city: {
@@ -54,14 +57,16 @@ export class ConversationService {
               { text: 'Kandy', value: 'KD' },
               { text: 'Ragama', value: 'RG' }
             ],
-            validation: { required: true }
+            validation: { required: true },
+            validationKey:'name'
           },
           houseNumber: {
             questionId: 'Q2-houseNumber',
             questionText:'House Name',
             inputType: 'text',
             placeholder: 'Enter house number',
-            validation: { required: true }
+            validation: { required: true },
+            validationKey: 'salary'
           },
           state: {
             questionId: 'Q2-state',

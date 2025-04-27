@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
   Question,
@@ -12,12 +12,15 @@ import {
   providedIn: 'root',
 })
 export class ConversationService {
+
   //conversation structure
-  private readonly conversation: Conversation = {
+  private readonly conversation: Conversation = 
+  {
     conversationId: '8631d9f7-1d59-45d3-9566-c12263800746',
     currentQuestionId: 'Q1',
-    questions: {
-        'Q1': {
+    questions: 
+    {
+        Q1: {
           questionId: 'Q1',
           questionText: 'What is the business partner type?',
           inputType: 'buttons',
@@ -27,7 +30,7 @@ export class ConversationService {
           ],
           requiresSubmitButton: false
         },
-        'Q4': {
+        Q4: {
         questionId: 'Q2',
         questionText: 'Please enter your address:',
         inputType: 'secondary2x2',
@@ -86,22 +89,8 @@ export class ConversationService {
         requiresSubmitButton: true
       },
       
-      // Q1: {
-      //   questionId: 'Q1',
-      //   questionText: 'Please select a date: (D/M/Y)',
-      //   inputType: 'calendar',
-      //   nextQuestionId: 'Q2',
-      // },
-      // 'Q1': {
-      //   questionId: 'Q1',
-      //   questionText: 'What is the business partner type?',
-      //   inputType: 'buttons', // Mapping 'selection' to 'buttons'
-      //   options: [
-      //     { text: 'Individual', nextQuestionId: 'Q2' },
-      //     { text: 'Corporate', nextQuestionId: 'Q3' }
-      //   ]
-      // },
-      'Q2': {
+
+      Q2: {
         questionId: 'Q2',
         questionText: 'What is your full name?',
         inputType: 'text',
@@ -110,46 +99,6 @@ export class ConversationService {
         nextQuestionId: 'Q4',
         requiresSubmitButton: true
       },
-      // 'Q2': {
-      //   questionId: 'Q2',
-      //   questionText: 'Please enter your address:',
-      //   inputType: 'address',
-      //   subQuestions: {
-      //     streetName: {
-      //       questionId: 'Q2-streetName',
-      //       inputType: 'text',
-      //       placeholder: 'Enter street name',
-      //       validation: { required: true }
-      //     },
-      //     houseNumber: {
-      //       questionId: 'Q2-houseNumber',
-      //       inputType: 'text',
-      //       placeholder: 'Enter house number',
-      //       validation: { required: true }
-      //     },
-      //     city: {
-      //       questionId: 'Q2-city',
-      //       inputType: 'dropdown',
-      //       options: [
-      //         { text: 'New York', value: 'NY' },
-      //         { text: 'Los Angeles', value: 'LA' },
-      //         { text: 'Chicago', value: 'CHI' }
-      //       ],
-      //       validation: { required: true }
-      //     },
-      //     state: {
-      //       questionId: 'Q2-state',
-      //       inputType: 'dropdown',
-      //       options: [
-      //         { text: 'California', value: 'CA' },
-      //         { text: 'Texas', value: 'TX' },
-      //         { text: 'Florida', value: 'FL' }
-      //       ],
-      //       validation: { required: true }
-      //     }
-      //   },
-      //   nextQuestionId: 'Q4'
-      // },
       Q3: {
         questionId: 'Q3',
         questionText: 'What is your company name?',
@@ -233,14 +182,23 @@ export class ConversationService {
         ],
       },
     },
+    // this.storeConversationInIndexedDB(conversation);
   };
+
+  
+
+
+
 
   private currentQuestionSubject = new BehaviorSubject<Question>(
     this.conversation.questions[this.conversation.currentQuestionId]
   );
   private historySubject = new BehaviorSubject<HistoryItem[]>([]);
 
-  constructor() {}
+  constructor() 
+  {
+    this.storeConversationInIndexedDB(this.conversation);
+  }
 
   get currentQuestion$(): Observable<Question> {
     return this.currentQuestionSubject.asObservable();
@@ -310,5 +268,36 @@ export class ConversationService {
       this.conversation.questions[this.conversation.currentQuestionId];
     this.currentQuestionSubject.next(initialQuestion);
     this.historySubject.next([]);
+  }
+
+  storeConversationInIndexedDB(conversation: any) : void
+  {
+    const request = indexedDB.open('ConversationDB', 1);
+  
+    request.onupgradeneeded = function (event) {
+      const db = (event.target as IDBOpenDBRequest).result;
+      if (!db.objectStoreNames.contains('conversations')) {
+        db.createObjectStore('conversations', { keyPath: 'conversationId' });
+      }
+    };
+  
+    request.onsuccess = function (event) {
+      const db = (event.target as IDBOpenDBRequest).result;
+      const transaction = db.transaction('conversations', 'readwrite');
+      const store = transaction.objectStore('conversations');
+      store.put(conversation);
+  
+      transaction.oncomplete = function () {
+        console.log('Conversation stored successfully!');
+      };
+  
+      transaction.onerror = function () {
+        console.error('Error storing conversation:', transaction.error);
+      };
+    };
+  
+    request.onerror = function () {
+      console.error('Error opening database:', request.error);
+    };
   }
 }

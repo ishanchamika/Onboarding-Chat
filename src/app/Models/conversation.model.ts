@@ -1,4 +1,4 @@
-export type QuestionType = 'text' | 'number' | 'radio' | 'dropdown' | 'buttons' | 'calendar' | 'datepicker' | 'address' | 'secondary2x2';
+export type QuestionType = 'text' | 'number' | 'radio' | 'dropdown' | 'buttons' | 'calendar' | 'datepicker' | 'address' | 'secondary2x2' | 'secondary3x3' | 'secondary4x4';
 
 export interface Option {
   text: string;
@@ -22,6 +22,7 @@ export interface Question {
   nextQuestionId?: string | null; 
   subQuestions?: { [key: string]: Question };
   requiresSubmitButton?: boolean;
+  layoutColumn?: number;
   validationKey?: string;
   minDate?: string;
   maxDate?: string;

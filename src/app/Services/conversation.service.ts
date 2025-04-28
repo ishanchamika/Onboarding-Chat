@@ -33,7 +33,8 @@ export class ConversationService {
         Q4: {
         questionId: 'Q2',
         questionText: 'Please enter your address:',
-        inputType: 'secondary2x2',
+        inputType: 'secondary3x3',
+        // layoutColumn:3,
         subQuestions: {
           streetName: {
             questionId: 'Q2-streetName',

@@ -6,8 +6,7 @@ import { DropdownInputComponent } from '../Components/question-types/dropdown-in
 import { ButtonsInputComponent } from '../Components/question-types/buttons-input/buttons-input.component';
 import { BaseQuestionComponent } from '../Components/question-types/base-question.component';
 import { CalendarInputComponent } from '../Components/question-types/calendar-input/calendar-input.component';
-import { AddressInputComponent } from '../Components/question-types/address-input/address-input.component';
-import { Secondary2x2InputComponent } from '../Components/question-types/secondary2x2-input/secondary2x2-input.component';
+import { SecondaryComponentInputComponent } from '../Components/question-types/secondaryComponent-input/secondaryComponent-input.component';
 
 @Injectable({
   providedIn: 'root'
@@ -30,13 +29,15 @@ export class QuestionComponentService
     this.componentMap.set('dropdown', DropdownInputComponent);
     this.componentMap.set('buttons', ButtonsInputComponent);
     this.componentMap.set('calendar', CalendarInputComponent);
-    this.componentMap.set('address', AddressInputComponent);
-    this.componentMap.set('secondary2x2', Secondary2x2InputComponent);
+    this.componentMap.set('secondary3x3', SecondaryComponentInputComponent);
+
+
 
   }
   
   loadQuestionComponent(question: Question, container: ViewContainerRef): BaseQuestionComponent 
   {
+    console.log(question);
     container.clear();
     
     const componentType = this.componentMap.get(question.inputType); // Changed to inputType

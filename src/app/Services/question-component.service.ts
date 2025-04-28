@@ -29,7 +29,7 @@ export class QuestionComponentService
     this.componentMap.set('dropdown', DropdownInputComponent);
     this.componentMap.set('buttons', ButtonsInputComponent);
     this.componentMap.set('calendar', CalendarInputComponent);
-    this.componentMap.set('secondary3x3', SecondaryComponentInputComponent);
+    this.componentMap.set('secondary', SecondaryComponentInputComponent);
 
 
 

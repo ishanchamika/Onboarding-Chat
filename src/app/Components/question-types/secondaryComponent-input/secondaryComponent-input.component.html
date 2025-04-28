@@ -1,0 +1,11 @@
+<div class="form-row" *ngFor="let row of subQuestionRows">
+    <div class="form-group" *ngFor="let subQuestion of row">
+        <label>{{ subQuestion.questionText }}</label>
+        <ng-container [ngSwitch]="subQuestion.inputType">
+            <app-text-input *ngSwitchCase="'text'" [question]="subQuestion"></app-text-input>
+            <app-dropdown-input *ngSwitchCase="'dropdown'" [question]="subQuestion"></app-dropdown-input>
+            <app-radio-input *ngSwitchCase="'radio'" [question]="subQuestion"></app-radio-input>
+            <app-calendar-input *ngSwitchCase="'calendar'" [question]="subQuestion"></app-calendar-input>
+        </ng-container>
+    </div>
+</div>

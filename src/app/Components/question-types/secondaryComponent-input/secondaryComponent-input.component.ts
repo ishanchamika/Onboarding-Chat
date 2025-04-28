@@ -10,23 +10,59 @@ import { CalendarInputComponent } from '../calendar-input/calendar-input.compone
 @Component({
   selector: 'app-address-input',
   standalone: false,
-  templateUrl: './address-input.component.html',
-  styleUrls: ['./address-input.component.css']
+  templateUrl: './secondaryComponent-input.component.html',
+  styleUrls: ['./secondaryComponent-input.component.css']
 })
-export class AddressInputComponent extends BaseQuestionComponent implements OnInit {
+export class SecondaryComponentInputComponent extends BaseQuestionComponent implements OnInit {
   @ViewChildren('inputs') inputComponents!: QueryList<
   TextInputComponent | DropdownInputComponent | RadioInputComponent | CalendarInputComponent
   // any
   >;
-  subQuestions!: Question[];
+  layoutColumns: number = 1;
+  subQuestionRows: Question[][] = [];
 
   ngOnInit(): void {
     if (this.question && this.question.subQuestions) {
-      this.subQuestions = Object.values(this.question.subQuestions);
+      this.layoutColumns = this.question.layoutColumn || 1;
+      const rowQuestions = Object.values(this.question.subQuestions);
+        this.subQuestionRows = this.groupIntoRows(rowQuestions, this.layoutColumns);
+      // this.subQuestions = Object.values(this.question.subQuestions);
     } else {
       console.error('Address input requires subQuestions');
     }
   }
+  groupIntoRows(questions: Question[],columns: number): Question[][] {
+    const rows: Question[][] = [];
+    for (let i = 0; i < questions.length; i += columns) {
+      rows.push(questions.slice(i, i + columns));
+    }
+    console.log('Grouped rows:', rows);
+    return rows;
+  }
+
+
+//   private groupIntoTriples(questions: Question[]): Question[][] {
+//     const rows: Question[][] = [];
+//     for (let i = 0; i < questions.length; i += 3) {
+//         rows.push(questions.slice(i, i + 3));
+//     }
+//     console.log(rows)
+//     return rows;
+    
+// }
+
+  // private groupIntoPairs(questions: Question[]): Question[][] {
+  //   const rows: Question[][] = [];
+  //   for (let i = 0; i < questions.length; i += 2) {
+  //     const pair = [questions[i]];
+  //     if (i + 1 < questions.length) {
+  //       pair.push(questions[i + 1]);
+  //     }
+  //     rows.push(pair);
+  //   }
+  //   return rows;
+  // }
+  
 
   onSubmitButtonClicked(): void {
     // if (this.canSubmit()) {
@@ -53,7 +89,7 @@ export class AddressInputComponent extends BaseQuestionComponent implements OnIn
       const inputObject: { [key: string]: any } = {};
 
       this.inputComponents.toArray().forEach((component, index) => {
-        const subQuestion = this.subQuestions[index];
+        const subQuestion = this.getSubQuestionByIndex(index);
         let value: any;
 
         // Extract value based on component type
@@ -82,6 +118,18 @@ export class AddressInputComponent extends BaseQuestionComponent implements OnIn
       this.submitAnswer({ text: inputString, value: inputObject });
     }
   }
+  getSubQuestionByIndex(index: number): Question {
+    let count = 0;
+    for(const row of this.subQuestionRows){
+      for(const subQuestion of row){
+        if(count === index){
+          return subQuestion;
+        }
+        count++;
+      }
+    }
+    throw new Error(`SubQuestion index not found : ${index}`);  
+  }
 
   canSubmit(): boolean {
     // if (!this.inputComponents) {
@@ -103,7 +151,46 @@ export class AddressInputComponent extends BaseQuestionComponent implements OnIn
     // });
     // console.log('AddressInput canSubmit:', valid);
     // return valid;
-    return true;
+    if(!this.inputComponents)
+      {
+        console.log('inputComponents not initialized');
+        return false;
+      }
+      const valid = this.inputComponents.toArray().every((component, index) =>
+      {
+        console.log('rrr',this.inputComponents);
+   
+        if(component instanceof TextInputComponent)
+        {
+          if(component.validationRule?.pattern)
+          {
+            return component.validationRule?.pattern.test(component.value);
+          }
+          else
+          {
+            console.log('Not validation key found from validation rules');
+            return false;
+          }
+        }
+        else if(component instanceof DropdownInputComponent)
+        {
+          const valid = component.question.validation?.required ? !!component.selectedOption : true;
+          return valid;
+        }
+        else if(component instanceof CalendarInputComponent)
+        {
+          const valid = component.question.validation?.required ? !!component.selectedDate : true;
+          return valid;
+        }
+        else if(component instanceof RadioInputComponent)
+        {
+          const valid = component.question.validation?.required ? !!component.selectedOption : true;
+          return valid;
+        }
+        return true;
+      });
+      console.log('asdasdad',valid);
+      return valid;
   }
 
 }

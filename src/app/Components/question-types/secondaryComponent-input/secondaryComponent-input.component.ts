@@ -25,14 +25,7 @@ export class SecondaryComponentInputComponent extends BaseQuestionComponent impl
     if (this.question && this.question.subQuestions) {
       this.layoutColumns = this.question.layoutColumn || 1;
       const rowQuestions = Object.values(this.question.subQuestions);
-<<<<<<< HEAD:src/app/Components/question-types/secondary2x2-input/secondary2x2-input.component.ts
-      console.log('@@@@@@',rowQuestions);
-
-        this.subQuestionRows = this.groupIntoPairs(rowQuestions);
-      console.log('######',this.subQuestionRows);
-=======
         this.subQuestionRows = this.groupIntoRows(rowQuestions, this.layoutColumns);
->>>>>>> akf-cComponentLayout:src/app/Components/question-types/secondaryComponent-input/secondaryComponent-input.component.ts
       // this.subQuestions = Object.values(this.question.subQuestions);
     } else {
       console.error('Address input requires subQuestions');
@@ -138,52 +131,19 @@ export class SecondaryComponentInputComponent extends BaseQuestionComponent impl
     throw new Error(`SubQuestion index not found : ${index}`);  
   }
 
-<<<<<<< HEAD:src/app/Components/question-types/secondary2x2-input/secondary2x2-input.component.ts
   canSubmit(): boolean 
   {
     if(!this.inputComponents) 
-=======
-  canSubmit(): boolean {
-    // if (!this.inputComponents) {
-    //   console.log('inputComponents not initialized');
-    //   return false;
-    // }
-    // const valid = this.inputComponents.toArray().every((component, index) => {
-    //   const subQuestion = this.subQuestions[index];
-    //   if (component instanceof TextInputComponent) {
-    //     const valid = subQuestion.validation?.required ? !!component.value.trim() : true;
-    //     console.log(`TextInput[${subQuestion.questionId}]: value=${component.value}, required=${subQuestion.validation?.required}, valid=${valid}`);
-    //     return valid;
-    //   } else if (component instanceof DropdownInputComponent) {
-    //     const valid = subQuestion.validation?.required ? !!component.selectedOption : true;
-    //     console.log(`DropdownInput[${subQuestion.questionId}]: selectedOption=${component.selectedOption?.text}, required=${subQuestion.validation?.required}, valid=${valid}`);
-    //     return valid;
-    //   }
-    //   return true;
-    // });
-    // console.log('AddressInput canSubmit:', valid);
-    // return valid;
-    if(!this.inputComponents)
->>>>>>> akf-cComponentLayout:src/app/Components/question-types/secondaryComponent-input/secondaryComponent-input.component.ts
       {
         console.log('inputComponents not initialized');
         return false;
       }
-<<<<<<< HEAD:src/app/Components/question-types/secondary2x2-input/secondary2x2-input.component.ts
       const valid = this.inputComponents.toArray().every((component, index) => 
       {
         console.log('rrr',this.inputComponents);
   
         if(component instanceof TextInputComponent) 
         { 
-=======
-      const valid = this.inputComponents.toArray().every((component, index) =>
-      {
-        console.log('rrr',this.inputComponents);
-   
-        if(component instanceof TextInputComponent)
-        {
->>>>>>> akf-cComponentLayout:src/app/Components/question-types/secondaryComponent-input/secondaryComponent-input.component.ts
           if(component.validationRule?.pattern)
           {
             return component.validationRule?.pattern.test(component.value);
@@ -193,13 +153,8 @@ export class SecondaryComponentInputComponent extends BaseQuestionComponent impl
             console.log('Not validation key found from validation rules');
             return false;
           }
-<<<<<<< HEAD:src/app/Components/question-types/secondary2x2-input/secondary2x2-input.component.ts
         } 
         else if(component instanceof DropdownInputComponent) 
-=======
-        }
-        else if(component instanceof DropdownInputComponent)
->>>>>>> akf-cComponentLayout:src/app/Components/question-types/secondaryComponent-input/secondaryComponent-input.component.ts
         {
           const valid = component.question.validation?.required ? !!component.selectedOption : true;
           return valid;
@@ -216,10 +171,6 @@ export class SecondaryComponentInputComponent extends BaseQuestionComponent impl
         }
         return true;
       });
-<<<<<<< HEAD:src/app/Components/question-types/secondary2x2-input/secondary2x2-input.component.ts
-=======
-      console.log('asdasdad',valid);
->>>>>>> akf-cComponentLayout:src/app/Components/question-types/secondaryComponent-input/secondaryComponent-input.component.ts
       return valid;
   }
 

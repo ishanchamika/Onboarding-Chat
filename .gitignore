@@ -38,5 +38,7 @@ testem.log
 /typings
 
 # System files
+.tsbuildinfo
 .DS_Store
 Thumbs.db
+.angular/cache/19.2.6/EclipseOnboarding/.tsbuildinfo

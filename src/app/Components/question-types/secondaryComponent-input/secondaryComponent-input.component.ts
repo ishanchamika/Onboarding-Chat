@@ -25,12 +25,15 @@ export class SecondaryComponentInputComponent extends BaseQuestionComponent impl
     if (this.question && this.question.subQuestions) {
       this.layoutColumns = this.question.layoutColumn || 1;
       const rowQuestions = Object.values(this.question.subQuestions);
-        this.subQuestionRows = this.groupIntoRows(rowQuestions, this.layoutColumns);
-      // this.subQuestions = Object.values(this.question.subQuestions);
+      this.subQuestionRows = this.groupIntoRows(rowQuestions, this.layoutColumns);
+      console.log('inputComponents:', this.inputComponents);
     } else {
       console.error('Address input requires subQuestions');
     }
   }
+  // ngAfterViewInit(): void {
+  //   console.log('inputComponents after view init:', this.inputComponents.toArray());
+  // }
   groupIntoRows(questions: Question[],columns: number): Question[][] {
     const rows: Question[][] = [];
     for (let i = 0; i < questions.length; i += columns) {
@@ -172,6 +175,7 @@ export class SecondaryComponentInputComponent extends BaseQuestionComponent impl
         return true;
       });
       return valid;
+
   }
 
 }

@@ -37,7 +37,7 @@ export class QuestionComponentService
   
   loadQuestionComponent(question: Question, container: ViewContainerRef): BaseQuestionComponent 
   {
-    console.log(question);
+    // console.log(question);
     container.clear();
     
     const componentType = this.componentMap.get(question.inputType); // Changed to inputType
@@ -52,7 +52,7 @@ export class QuestionComponentService
     const component = componentRef.instance;
     component.question = question;
     
-    console.log('www', component);
+    
     return component;
   }
 }

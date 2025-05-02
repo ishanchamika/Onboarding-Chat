@@ -20,7 +20,7 @@ export interface Question {
   };
   customValidation?:any;
   nextQuestionId?: string | null; 
-  subQuestions?: { [key: string]: Question };
+  subQuestion?: { [key: string]: Question };
   requiresSubmitButton?: boolean;
   layoutColumn?: number;
   validationKey?: string;

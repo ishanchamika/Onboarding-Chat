@@ -22,13 +22,13 @@ export class SecondaryComponentInputComponent extends BaseQuestionComponent impl
   subQuestionRows: Question[][] = [];
 
   ngOnInit(): void {
-    if (this.question && this.question.subQuestions) {
+    if (this.question && this.question.subQuestion) {
       this.layoutColumns = this.question.layoutColumn || 1;
-      const rowQuestions = Object.values(this.question.subQuestions);
+      const rowQuestions = Object.values(this.question.subQuestion);
       this.subQuestionRows = this.groupIntoRows(rowQuestions, this.layoutColumns);
       console.log('inputComponents:', this.inputComponents);
     } else {
-      console.error('Address input requires subQuestions');
+      console.error('Secondary input requires subQuestions');
     }
   }
   // ngAfterViewInit(): void {

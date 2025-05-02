@@ -16,7 +16,7 @@ export class ChatComponent implements OnInit
   @ViewChild('questionContainer', { read: ViewContainerRef, static: false }) 
   questionContainer!: ViewContainerRef;
   
-  currentQuestion$: Observable<Question>;
+  currentQuestion$: Observable<Question|null>;
   currentQuestion: Question | null = null; // Declare currentQuestion
   currentQuestionComponent: BaseQuestionComponent | null = null; // Declare currentQuestionComponent
   messages: { type: 'bot' | 'user', text: string }[] = [];
@@ -29,8 +29,13 @@ export class ChatComponent implements OnInit
     this.currentQuestion$ = this.conversationService.currentQuestion$;
   }
   
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    this.currentQuestion$ = this.conversationService.currentQuestion$;
+    await this.conversationService.loadConversation(
+      '8631d9f7-1d59-45d3-9566-c12263800746'
+    );
     this.currentQuestion$.subscribe(question => {
+      if(!question) return;
       
       // Add the bot message with the question
       if (this.messages.length === 0 || 

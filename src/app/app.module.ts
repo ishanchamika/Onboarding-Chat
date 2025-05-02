@@ -22,6 +22,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { CalendarInputComponent } from './Components/question-types/calendar-input/calendar-input.component';
 import { SubmitButtonComponent } from './Components/question-types/submit-button/submit-button.component';
 import { SecondaryComponentInputComponent } from './Components/question-types/secondaryComponent-input/secondaryComponent-input.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { SecondaryComponentInputComponent } from './Components/question-types/se
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
+    HttpClientModule,
 
     ReactiveFormsModule
   ],

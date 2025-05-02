@@ -10,7 +10,7 @@ export abstract class BaseQuestionComponent {
   @Input() question!: Question;
   @Output() answerSubmitted = new EventEmitter<any>();
 
-   currentQuestion$: Observable<Question>;
+   currentQuestion$: Observable<Question | null>;
     currentQuestion: Question | null = null;
 
   constructor(

@@ -215,25 +215,21 @@ export class ConversationService {
     return this.historySubject.asObservable();
   }
 
-  async loadConversation(conversationId: string): Promise<void> {
+  async loadConversation(conversationId: string): Promise<void> 
+  {
     console.log(conversationId)
-    try {
+    try 
+    {
       
-      // Fetch conversation from the backend
-      // this.conversation = (await this.http
-      //   .get<Conversation>(`api/Conversation/${conversationId}`)
-      //   .toPromise()) ?? null;
+      this.conversation = await this.http.get<any>('https://localhost:44383/api/Conversation/' + conversationId).toPromise() ?? null;
 
-      this.conversation = await this.http
-      .get<any>('http://localhost:5149/api/Conversation/' + conversationId)
-      .toPromise() ?? null;
-
-      if (this.conversation) {
-        // Set the initial question after loading the conversation
-        const initialQuestion =
-          this.conversation.questions[this.conversation.currentQuestionId];
-        this.currentQuestionSubject.next(initialQuestion);
-      } else {
+      if(this.conversation) 
+      {
+        this.storeConversationInIndexedDB(this.conversation);
+        this.loadQuestionFromIndexedDB(this.conversation.conversationId, this.conversation.currentQuestionId);
+      }
+      else 
+      {
         console.error('No conversation data received from the backend');
       }
     } catch (error) {
@@ -242,9 +238,10 @@ export class ConversationService {
     }
   }
 
-  handleAnswer(answer: any): void {
+  handleAnswer(answer: any): void 
+  {
     const current = this.currentQuestion;
-    if (!current || !this.conversation) {
+    if(!current || !this.conversation) {
       console.error('Conversation or current question not loaded');
       return;
     }
@@ -252,7 +249,7 @@ export class ConversationService {
     let nextQuestionId: string | null = null;
 
     // Handle different answer types
-    if (answer instanceof Date) {
+    if(answer instanceof Date) {
       answerText = answer.toLocaleDateString();
       nextQuestionId = current.nextQuestionId || null;
     } else if (typeof answer === 'string' || typeof answer === 'number') {
@@ -275,10 +272,11 @@ export class ConversationService {
     this.historySubject.next(historyItems);
 
     // Set next question if available
-    if (nextQuestionId) {
-      const nextQuestion = this.conversation.questions[nextQuestionId];
-      this.currentQuestionSubject.next(nextQuestion);
-    } else {
+    if(nextQuestionId && this.conversation?.conversationId) {
+      this.loadQuestionFromIndexedDB(this.conversation.conversationId, nextQuestionId);
+    } 
+    else 
+    {
       // End of conversation path
       const endQuestion: Question = {
         questionId: 'final',
@@ -307,34 +305,70 @@ export class ConversationService {
     this.historySubject.next([]);
   }
 
-  // storeConversationInIndexedDB(conversation: any) : void
-  // {
-  //   const request = indexedDB.open('ConversationDB', 1);
+  storeConversationInIndexedDB(conversation: any) : void
+  {
+    const request = indexedDB.open('ConversationDB', 1);
   
-  //   request.onupgradeneeded = function (event) {
-  //     const db = (event.target as IDBOpenDBRequest).result;
-  //     if (!db.objectStoreNames.contains('conversations')) {
-  //       db.createObjectStore('conversations', { keyPath: 'conversationId' });
-  //     }
-  //   };
+    request.onupgradeneeded = function (event) {
+      const db = (event.target as IDBOpenDBRequest).result;
+      if (!db.objectStoreNames.contains('conversations')) {
+        db.createObjectStore('conversations', { keyPath: 'conversationId' });
+      }
+    };
   
-  //   request.onsuccess = function (event) {
-  //     const db = (event.target as IDBOpenDBRequest).result;
-  //     const transaction = db.transaction('conversations', 'readwrite');
-  //     const store = transaction.objectStore('conversations');
-  //     store.put(conversation);
+    request.onsuccess = function (event) {
+      const db = (event.target as IDBOpenDBRequest).result;
+      const transaction = db.transaction('conversations', 'readwrite');
+      const store = transaction.objectStore('conversations');
+      store.put(conversation);
   
-  //     transaction.oncomplete = function () {
-  //       console.log('Conversation stored successfully!');
-  //     };
+      transaction.oncomplete = function () {
+        console.log('Conversation stored successfully!');
+      };
   
-  //     transaction.onerror = function () {
-  //       console.error('Error storing conversation:', transaction.error);
-  //     };
-  //   };
+      transaction.onerror = function () {
+        console.error('Error storing conversation:', transaction.error);
+      };
+    };
   
-  //   request.onerror = function () {
-  //     console.error('Error opening database:', request.error);
-  //   };
-  // }
+    request.onerror = function () {
+      console.error('Error opening database:', request.error);
+    };
+  }
+
+  async loadQuestionFromIndexedDB(conversationId: string, questionId: string): Promise<void> 
+  {
+    const request = indexedDB.open('ConversationDB', 1);
+  
+    request.onsuccess = (event) => 
+    {
+      const db = (event.target as IDBOpenDBRequest).result;
+      const transaction = db.transaction('conversations', 'readonly');
+      const store = transaction.objectStore('conversations');
+      const getRequest = store.get(conversationId);
+  
+      getRequest.onsuccess = () => 
+      {
+        const storedConversation = getRequest.result;
+        if(storedConversation && storedConversation.questions && storedConversation.questions[questionId]) 
+        {
+          const question = storedConversation.questions[questionId];
+          this.currentQuestionSubject.next(question);
+        } 
+        else 
+        {
+          console.log('Question not found in IndexedDB');
+        }
+      };
+  
+      getRequest.onerror = () => {
+        console.log('Error retrieving conversation from IndexedDB:', getRequest.error);
+      };
+    };
+  
+    request.onerror = () => {
+      console.log('Error opening database:', request.error);
+    };
+  }
+  
 }

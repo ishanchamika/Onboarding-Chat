@@ -26,7 +26,6 @@ export class SecondaryComponentInputComponent extends BaseQuestionComponent impl
       this.layoutColumns = this.question.layoutColumn || 1;
       const rowQuestions = Object.values(this.question.subQuestion);
       this.subQuestionRows = this.groupIntoRows(rowQuestions, this.layoutColumns);
-      console.log('inputComponents:', this.inputComponents);
     } else {
       console.error('Secondary input requires subQuestions');
     }
@@ -39,7 +38,6 @@ export class SecondaryComponentInputComponent extends BaseQuestionComponent impl
     for (let i = 0; i < questions.length; i += columns) {
       rows.push(questions.slice(i, i + columns));
     }
-    console.log('Grouped rows:', rows);
     return rows;
   }
 
@@ -143,7 +141,6 @@ export class SecondaryComponentInputComponent extends BaseQuestionComponent impl
       }
       const valid = this.inputComponents.toArray().every((component, index) => 
       {
-        console.log('rrr',this.inputComponents);
   
         if(component instanceof TextInputComponent) 
         { 

@@ -190,7 +190,7 @@ export class ConversationService {
   
 
 
-
+  private pausedQuestionId: string | null = null;
   private conversation : Conversation | null = null;
   private currentQuestionSubject = new BehaviorSubject<Question|null>(
     // this.conversation.questions[this.conversation.currentQuestionId]
@@ -217,24 +217,47 @@ export class ConversationService {
 
   async loadConversation(conversationId: string): Promise<void> 
   {
-    console.log(conversationId)
     try 
     {
-      
-      this.conversation = await this.http.get<any>('https://localhost:44383/api/Conversation/' + conversationId).toPromise() ?? null;
-
-      if(this.conversation) 
+      this.initializeProgressDB();
+      this.conversation  = await this.getConversationFromIndexedDB(conversationId);
+      this.pausedQuestionId = await this.getCurrentQuestionId(conversationId);
+   
+      if(this.conversation  !== null)
       {
-        this.storeConversationInIndexedDB(this.conversation);
-        this.loadQuestionFromIndexedDB(this.conversation.conversationId, this.conversation.currentQuestionId);
+        if(this.pausedQuestionId !== null)
+        {
+          this.loadQuestionFromIndexedDB(this.conversation.conversationId, this.pausedQuestionId);
+        }
+        else
+        {
+          this.loadQuestionFromIndexedDB(this.conversation.conversationId, this.conversation.currentQuestionId);
+        }
       }
-      else 
+      else
       {
-        console.error('No conversation data received from the backend');
+        this.conversation = await this.http.get<any>('https://localhost:44383/api/Conversation/' + conversationId).toPromise() ?? null;
+        if(this.conversation) 
+        {
+          this.storeConversationInIndexedDB(this.conversation);
+          if(this.pausedQuestionId !== null)
+          {
+            this.loadQuestionFromIndexedDB(this.conversation.conversationId, this.pausedQuestionId);
+          }
+          else
+          {
+            this.loadQuestionFromIndexedDB(this.conversation.conversationId, this.conversation.currentQuestionId);
+          }
+        }
+        else 
+        {
+          console.error('No conversation data received from the backend');
+        }
       }
-    } catch (error) {
+    } 
+    catch (error) 
+    {
       console.error('Error fetching conversation:', error);
-      throw error; // Optionally rethrow or handle differently
     }
   }
 
@@ -338,6 +361,8 @@ export class ConversationService {
 
   async loadQuestionFromIndexedDB(conversationId: string, questionId: string): Promise<void> 
   {
+    this.storeCurrentQuestionId(conversationId, questionId);
+    console.log('oooooooooo', questionId);
     const request = indexedDB.open('ConversationDB', 1);
   
     request.onsuccess = (event) => 
@@ -370,5 +395,162 @@ export class ConversationService {
       console.log('Error opening database:', request.error);
     };
   }
+  
+
+
+
+  getConversationFromIndexedDB(conversationId: string): Promise<any | null> {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open('ConversationDB', 1); // opening at version 1
+  
+      request.onupgradeneeded = function () {
+        // If this triggers, it means the DB did not exist before
+        // So we cancel it, because you said: don't create it
+        console.warn('DB did not exist, returning null without creating.');
+        request.transaction?.abort(); // cancel DB creation
+        resolve(null);
+      };
+  
+      request.onsuccess = function (event) {
+        const db = (event.target as IDBOpenDBRequest).result;
+  
+        if (!db.objectStoreNames.contains('conversations')) {
+          // conversations store doesn't exist
+          resolve(null);
+          return;
+        }
+  
+        const transaction = db.transaction('conversations', 'readonly');
+        const store = transaction.objectStore('conversations');
+        const getRequest = store.get(conversationId);
+  
+        getRequest.onsuccess = () => {
+          resolve(getRequest.result ?? null);
+        };
+  
+        getRequest.onerror = () => {
+          console.error('Error retrieving conversation from IndexedDB:', getRequest.error);
+          reject(getRequest.error);
+        };
+      };
+  
+      request.onerror = () => {
+        console.error('Error opening ConversationDB:', request.error);
+        reject(request.error);
+      };
+    });
+  }
+  
+
+
+
+  storeCurrentQuestionId(conversationId: string, questionId: string): void {
+    const dbVersion = 2;
+    const request = indexedDB.open('ProgressDB', dbVersion);
+  
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+  
+      if (!db.objectStoreNames.contains('progress')) {
+        const store = db.createObjectStore('progress', { keyPath: 'id' });
+        console.log('Created object store: progress');
+      }
+    };
+  
+    request.onsuccess = function (event) {
+      const db = (event.target as IDBOpenDBRequest).result;
+  
+      if (!db.objectStoreNames.contains('progress')) {
+        console.error("'progress' object store not found, even after upgrade.");
+        return;
+      }
+  
+      const transaction = db.transaction('progress', 'readwrite');
+      const store = transaction.objectStore('progress');
+  
+      // Store with the required 'id' key
+      store.put({
+        id: conversationId,       // This must match your keyPath 'id'
+        conversationId,
+        questionId
+      });
+  
+      transaction.oncomplete = () => {
+        console.log('Progress stored successfully.');
+      };
+  
+      transaction.onerror = () => {
+        console.error('Error storing progress:', transaction.error);
+      };
+    };
+  
+    request.onerror = () => {
+      console.error('Error opening ProgressDB:', request.error);
+    };
+  }
+  
+  
+  
+
+
+
+  getCurrentQuestionId(conversationId: string): Promise<string | null> {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open('ProgressDB', 2);
+  
+      request.onsuccess = function (event) {
+        const db = (event.target as IDBOpenDBRequest).result;
+  
+        if (!db.objectStoreNames.contains('progress')) {
+          resolve(null);
+          return;
+        }
+  
+        const transaction = db.transaction('progress', 'readonly');
+        const store = transaction.objectStore('progress');
+        const getRequest = store.get(conversationId);
+  
+        getRequest.onsuccess = () => {
+          resolve(getRequest.result?.questionId ?? null);
+        };
+  
+        getRequest.onerror = () => {
+          console.error('Error getting progress:', getRequest.error);
+          reject(getRequest.error);
+        };
+      };
+  
+      request.onerror = () => {
+        console.error('Error opening ProgressDB:', request.error);
+        reject(request.error);
+      };
+    });
+  }
+
+  
+
+
+   initializeProgressDB(): void 
+   {
+    const dbVersion = 1;
+    const request = indexedDB.open('ProgressDB', dbVersion);
+  
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+  
+      if(!db.objectStoreNames.contains('progress')) {
+        db.createObjectStore('progress', { keyPath: 'id', autoIncrement: true });
+      }
+    };
+  
+    request.onsuccess = () => {
+      request.result.close();
+    };
+  
+    request.onerror = () => {
+      console.error('Failed to initialize ProgressDB:', request.error);
+    };
+  }
+  
   
 }

@@ -1,0 +1,11 @@
+<div class="checkbox-container">
+    <div *ngFor="let option of question.options" class="checkbox-option">
+      <label>
+        <input 
+          type="checkbox" 
+          [value]="option.value || option.text" 
+          (change)="toggleOption(option)">
+        {{ option.text }}
+      </label>
+    </div>
+  </div>

@@ -258,7 +258,10 @@ export class ConversationService {
     } else if (answer.text && answer.value) {
       answerText = answer.text;
       nextQuestionId = current.nextQuestionId || null;
-    } else {
+    } else if (current.inputType === 'checkbox'){
+      answerText = answer.map((opt: Option) => opt.text).join(',');
+      nextQuestionId = current.nextQuestionId || null;
+    }else {
       answerText = answer.text;
       nextQuestionId = answer.nextQuestionId;
     }

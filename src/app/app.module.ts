@@ -23,6 +23,7 @@ import { CalendarInputComponent } from './Components/question-types/calendar-inp
 import { SubmitButtonComponent } from './Components/question-types/submit-button/submit-button.component';
 import { SecondaryComponentInputComponent } from './Components/question-types/secondaryComponent-input/secondaryComponent-input.component';
 import { HttpClientModule } from '@angular/common/http';
+import { CheckboxInputComponent } from './Components/question-types/checkbox-input/checkbox-input.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { HttpClientModule } from '@angular/common/http';
     CalendarInputComponent,
     SubmitButtonComponent,
     SecondaryComponentInputComponent,
+    CheckboxInputComponent,
     
   ],
   imports: [

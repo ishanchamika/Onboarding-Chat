@@ -221,7 +221,7 @@ export class ConversationService {
     try 
     {
       
-      this.conversation = await this.http.get<any>('https://localhost:44383/api/Conversation/' + conversationId).toPromise() ?? null;
+      this.conversation = await this.http.get<any>('http://localhost:5149/api/Conversation/' + conversationId).toPromise() ?? null;
 
       if(this.conversation) 
       {

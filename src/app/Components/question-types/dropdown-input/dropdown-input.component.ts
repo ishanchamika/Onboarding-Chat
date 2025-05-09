@@ -29,7 +29,8 @@ export class DropdownInputComponent extends BaseQuestionComponent implements OnI
   
   onSubmitButtonClicked(): void {
     if (this.selectedOption) {
-      this.submitAnswer(this.selectedOption);
+      const answer = { text: this.selectedOption, value: this.selectedOption, type:'dropdown', currentQID: this.question.questionId, nextQuestionId: this.question.nextQuestionId };
+      this.submitAnswer(answer);
       this.selectedOption = null;
     }
   }

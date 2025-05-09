@@ -25,7 +25,8 @@ export class TextInputComponent extends BaseQuestionComponent
   {
     if(this.canSubmit()) 
     {
-      this.submitAnswer(this.value);
+      const answer = { text: this.value, value: this.value, type:'input', currentQID: this.question.questionId, nextQuestionId: this.question.nextQuestionId};
+      this.submitAnswer(answer);
       this.value = '';
     }
   }

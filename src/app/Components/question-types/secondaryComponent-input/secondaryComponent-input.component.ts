@@ -116,7 +116,7 @@ export class SecondaryComponentInputComponent extends BaseQuestionComponent impl
       });
 
       const inputString = inputParts.join(', ');
-      this.submitAnswer({ text: inputString, value: inputObject });
+      this.submitAnswer({ text: inputString, value: inputObject, type:'secondary', currentQID: this.question.questionId, nextQuestionId: this.question.nextQuestionId });
     }
   }
   getSubQuestionByIndex(index: number): Question {

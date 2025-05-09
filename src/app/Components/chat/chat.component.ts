@@ -29,56 +29,68 @@ export class ChatComponent implements OnInit
     this.currentQuestion$ = this.conversationService.currentQuestion$;
   }
   
-  async ngOnInit(): Promise<void> {
+  async ngOnInit(): Promise<void> 
+  {
     this.currentQuestion$ = this.conversationService.currentQuestion$;
-    await this.conversationService.loadConversation(
-      '8631d9f7-1d59-45d3-9566-c12263800746'
-    );
-    this.currentQuestion$.subscribe(question => {
-      if(!question) return;
+    await this.conversationService.loadConversation('8631d9f7-1d59-45d3-9566-c12263800746');
+    this.currentQuestion$.subscribe(question => 
+    {
+      if(!question)
+      {
+        return
+      };
       
       // Add the bot message with the question
-      if (this.messages.length === 0 || 
-          this.messages[this.messages.length - 1].text !== question.questionText) { // Changed to questionText
+      if(this.messages.length === 0 || this.messages[this.messages.length - 1].text !== question.questionText) 
+      {
         this.messages.push({
           type: 'bot',
           text: question.questionText || '' // Changed to questionText
         });
-
       }
 
-    this.isSubmitButton = question.requiresSubmitButton;
-    setTimeout(() => {
-      if (this.questionContainer) {
-        const component = this.questionComponentService.loadQuestionComponent(
-          question, 
-          this.questionContainer
-        );
-        // Assign the component instance
-        this.currentQuestionComponent = component;
-        // Subscribe to answer events
-        component.answerSubmitted.subscribe(answer => {
-          this.handleAnswer(answer);
-        });
-      }
+      this.isSubmitButton = question.requiresSubmitButton;
+      setTimeout(() => 
+      {
+        if(this.questionContainer) 
+        {
+          const component = this.questionComponentService.loadQuestionComponent(question, this.questionContainer);
+          // Assign the component instance
+          this.currentQuestionComponent = component;
+          // Subscribe to answer events
+          component.answerSubmitted.subscribe(answer => 
+          {
+            this.handleAnswer(answer);
+            // console.log('compooooooo', question);
+            // console.log('anssswer', answer);
+          });
+        }
+      });
     });
-  });
   }
   
   handleAnswer(answer: any): void {
     let answerText: string;
-    
-    // Handle different answer types
-    if (answer instanceof Date) {
-      answerText = answer.toLocaleDateString(); // Format the date for display
+
+    if(answer.type == 'dropdown') {
+      answerText = answer.text.text.toString()  ;
+    } 
+    else if(answer.type == 'calender') {
+      answerText = answer.text.toLocaleDateString();
     }
-    else if (typeof answer === 'string' || typeof answer === 'number') {
-      answerText = answer.toString();
-    }
-    else if (answer.text) {
-      // Handle Option or address objects
+    else if (answer.type == 'input') {
+      answerText = answer.text.toString();
+    } 
+    else if (answer.type=='button') {
+      answerText = answer.text.text;
+    } 
+    else if (answer.type=='radio') {
+      answerText = answer.text.text;
+    } 
+    else if(answer.type == 'secondary'){
       answerText = answer.text;
-     } else {
+    }
+    else {
       answerText = 'Unknown answer';
     }
     

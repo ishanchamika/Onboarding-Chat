@@ -85,6 +85,7 @@ export class ConversationService {
   handleAnswer(answer: any): void 
   {
     const current = this.currentQuestion;
+    console.log('aaa', answer);
     if(!current || !this.conversation) 
     {
       console.error('Conversation or current question not loaded');
@@ -93,19 +94,34 @@ export class ConversationService {
     let answerText: string;
     let nextQuestionId: string | null = null;
 
+    // answerText = answer.toLocaleDateString();
     // Handle different answer types
-    if(answer instanceof Date) {
-      answerText = answer.toLocaleDateString();
-      nextQuestionId = current.nextQuestionId || null;
-    } else if (typeof answer === 'string' || typeof answer === 'number') {
-      answerText = answer.toString();
-      nextQuestionId = current.nextQuestionId || null;
-    } else if (answer.text && answer.value) {
-      answerText = answer.text;
-      nextQuestionId = current.nextQuestionId || null;
-    } else {
+    if(answer.type == 'dropdown') {
+      answerText = answer.text.text.toString()  ;
+      nextQuestionId = answer.text.nextQuestionId || null;
+    } 
+    else if(answer.type == 'calender') {
+      answerText = answer.text.toLocaleDateString();
+      nextQuestionId = answer.nextQuestionId || null;
+    }
+    else if (answer.type == 'input') {
+      answerText = answer.text.toString();
+      nextQuestionId = answer.nextQuestionId || null;
+    } 
+    else if (answer.type=='button') {
+      answerText = answer.text.text;
+      nextQuestionId = answer.text.nextQuestionId || null;
+      console.log('currrr3', nextQuestionId);
+    } 
+    else if (answer.type=='radio') {
+      answerText = answer.text.text;
+      nextQuestionId = answer.text.nextQuestionId || null;
+      console.log('currrr3', nextQuestionId);
+    } 
+    else {
       answerText = answer.text;
       nextQuestionId = answer.nextQuestionId;
+      console.log('currrr4', nextQuestionId);
     }
 
     // Add to history
@@ -120,6 +136,8 @@ export class ConversationService {
     } 
     else 
     {
+    console.log('fff');
+
       // End of conversation path
       const endQuestion: Question = {
         questionId: 'final',

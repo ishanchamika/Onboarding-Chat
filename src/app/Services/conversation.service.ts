@@ -38,9 +38,12 @@ export class ConversationService {
   //_________Initially call endpoint & create IndexedDB databases_______
   async loadConversation(conversationId: string): Promise<void> 
   {
+
     try 
     {
-      this.initializeProgressDB();//create IndexedDB databases
+      // this.initializeProgressDB();
+      // this.initializeAnswerDB();
+      this.loadAnswersFromIndexedDB();
       this.conversation  = await this.getConversationFromIndexedDB(conversationId);
       this.pausedQuestionId = await this.getCurrentQuestionId(conversationId);
    
@@ -82,10 +85,10 @@ export class ConversationService {
     }
   }
 
-  handleAnswer(answer: any): void 
+  handleAnswer(answer: any, question:any): void 
   {
+    this.storeAnswers(answer, question);
     const current = this.currentQuestion;
-    console.log('aaa', answer);
     if(!current || !this.conversation) 
     {
       console.error('Conversation or current question not loaded');
@@ -111,17 +114,14 @@ export class ConversationService {
     else if (answer.type=='button') {
       answerText = answer.text.text;
       nextQuestionId = answer.text.nextQuestionId || null;
-      console.log('currrr3', nextQuestionId);
     } 
     else if (answer.type=='radio') {
       answerText = answer.text.text;
       nextQuestionId = answer.text.nextQuestionId || null;
-      console.log('currrr3', nextQuestionId);
     } 
     else {
       answerText = answer.text;
       nextQuestionId = answer.nextQuestionId;
-      console.log('currrr4', nextQuestionId);
     }
 
     // Add to history
@@ -136,8 +136,6 @@ export class ConversationService {
     } 
     else 
     {
-    console.log('fff');
-
       // End of conversation path
       const endQuestion: Question = {
         questionId: 'final',
@@ -199,6 +197,105 @@ export class ConversationService {
     };
   }
 
+
+  //__________________Store Ques. & Answers into IndexedDB___________________
+  storeAnswers(answer: any, question:any): void 
+  {
+    const request = indexedDB.open('AnswerDB', 1);
+  
+    request.onupgradeneeded = function (event) {
+      const db = (event.target as IDBOpenDBRequest).result;
+  
+      // Create object store with 'currentQID' as the key
+      if (!db.objectStoreNames.contains('answers')) {
+        db.createObjectStore('answers', { keyPath: 'currentQID' });
+      }
+    };
+  
+    request.onsuccess = function (event) {
+      const db = (event.target as IDBOpenDBRequest).result;
+      const transaction = db.transaction(['answers'], 'readwrite');
+      const store = transaction.objectStore('answers');
+  
+      const data = {
+        currentQID: answer.currentQID,
+        Question: question.questionText,
+        value: answer.value
+      };
+  
+      const addRequest = store.put(data); // put will add or update by key
+  
+      addRequest.onsuccess = function () {
+        console.log('Answer stored successfully:', data);
+      };
+  
+      addRequest.onerror = function (err) {
+        console.error('Error storing answer:', err);
+      };
+    };
+  
+    request.onerror = function (err) {
+      console.error('Error opening IndexedDB:', err);
+    };
+  }
+  
+
+  //____________Load answers from IndexedDB_______________
+  loadAnswersFromIndexedDB(): void 
+  {
+    const request = indexedDB.open('AnswerDB', 1);
+    
+    request.onsuccess = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+      const transaction = db.transaction(['answers'], 'readonly');
+      const store = transaction.objectStore('answers');
+      
+      const getAllRequest = store.getAll();
+      
+      getAllRequest.onsuccess = () => {
+        const storedAnswers = getAllRequest.result;
+        const history: { question: string; answer: string }[] = storedAnswers.map((item: any) => 
+        {
+          console.log('ssss', item);
+          let formattedAnswer: string;
+        
+          if(!item.value){
+            formattedAnswer = '';
+          } 
+          else if( typeof item.value === 'object' && 'text' in item.value){
+            formattedAnswer = item.value.text;
+          } 
+          else if (item.value instanceof Date) {
+            formattedAnswer = item.value.toLocaleDateString();
+          }
+          else if (typeof item.value === 'object' && !(item.value instanceof Date)){
+            formattedAnswer = Object.entries(item.value).map(([key, val]) => `${key.split('-').pop()}: ${val}`).join(', ');
+          } 
+          else {
+            formattedAnswer = String(item.value);
+          }
+          return {
+            question: item.Question,
+            answer: formattedAnswer
+          };
+        });
+        
+  
+        // Push loaded history to BehaviorSubject
+        this.historySubject.next(history);
+      };
+  
+      getAllRequest.onerror = (err) => {
+        console.error('Error retrieving answers from IndexedDB:', err);
+      };
+    };
+  
+    request.onerror = (err) => {
+      console.error('Error opening IndexedDB:', err);
+    };
+  }
+
+  
 
   //____________________Load current question object from indexedDB________________________
   async loadQuestionFromIndexedDB(conversationId: string, questionId: string): Promise<void> 
@@ -398,5 +495,28 @@ export class ConversationService {
     };
   }
   
+  initializeAnswerDB(): void 
+  {
+    const dbVersion = 1;
+    const request = indexedDB.open('AnswerDB', dbVersion);
+  
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+  
+      if (!db.objectStoreNames.contains('answers')) {
+        db.createObjectStore('answers', { keyPath: 'currentQID' });
+        console.log('Object store "answers" created.');
+      }
+    };
+  
+    request.onsuccess = () => {
+      request.result.close();
+      console.log('AnswerDB initialized successfully.');
+    };
+  
+    request.onerror = () => {
+      console.error('Failed to initialize AnswerDB:', request.error);
+    };
+  }
   
 }

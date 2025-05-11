@@ -31,6 +31,9 @@ export class ChatComponent implements OnInit
   
   async ngOnInit(): Promise<void> 
   {
+    this.conversationService.initializeAnswerDB();
+    this.conversationService.initializeProgressDB();
+    this.loadAnswersFromIndexedDB();
     this.currentQuestion$ = this.conversationService.currentQuestion$;
     await this.conversationService.loadConversation('8631d9f7-1d59-45d3-9566-c12263800746');
     this.currentQuestion$.subscribe(question => 
@@ -60,8 +63,7 @@ export class ChatComponent implements OnInit
           // Subscribe to answer events
           component.answerSubmitted.subscribe(answer => 
           {
-            this.handleAnswer(answer);
-            // console.log('compooooooo', question);
+            this.handleAnswer(answer, question);
             // console.log('anssswer', answer);
           });
         }
@@ -69,7 +71,7 @@ export class ChatComponent implements OnInit
     });
   }
   
-  handleAnswer(answer: any): void {
+  handleAnswer(answer: any, question:any): void {
     let answerText: string;
 
     if(answer.type == 'dropdown') {
@@ -101,7 +103,7 @@ export class ChatComponent implements OnInit
     });
     
     // Process the selection in conversation service
-    this.conversationService.handleAnswer(answer);
+    this.conversationService.handleAnswer(answer, question);
   }
 
   submitCurrentAnswer(): void {
@@ -113,4 +115,63 @@ export class ChatComponent implements OnInit
   trackByFn(index: number): number {
     return index;
   }
+
+
+
+    //____________Load answers from IndexedDB_______________
+    loadAnswersFromIndexedDB(): void {
+      const request = indexedDB.open('AnswerDB', 1);
+    
+      request.onsuccess = (event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+        const transaction = db.transaction(['answers'], 'readonly');
+        const store = transaction.objectStore('answers');
+    
+        const getAllRequest = store.getAll();
+    
+        getAllRequest.onsuccess = () => {
+          const storedAnswers = getAllRequest.result;
+    
+          storedAnswers.forEach((item: any) => {
+            let formattedAnswer = '';
+    
+            if (!item.value) {
+              formattedAnswer = '';
+            } 
+            else if (typeof item.value === 'object' && 'text' in item.value) {
+              formattedAnswer = item.value.text;
+            } 
+            else if (item.value instanceof Date) {
+              formattedAnswer = item.value.toLocaleDateString();
+            }
+            else if (typeof item.value === 'string' && !isNaN(Date.parse(item.value))) {
+              formattedAnswer = new Date(item.value).toLocaleDateString();
+            } 
+            else if (typeof item.value === 'object') {
+              formattedAnswer = Object.entries(item.value)
+                .map(([key, val]) => `${key.split('-').pop()}: ${val}`)
+                .join(', ');
+            } 
+            else {
+              formattedAnswer = String(item.value);
+            }
+    
+            // Push to chat-style messages array
+            this.messages.push(
+              { type: 'bot', text: item.Question },
+              { type: 'user', text: formattedAnswer }
+            );
+          });
+        };
+    
+        getAllRequest.onerror = (err) => {
+          console.error('Error retrieving answers from IndexedDB:', err);
+        };
+      };
+    
+      request.onerror = (err) => {
+        console.error('Error opening IndexedDB:', err);
+      };
+    }
+    
 }

@@ -43,6 +43,7 @@ export class QuestionComponentService
     const componentType = this.componentMap.get(question.inputType); // Changed to inputType
     if (!componentType) 
     {
+      window.alert('No component Found as "'+  question.inputType + '"');
       throw new Error(`No component registered for question type: ${question.inputType}`); // Changed to inputType
     }
     
@@ -51,7 +52,6 @@ export class QuestionComponentService
     
     const component = componentRef.instance;
     component.question = question;
-    
     
     return component;
   }

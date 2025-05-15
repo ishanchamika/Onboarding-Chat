@@ -1,4 +1,4 @@
-export type QuestionType = 'text' | 'number' | 'radio' | 'dropdown' | 'buttons' | 'calendar' | 'datepicker' | 'secondary';
+export type QuestionType = 'text' | 'number' | 'radio' | 'dropdown' | 'buttons' | 'calendar' | 'datepicker' | 'checkbox' |'secondary';
 
 export interface Option {
   text: string;

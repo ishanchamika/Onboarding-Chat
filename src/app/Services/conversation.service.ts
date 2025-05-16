@@ -119,6 +119,10 @@ export class ConversationService {
       answerText = answer.text.text;
       nextQuestionId = answer.text.nextQuestionId || null;
     } 
+    else if (answer.type=='checkbox') {
+      answerText = answer.text;
+      nextQuestionId = answer.value[0].nextQuestionId || null;
+    }
     else {
       answerText = answer.text;
       nextQuestionId = answer.nextQuestionId;

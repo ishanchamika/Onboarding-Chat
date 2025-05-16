@@ -92,6 +92,9 @@ export class ChatComponent implements OnInit
     else if(answer.type == 'secondary'){
       answerText = answer.text;
     }
+    else if(answer.type == 'checkbox'){
+      answerText = answer.text;
+    }
     else {
       answerText = 'Unknown answer';
     }

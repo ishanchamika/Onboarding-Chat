@@ -27,8 +27,10 @@ export class CheckboxInputComponent extends BaseQuestionComponent implements OnI
   }
 
   onSubmitButtonClicked(): void {
-      if(this.selectedOptions.length>0) {
-        this.submitAnswer(this.selectedOptions);
+      if(this.selectedOptions.length>0) 
+      {
+        const answer = { text: this.selectedOptions.map(opt => opt.text).join(', '), value: this.selectedOptions, type:'checkbox', currentQID: this.question.questionId, nextQuestionId: this.question.nextQuestionId };
+        this.submitAnswer(answer);
         this.selectedOptions = [];
       }
   }

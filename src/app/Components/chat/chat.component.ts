@@ -35,7 +35,7 @@ export class ChatComponent implements OnInit
     this.conversationService.initializeProgressDB();
     this.loadAnswersFromIndexedDB();
     this.currentQuestion$ = this.conversationService.currentQuestion$;
-    await this.conversationService.loadConversation('8631d9f7-1d59-45d3-9566-c12263800746');
+    await this.conversationService.loadConversation('8631d9f7-1d59-45d3-9566');
     this.currentQuestion$.subscribe(question => 
     {
       if(!question)
@@ -150,6 +150,9 @@ export class ChatComponent implements OnInit
             else if (typeof item.value === 'string' && !isNaN(Date.parse(item.value))) {
               formattedAnswer = new Date(item.value).toLocaleDateString();
             } 
+            else if (Array.isArray(item.value) && item.value.every((v: { text: string }) => v && typeof v === 'object' && 'text' in v)) {
+              formattedAnswer = item.value.map((opt: { text: string }) => opt.text).join(', ');
+            }
             else if (typeof item.value === 'object') {
               formattedAnswer = Object.entries(item.value)
                 .map(([key, val]) => `${key.split('-').pop()}: ${val}`)

@@ -272,6 +272,9 @@ export class ConversationService {
           else if (item.value instanceof Date) {
             formattedAnswer = item.value.toLocaleDateString();
           }
+          else if (Array.isArray(item.value) && item.value.every((v: { text: string }) => v && typeof v === 'object' && 'text' in v)) {
+            formattedAnswer = item.value.map((opt: { text: string }) => opt.text).join(', ');
+          }
           else if (typeof item.value === 'object' && !(item.value instanceof Date)){
             formattedAnswer = Object.entries(item.value).map(([key, val]) => `${key.split('-').pop()}: ${val}`).join(', ');
           } 

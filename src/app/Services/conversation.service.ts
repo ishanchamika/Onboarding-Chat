@@ -212,7 +212,7 @@ export class ConversationService {
   
       // Create object store with 'currentQID' as the key
       if (!db.objectStoreNames.contains('answers')) {
-        db.createObjectStore('answers', { keyPath: 'currentQID' });
+        db.createObjectStore('answers', { keyPath: 'id', autoIncrement: true });
       }
     };
   
@@ -227,7 +227,7 @@ export class ConversationService {
         value: answer.value
       };
   
-      const addRequest = store.put(data); // put will add or update by key
+      const addRequest = store.add(data); // put will add or update by key
   
       addRequest.onsuccess = function () {
         console.log('Answer stored successfully:', data);
@@ -260,7 +260,6 @@ export class ConversationService {
         const storedAnswers = getAllRequest.result;
         const history: { question: string; answer: string }[] = storedAnswers.map((item: any) => 
         {
-          console.log('ssss', item);
           let formattedAnswer: string;
         
           if(!item.value){
@@ -511,7 +510,7 @@ export class ConversationService {
       const db = (event.target as IDBOpenDBRequest).result;
   
       if (!db.objectStoreNames.contains('answers')) {
-        db.createObjectStore('answers', { keyPath: 'currentQID' });
+        db.createObjectStore('answers', { keyPath: 'id', autoIncrement: true });
         console.log('Object store "answers" created.');
       }
     };

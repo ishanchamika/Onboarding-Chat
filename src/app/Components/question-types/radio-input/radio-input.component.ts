@@ -23,7 +23,8 @@ export class RadioInputComponent extends BaseQuestionComponent implements OnInit
   
   onSubmitButtonClicked(): void {
     if (this.selectedOption) {
-      this.submitAnswer(this.selectedOption);
+      const answer = { text: this.selectedOption, value: this.selectedOption, type:'radio', currentQID: this.question.questionId, nextQuestionId: this.question.nextQuestionId };
+      this.submitAnswer(answer);
       this.selectedOption = null;
     }
   }

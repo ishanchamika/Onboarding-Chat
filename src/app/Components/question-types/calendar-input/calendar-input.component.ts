@@ -66,7 +66,8 @@ export class CalendarInputComponent extends BaseQuestionComponent implements OnI
   {
     if(this.canSubmit()) 
     {
-      this.submitAnswer(this.selectedDate);
+      const answer = { text: this.selectedDate, value: this.selectedDate, type:'calender', currentQID: this.question.questionId, nextQuestionId: this.question.nextQuestionId };
+      this.submitAnswer(answer);
       this.selectedDate = null;
     }
   }

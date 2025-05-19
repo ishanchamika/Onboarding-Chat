@@ -27,6 +27,8 @@ export interface Question {
   validationKey?: string;
   minDate?: string;
   maxDate?: string;
+  mincheck?: string;
+  maxcheck?: string;
 }
 
 export interface Conversation {

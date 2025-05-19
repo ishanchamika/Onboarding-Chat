@@ -14,193 +14,13 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ConversationService {
 
-  //conversation structure
-  // private readonly conversation: Conversation = 
-  // {
-  //   conversationId: '8631d9f7-1d59-45d3-9566-c12263800746',
-  //   currentQuestionId: 'Q1',
-  //   questions: 
-  //   {
-  //       Q1: {
-  //         questionId: 'Q1',
-  //         questionText: 'What is the business partner type?',
-  //         inputType: 'buttons',
-  //         options: [
-  //           { text: 'Individual', nextQuestionId: 'Q2' },
-  //           { text: 'Corporate', nextQuestionId: 'Q3' }
-  //         ],
-  //         requiresSubmitButton: false
-  //       },
-  //       Q4: {
-  //       questionId: 'Q2',
-  //       questionText: 'Please enter your address:',
-  //       inputType: 'secondary',
-  //       layoutColumn:4,
-  //       subQuestions: {
-  //         streetName: {
-  //           questionId: 'Q2-streetName',
-  //           questionText:'Street Name',
-  //           inputType: 'text',
-  //           placeholder: 'Enter street name',
-  //           validation: { required: true },
-  //           validationKey: 'name'
-  //         },
-  //         date: {
-  //           questionId: 'Q2-date',
-  //           questionText: 'Please select a date: (D/M/Y)',
-  //           inputType: 'calendar',
-  //           minDate: '2025-04-20',
-  //           maxDate: '2025-04-30',
-  //           validation: { required: true },
-  //           validationKey: ''
-  //         },
-          
-  //         city: {
-  //           questionId: 'Q2-city',
-  //           questionText:'City Name',
-  //           inputType: 'radio',
-  //           options: [
-  //             { text: 'Colombo', value: 'CB' },
-  //             { text: 'Kandy', value: 'KD' },
-  //             { text: 'Ragama', value: 'RG' }
-  //           ],
-  //           validation: { required: true },
-  //           validationKey:'name'
-  //         },
-  //         houseNumber: {
-  //           questionId: 'Q2-houseNumber',
-  //           questionText:'House Name',
-  //           inputType: 'text',
-  //           placeholder: 'Enter house number',
-  //           validation: { required: true },
-  //           validationKey: 'salary'
-  //         },
-  //         state: {
-  //           questionId: 'Q2-state',
-  //           questionText:'State Name',
-  //           inputType: 'dropdown',
-  //           options: [
-  //             { text: 'Western', value: 'WP' },
-  //             { text: 'South', value: 'SP' },
-  //             { text: 'Central', value: 'CP' }
-  //           ],
-  //           validation: { required: true }
-  //         }
-  //       },
-  //       nextQuestionId: 'Q5',
-  //       requiresSubmitButton: true
-  //     },
-      
-
-  //     Q2: {
-  //       questionId: 'Q2',
-  //       questionText: 'What is your full name?',
-  //       inputType: 'text',
-  //       placeholder: 'Enter your full name',
-  //       validationKey: 'name',
-  //       nextQuestionId: 'Q4',
-  //       requiresSubmitButton: true
-  //     },
-  //     Q3: {
-  //       questionId: 'Q3',
-  //       questionText: 'What is your company name?',
-  //       inputType: 'text',
-  //       placeholder: 'Enter company name',
-  //       nextQuestionId: 'Q4',
-  //       requiresSubmitButton: true,
-  //       validationKey:'name'
-  //     },
-  //     Q5: {
-  //       questionId: 'Q5',
-  //       questionText: 'What is your annual revenue?',
-  //       inputType: 'text',
-  //       placeholder: 'Enter amount in dollars',
-  //       validation: {
-  //         required: true,
-  //         min: 0,
-  //       },
-  //       nextQuestionId: 'Q6',
-  //       requiresSubmitButton: true,
-  //       validationKey: 'salary'
-  //     },
-  //     Q6: {
-  //       questionId: 'Q6',
-  //       questionText: 'Which industry do you operate in?',
-  //       inputType: 'dropdown',
-  //       options: [
-  //         { text: 'Technology', nextQuestionId: 'Q7' },
-  //         { text: 'Healthcare', nextQuestionId: 'Q7' },
-  //         { text: 'Finance', nextQuestionId: 'Q7' },
-  //         { text: 'Retail', nextQuestionId: 'Q7' },
-  //         { text: 'Other', nextQuestionId: 'Q7' },
-  //       ],
-  //       validationKey: 'no',
-  //       requiresSubmitButton: true
-  //     },
-  //     Q7: {
-  //       questionId: 'Q7',
-  //       questionText: 'Please select a date: (D/M/Y)',
-  //       inputType: 'calendar',
-  //       nextQuestionId: 'Q10',
-  //       validationKey: 'no',
-  //       requiresSubmitButton: true,
-  //       minDate: '2025-04-19',
-  //       maxDate: '2025-04-29'
-  //     },
-  //     Q10: {
-  //       questionId: 'Q10',
-  //       questionText: 'How many employees do you have?',
-  //       inputType: 'radio',
-  //       options: [
-  //         { text: '1-10', nextQuestionId: 'Q8' },
-  //         { text: '11-50', nextQuestionId: 'Q8' },
-  //         { text: '51-200', nextQuestionId: 'Q8' },
-  //         { text: '201-1000', nextQuestionId: 'Q8' },
-  //         { text: '1000+', nextQuestionId: 'Q8' },
-  //       ],
-  //       validationKey: 'no',
-  //       requiresSubmitButton: true
-  //     },
-      
-  //     Q8: {
-  //       questionId: 'Q8',
-  //       questionText: 'What services are you interested in?',
-  //       inputType: 'buttons',
-  //       options: [
-  //         { text: 'Consulting', nextQuestionId: 'END' },
-  //         { text: 'Software Development', nextQuestionId: 'END' },
-  //         { text: 'Cloud Services', nextQuestionId: 'END' },
-  //         { text: 'Support', nextQuestionId: 'END' },
-  //       ],
-  //     },
-  //     END: {
-  //       questionId: 'END',
-  //       questionText:
-  //         'Thank you for your responses! Is there anything else I can help you with?',
-  //       inputType: 'buttons',
-  //       options: [
-  //         { text: 'Start Over', nextQuestionId: 'Q1' },
-  //         { text: "No, I'm done", nextQuestionId: null },
-  //       ],
-  //     },
-  //   },
-    // this.storeConversationInIndexedDB(conversation);
-  // };
-
-  
-
-
-
+  private pausedQuestionId: string | null = null;
   private conversation : Conversation | null = null;
-  private currentQuestionSubject = new BehaviorSubject<Question|null>(
-    // this.conversation.questions[this.conversation.currentQuestionId]
-    null
-  );
+  private currentQuestionSubject = new BehaviorSubject<Question|null>(null);
   private historySubject = new BehaviorSubject<HistoryItem[]>([]);
 
   constructor(private http : HttpClient) 
   {
-    // this.storeConversationInIndexedDB(this.conversation);
   }
 
   get currentQuestion$(): Observable<Question|null> {
@@ -215,70 +35,110 @@ export class ConversationService {
     return this.historySubject.asObservable();
   }
 
+  //_________Initially call endpoint & create IndexedDB databases_______
   async loadConversation(conversationId: string): Promise<void> 
   {
-    console.log(conversationId)
+
     try 
     {
-      
-      this.conversation = await this.http.get<any>('http://localhost:5149/api/Conversation/' + conversationId).toPromise() ?? null;
-
-      if(this.conversation) 
+      // this.initializeProgressDB();
+      // this.initializeAnswerDB();
+      this.loadAnswersFromIndexedDB();
+      this.conversation  = await this.getConversationFromIndexedDB(conversationId);
+      this.pausedQuestionId = await this.getCurrentQuestionId(conversationId);
+   
+      if(this.conversation  !== null)
       {
-        this.storeConversationInIndexedDB(this.conversation);
-        this.loadQuestionFromIndexedDB(this.conversation.conversationId, this.conversation.currentQuestionId);
+        if(this.pausedQuestionId !== null)
+        {
+          this.loadQuestionFromIndexedDB(this.conversation.conversationId, this.pausedQuestionId);
+        }
+        else
+        {
+          this.loadQuestionFromIndexedDB(this.conversation.conversationId, this.conversation.currentQuestionId);
+        }
       }
-      else 
+      else
       {
-        console.error('No conversation data received from the backend');
+        this.conversation = await this.http.get<any>('https://localhost:44383/api/Conversation/' + conversationId).toPromise() ?? null;
+        if(this.conversation) 
+        {
+          this.storeConversationInIndexedDB(this.conversation);
+          if(this.pausedQuestionId !== null)
+          {
+            this.loadQuestionFromIndexedDB(this.conversation.conversationId, this.pausedQuestionId);
+          }
+          else
+          {
+            this.loadQuestionFromIndexedDB(this.conversation.conversationId, this.conversation.currentQuestionId);
+          }
+        }
+        else 
+        {
+          console.error('No conversation data received from the backend');
+        }
       }
-    } catch (error) {
+    } 
+    catch (error) 
+    {
       console.error('Error fetching conversation:', error);
-      throw error; // Optionally rethrow or handle differently
     }
   }
 
-  handleAnswer(answer: any): void 
+  handleAnswer(answer: any, question:any): void 
   {
+    this.storeAnswers(answer, question);
     const current = this.currentQuestion;
-    if(!current || !this.conversation) {
+    if(!current || !this.conversation) 
+    {
       console.error('Conversation or current question not loaded');
       return;
     }
     let answerText: string;
     let nextQuestionId: string | null = null;
 
+    // answerText = answer.toLocaleDateString();
     // Handle different answer types
-    if(answer instanceof Date) {
-      answerText = answer.toLocaleDateString();
-      nextQuestionId = current.nextQuestionId || null;
-    } else if (typeof answer === 'string' || typeof answer === 'number') {
-      answerText = answer.toString();
-      nextQuestionId = current.nextQuestionId || null;
-    } else if (answer.text && answer.value) {
+    if(answer.type == 'dropdown') {
+      answerText = answer.text.text.toString()  ;
+      nextQuestionId = answer.text.nextQuestionId || null;
+    } 
+    else if(answer.type == 'calender') {
+      answerText = answer.text.toLocaleDateString();
+      nextQuestionId = answer.nextQuestionId || null;
+    }
+    else if (answer.type == 'input') {
+      answerText = answer.text.toString();
+      nextQuestionId = answer.nextQuestionId || null;
+    } 
+    else if (answer.type=='button') {
+      answerText = answer.text.text;
+      nextQuestionId = answer.text.nextQuestionId || null;
+    } 
+    else if (answer.type=='radio') {
+      answerText = answer.text.text;
+      nextQuestionId = answer.text.nextQuestionId || null;
+    } 
+    else if (answer.type=='checkbox') {
       answerText = answer.text;
-      nextQuestionId = current.nextQuestionId || null;
-    } else if (current.inputType === 'checkbox'){
-      answerText = answer.map((opt: Option) => opt.text).join(',');
-      nextQuestionId = current.nextQuestionId || null;
+      nextQuestionId = answer.value[0].nextQuestionId || null;
     }else if(current.inputType === 'file' ){
       answerText = 'helloooo';
       nextQuestionId = current.nextQuestionId || null;
-    }else {
+    }
+    else {
       answerText = answer.text;
       nextQuestionId = answer.nextQuestionId;
     }
 
     // Add to history
     const historyItems = this.historySubject.getValue();
-    historyItems.push({
-      question: current.questionText || '',
-      answer: answerText,
-    });
+    historyItems.push({ question: current.questionText || '', answer: answerText });
     this.historySubject.next(historyItems);
 
     // Set next question if available
-    if(nextQuestionId && this.conversation?.conversationId) {
+    if(nextQuestionId && this.conversation?.conversationId) 
+    {
       this.loadQuestionFromIndexedDB(this.conversation.conversationId, nextQuestionId);
     } 
     else 
@@ -301,16 +161,18 @@ export class ConversationService {
   }
 
   resetConversation(): void {
-    if (!this.conversation) {
+    if(!this.conversation) 
+    {
       console.error('Conversation not loaded');
       return;
     }
-    const initialQuestion =
-      this.conversation.questions[this.conversation.currentQuestionId];
+    const initialQuestion = this.conversation.questions[this.conversation.currentQuestionId];
     this.currentQuestionSubject.next(initialQuestion);
     this.historySubject.next([]);
   }
 
+
+  //____________Store conversation json into IndexedDB from API call___________
   storeConversationInIndexedDB(conversation: any) : void
   {
     const request = indexedDB.open('ConversationDB', 1);
@@ -342,8 +204,113 @@ export class ConversationService {
     };
   }
 
+
+  //__________________Store Ques. & Answers into IndexedDB___________________
+  storeAnswers(answer: any, question:any): void 
+  {
+    const request = indexedDB.open('AnswerDB', 1);
+  
+    request.onupgradeneeded = function (event) {
+      const db = (event.target as IDBOpenDBRequest).result;
+  
+      // Create object store with 'currentQID' as the key
+      if (!db.objectStoreNames.contains('answers')) {
+        db.createObjectStore('answers', { keyPath: 'currentQID' });
+      }
+    };
+  
+    request.onsuccess = function (event) {
+      const db = (event.target as IDBOpenDBRequest).result;
+      const transaction = db.transaction(['answers'], 'readwrite');
+      const store = transaction.objectStore('answers');
+  
+      const data = {
+        currentQID: answer.currentQID,
+        Question: question.questionText,
+        value: answer.value
+      };
+  
+      const addRequest = store.put(data); // put will add or update by key
+  
+      addRequest.onsuccess = function () {
+        console.log('Answer stored successfully:', data);
+      };
+  
+      addRequest.onerror = function (err) {
+        console.error('Error storing answer:', err);
+      };
+    };
+  
+    request.onerror = function (err) {
+      console.error('Error opening IndexedDB:', err);
+    };
+  }
+  
+
+  //____________Load answers from IndexedDB_______________
+  loadAnswersFromIndexedDB(): void 
+  {
+    const request = indexedDB.open('AnswerDB', 1);
+    
+    request.onsuccess = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+      const transaction = db.transaction(['answers'], 'readonly');
+      const store = transaction.objectStore('answers');
+      
+      const getAllRequest = store.getAll();
+      
+      getAllRequest.onsuccess = () => {
+        const storedAnswers = getAllRequest.result;
+        const history: { question: string; answer: string }[] = storedAnswers.map((item: any) => 
+        {
+          console.log('ssss', item);
+          let formattedAnswer: string;
+        
+          if(!item.value){
+            formattedAnswer = '';
+          } 
+          else if( typeof item.value === 'object' && 'text' in item.value){
+            formattedAnswer = item.value.text;
+          } 
+          else if (item.value instanceof Date) {
+            formattedAnswer = item.value.toLocaleDateString();
+          }
+          else if (Array.isArray(item.value) && item.value.every((v: { text: string }) => v && typeof v === 'object' && 'text' in v)) {
+            formattedAnswer = item.value.map((opt: { text: string }) => opt.text).join(', ');
+          }
+          else if (typeof item.value === 'object' && !(item.value instanceof Date)){
+            formattedAnswer = Object.entries(item.value).map(([key, val]) => `${key.split('-').pop()}: ${val}`).join(', ');
+          } 
+          else {
+            formattedAnswer = String(item.value);
+          }
+          return {
+            question: item.Question,
+            answer: formattedAnswer
+          };
+        });
+        
+  
+        // Push loaded history to BehaviorSubject
+        this.historySubject.next(history);
+      };
+  
+      getAllRequest.onerror = (err) => {
+        console.error('Error retrieving answers from IndexedDB:', err);
+      };
+    };
+  
+    request.onerror = (err) => {
+      console.error('Error opening IndexedDB:', err);
+    };
+  }
+
+  
+
+  //____________________Load current question object from indexedDB________________________
   async loadQuestionFromIndexedDB(conversationId: string, questionId: string): Promise<void> 
   {
+    this.storeCurrentQuestionId(conversationId, questionId); //if loaded the question, immediately store into indexedDB
     const request = indexedDB.open('ConversationDB', 1);
   
     request.onsuccess = (event) => 
@@ -374,6 +341,191 @@ export class ConversationService {
   
     request.onerror = () => {
       console.log('Error opening database:', request.error);
+    };
+  }
+  
+
+
+  //________________Initially load conversation json from IndexedDB If Exist_______________
+  getConversationFromIndexedDB(conversationId: string): Promise<any | null> 
+  {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open('ConversationDB', 1);
+  
+      request.onupgradeneeded = function () {
+        console.warn('DB did not exist, returning null without creating.');
+        request.transaction?.abort(); // cancel DB creation
+        resolve(null);
+      };
+  
+      request.onsuccess = function (event) 
+      {
+        const db = (event.target as IDBOpenDBRequest).result;
+  
+        if(!db.objectStoreNames.contains('conversations')) 
+        {
+          resolve(null);
+          return;
+        }
+  
+        const transaction = db.transaction('conversations', 'readonly');
+        const store = transaction.objectStore('conversations');
+        const getRequest = store.get(conversationId);
+  
+        getRequest.onsuccess = () => {
+          resolve(getRequest.result ?? null);
+        };
+  
+        getRequest.onerror = () => {
+          console.error('Error retrieving conversation from IndexedDB:', getRequest.error);
+          reject(getRequest.error);
+        };
+      };
+  
+      request.onerror = () => {
+        console.error('Error opening ConversationDB:', request.error);
+        reject(request.error);
+      };
+    });
+  }
+  
+
+
+  //________Store current QuestionId for afterUse(getCurrentQuestionId)____________
+  storeCurrentQuestionId(conversationId: string, questionId: string): void 
+  {
+    const dbVersion = 2;
+    const request = indexedDB.open('ProgressDB', dbVersion);
+  
+    request.onupgradeneeded = (event) => 
+    {
+      const db = (event.target as IDBOpenDBRequest).result;
+  
+      if(!db.objectStoreNames.contains('progress')) 
+      {
+        const store = db.createObjectStore('progress', { keyPath: 'id' });
+        console.log('Created object store: progress');
+      }
+    };
+  
+    request.onsuccess = function (event) 
+    {
+      const db = (event.target as IDBOpenDBRequest).result;
+  
+      if(!db.objectStoreNames.contains('progress')) 
+      {
+        console.error("'progress' object store not found, even after upgrade.");
+        return;
+      }
+  
+      const transaction = db.transaction('progress', 'readwrite');
+      const store = transaction.objectStore('progress');
+
+      store.put({ id: conversationId, conversationId, questionId });
+  
+      transaction.oncomplete = () => {
+        console.log('Progress stored successfully.');
+      };
+  
+      transaction.onerror = () => {
+        console.error('Error storing progress:', transaction.error);
+      };
+    };
+  
+    request.onerror = () => {
+      console.error('Error opening ProgressDB:', request.error);
+    };
+  }
+  
+  
+  
+
+
+  //__________load last partially answered question(if reloaded)___________
+  getCurrentQuestionId(conversationId: string): Promise<string | null> 
+  {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open('ProgressDB', 2);
+  
+      request.onsuccess = function(event) 
+      {
+        const db = (event.target as IDBOpenDBRequest).result;
+  
+        if(!db.objectStoreNames.contains('progress')) 
+        {
+          resolve(null);
+          return;
+        }
+  
+        const transaction = db.transaction('progress', 'readonly');
+        const store = transaction.objectStore('progress');
+        const getRequest = store.get(conversationId);
+  
+        getRequest.onsuccess = () => {
+          resolve(getRequest.result?.questionId ?? null);
+        };
+  
+        getRequest.onerror = () => {
+          console.error('Error getting progress:', getRequest.error);
+          reject(getRequest.error);
+        };
+      };
+  
+      request.onerror = () => {
+        console.error('Error opening ProgressDB:', request.error);
+        reject(request.error);
+      };
+    });
+  }
+
+  
+
+  //___________Initially create Indexed db to store current QID___________
+  initializeProgressDB(): void 
+  {
+    const dbVersion = 1;
+    const request = indexedDB.open('ProgressDB', dbVersion);
+  
+    request.onupgradeneeded = (event) => 
+    {
+      const db = (event.target as IDBOpenDBRequest).result;
+  
+      if(!db.objectStoreNames.contains('progress')) 
+      {
+        db.createObjectStore('progress', { keyPath: 'id', autoIncrement: true });
+      }
+    };
+  
+    request.onsuccess = () => {
+      request.result.close();
+    };
+  
+    request.onerror = () => {
+      console.error('Failed to initialize ProgressDB:', request.error);
+    };
+  }
+  
+  initializeAnswerDB(): void 
+  {
+    const dbVersion = 1;
+    const request = indexedDB.open('AnswerDB', dbVersion);
+  
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+  
+      if (!db.objectStoreNames.contains('answers')) {
+        db.createObjectStore('answers', { keyPath: 'currentQID' });
+        console.log('Object store "answers" created.');
+      }
+    };
+  
+    request.onsuccess = () => {
+      request.result.close();
+      console.log('AnswerDB initialized successfully.');
+    };
+  
+    request.onerror = () => {
+      console.error('Failed to initialize AnswerDB:', request.error);
     };
   }
   

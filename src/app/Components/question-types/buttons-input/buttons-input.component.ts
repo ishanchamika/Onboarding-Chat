@@ -17,7 +17,9 @@ export class ButtonsInputComponent extends BaseQuestionComponent implements OnIn
   }
   
   selectOption(option: Option): void {
-    this.submitAnswer(option);
+
+    const answer = { text: option, value: option, type:'button', currentQID: this.question.questionId, nextQuestionId: this.question.nextQuestionId };
+    this.submitAnswer(answer);
   }
 
   onSubmitButtonClicked(): void {

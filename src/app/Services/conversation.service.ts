@@ -261,6 +261,9 @@ export class ConversationService {
     } else if (current.inputType === 'checkbox'){
       answerText = answer.map((opt: Option) => opt.text).join(',');
       nextQuestionId = current.nextQuestionId || null;
+    }else if(current.inputType === 'file' ){
+      answerText = 'helloooo';
+      nextQuestionId = current.nextQuestionId || null;
     }else {
       answerText = answer.text;
       nextQuestionId = answer.nextQuestionId;

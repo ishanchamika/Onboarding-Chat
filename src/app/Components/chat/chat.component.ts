@@ -21,6 +21,9 @@ export class ChatComponent implements OnInit
   currentQuestionComponent: BaseQuestionComponent | null = null; // Declare currentQuestionComponent
   messages: { type: 'bot' | 'user', text: string }[] = [];
   isSubmitButton: any = false;
+  private conversationId: string =
+  '8631d9f7-1d59-45d3-9566-c12263800746'
+      // '8631d9f7-1d59-45d3-9566';
   
   constructor(
     private conversationService: ConversationService,
@@ -31,11 +34,11 @@ export class ChatComponent implements OnInit
   
   async ngOnInit(): Promise<void> {
     this.currentQuestion$ = this.conversationService.currentQuestion$;
-    await this.conversationService.loadConversation(
-      '8631d9f7-1d59-45d3-9566-c12263800746'
-    );
+    await this.conversationService.loadConversation( this.conversationId);
     this.currentQuestion$.subscribe(question => {
       if(!question) return;
+
+      const questionWithConversationId: Question = { ...question, conversationId: this.conversationId }
       
       // Add the bot message with the question
       if (this.messages.length === 0 || 
@@ -51,7 +54,7 @@ export class ChatComponent implements OnInit
     setTimeout(() => {
       if (this.questionContainer) {
         const component = this.questionComponentService.loadQuestionComponent(
-          question, 
+          questionWithConversationId, 
           this.questionContainer
         );
         // Assign the component instance

@@ -180,4 +180,30 @@ export class ChatComponent implements OnInit
       };
     }
     
+    clearIndexedDb()
+    {
+      const reset = window.confirm("This will delete your all local data!");
+      if(!reset)
+      {
+        return;
+      }
+      const dbsToDelete = ['AnswerDB', 'ProgressDB', 'ConversationDB'];
+      dbsToDelete.forEach((dbName) => 
+      {
+        const deleteRequest = indexedDB.deleteDatabase(dbName);
+
+        deleteRequest.onsuccess = () => {
+          console.log(`Deleted database: ${dbName}`);
+        };
+
+        deleteRequest.onerror = (event) => {
+          console.error(`Error deleting database ${dbName}:`, event);
+        };
+
+        deleteRequest.onblocked = () => {
+          console.warn(`Deletion of database "${dbName}" is blocked. Please close all tabs using it.`);
+        };
+      });
+      location.reload();
+    }
 }

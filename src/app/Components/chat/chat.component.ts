@@ -21,6 +21,9 @@ export class ChatComponent implements OnInit
   currentQuestionComponent: BaseQuestionComponent | null = null; // Declare currentQuestionComponent
   messages: { type: 'bot' | 'user', text: string }[] = [];
   isSubmitButton: any = false;
+  private conversationId: string =
+  '8631d9f7-1d59-45d3-9566-c12263800746'
+      // '8631d9f7-1d59-45d3-9566';
   
   constructor(
     private conversationService: ConversationService,
@@ -35,13 +38,11 @@ export class ChatComponent implements OnInit
     this.conversationService.initializeProgressDB();
     this.loadAnswersFromIndexedDB();
     this.currentQuestion$ = this.conversationService.currentQuestion$;
-    await this.conversationService.loadConversation('8631d9f7-1d59-45d3-9566');
-    this.currentQuestion$.subscribe(question => 
-    {
-      if(!question)
-      {
-        return
-      };
+    await this.conversationService.loadConversation( this.conversationId);
+    this.currentQuestion$.subscribe(question => {
+      if(!question) return;
+
+      const questionWithConversationId: Question = { ...question, conversationId: this.conversationId }
       
       // Add the bot message with the question
       if(this.messages.length === 0 || this.messages[this.messages.length - 1].text !== question.questionText) 

@@ -24,6 +24,7 @@ import { SubmitButtonComponent } from './Components/question-types/submit-button
 import { SecondaryComponentInputComponent } from './Components/question-types/secondaryComponent-input/secondaryComponent-input.component';
 import { HttpClientModule } from '@angular/common/http';
 import { CheckboxInputComponent } from './Components/question-types/checkbox-input/checkbox-input.component';
+import { FileInputComponent } from './Components/question-types/file-input/file-input.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { CheckboxInputComponent } from './Components/question-types/checkbox-inp
     SubmitButtonComponent,
     SecondaryComponentInputComponent,
     CheckboxInputComponent,
+    FileInputComponent,
     
   ],
   imports: [

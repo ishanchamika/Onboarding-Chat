@@ -122,6 +122,9 @@ export class ConversationService {
     else if (answer.type=='checkbox') {
       answerText = answer.text;
       nextQuestionId = answer.value[0].nextQuestionId || null;
+    }else if(current.inputType === 'file' ){
+      answerText = 'helloooo';
+      nextQuestionId = current.nextQuestionId || null;
     }
     else {
       answerText = answer.text;

@@ -1,0 +1,20 @@
+<!-- <input type="file" (change)="onFileSelected($event)" accept="image/png,image/jpeg,application/pdf" />
+    <div *ngIf="selectedFile">{{ selectedFile.name }}</div>
+    <div *ngIf="uploadError" class="error">{{ uploadError }}</div> -->
+
+  <div
+  class="dropzone"
+  (dragover)="onDragOver($event)"
+  (drop)="onFileDropped($event)"
+  (dragleave)="onDragLeave($event)"
+  [class.dropzone-hover]="isDropZoneHovered">
+
+  <p *ngIf="!selectedFile">Drag and drop a file here or click to select</p>
+  <p *ngIf="selectedFile">{{ selectedFile.name }}</p>
+  <input type="file" hidden #fileInput (change)="onFileSelected($event)" accept="image/png,image/jpeg,application/pdf" />
+  
+  <button mat-raised-button color="primary" (click)="fileInput.click()">Browse File</button>
+</div>
+
+<div *ngIf="uploadError" class="error">{{ uploadError }}</div>
+  

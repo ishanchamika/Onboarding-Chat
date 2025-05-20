@@ -127,8 +127,6 @@ export class ConversationService {
       nextQuestionId = current.nextQuestionId || null;
     }
     else {
-    }
-    else {
       answerText = answer.text;
       nextQuestionId = answer.nextQuestionId;
     }

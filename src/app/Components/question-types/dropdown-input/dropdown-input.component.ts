@@ -10,7 +10,8 @@ import { Option } from '../../../Models/conversation.model';
 })
 export class DropdownInputComponent extends BaseQuestionComponent implements OnInit {
   selectedOption: Option | null = null;
-  
+  misvalidatedmsg: string = '';
+
   ngOnInit(): void {
     if (!this.question.options || this.question.options.length === 0) {
       console.error('Dropdown input requires options but none were provided');
@@ -42,5 +43,10 @@ export class DropdownInputComponent extends BaseQuestionComponent implements OnI
     } 
     return false;
     // return !!this.selectedOption;
+  }
+  
+  getValidationMsg(): string
+  {
+    return this.misvalidatedmsg;
   }
 }

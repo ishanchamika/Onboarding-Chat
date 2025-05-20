@@ -14,6 +14,7 @@ export class FileInputComponent extends BaseQuestionComponent implements OnInit{
   uploadError: string | null = null;
   isUploading =false;
   isDropZoneHovered = false;
+  misvalidatedmsg: string = '';
 
   constructor(
     private http: HttpClient,
@@ -120,4 +121,8 @@ onFileDropped(event: DragEvent): void {
       return true;
   }
 
+  getValidationMsg(): string
+  {
+    return this.misvalidatedmsg;
+  }
 }

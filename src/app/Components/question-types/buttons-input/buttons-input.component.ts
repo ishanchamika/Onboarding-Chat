@@ -9,7 +9,7 @@ import { Option } from '../../../Models/conversation.model';
   styleUrls: ['./buttons-input.component.css']
 })
 export class ButtonsInputComponent extends BaseQuestionComponent implements OnInit {
-  
+  misvalidatedmsg: string = '';
   ngOnInit(): void {
     if (!this.question.options || this.question.options.length === 0) {
       console.error('Buttons input requires options but none were provided');
@@ -28,5 +28,10 @@ export class ButtonsInputComponent extends BaseQuestionComponent implements OnIn
 
   canSubmit(): boolean {
     return false; 
+  }
+
+  getValidationMsg(): string
+  {
+    return this.misvalidatedmsg;
   }
 }

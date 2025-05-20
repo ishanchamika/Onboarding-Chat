@@ -22,8 +22,8 @@ export class ChatComponent implements OnInit
   messages: { type: 'bot' | 'user', text: string }[] = [];
   isSubmitButton: any = false;
   private conversationId: string =
-  '8631d9f7-1d59-45d3-9566-c12263800746'
-      // '8631d9f7-1d59-45d3-9566';
+  // '8631d9f7-1d59-45d3-9566-c12263800746'
+      '8631d9f7-1d59-45d3-9566';
   
   constructor(
     private conversationService: ConversationService,

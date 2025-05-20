@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { BaseQuestionComponent } from '../base-question.component';
 import { Option } from '../../../Models/conversation.model';
+import { NgModel } from '@angular/forms';
 
 @Component({
   selector: 'app-checkbox-input',
@@ -15,7 +16,8 @@ export class CheckboxInputComponent extends BaseQuestionComponent implements OnI
   dbMax!: number;
   dbMin!: number;
   selectedCount!: number;
-  
+  misvalidatedmsg: string = '';
+
   ngOnInit(): void {
     if(!this.question.options || this.question.options.length === 0) {
       console.error('Checkbox input requires options');
@@ -48,15 +50,27 @@ canSubmit(): boolean {
 
   if(selectedCount >= this.dbMin && selectedCount <= this.dbMax)
   {
-    console.log('aaa', selectedCount);
-    console.log('Min', this.dbMin);
-    console.log('Max', this.dbMax);
     return true;
+  }
+
+  if(selectedCount <= this.dbMin && selectedCount > this.dbMax)
+  {
+    this.misvalidatedmsg = `Minimum ${this.dbMin} and Maximum ${this.dbMax} should be checked`;
+  }
+  else if(selectedCount < this.dbMin)
+  {
+    this.misvalidatedmsg = `Minimum ${this.dbMin} should be checked`;
+  }
+  else if(selectedCount > this.dbMax)
+  {
+    this.misvalidatedmsg = `Maximum ${this.dbMin} should be checked`;
   }
   return false;
 }
 
-
+  getValidationMsg(): string
+  {
+    return this.misvalidatedmsg;
+  }
   
-
 }

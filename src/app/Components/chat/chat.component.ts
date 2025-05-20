@@ -58,13 +58,13 @@ export class ChatComponent implements OnInit
       {
         if(this.questionContainer) 
         {
-          const component = this.questionComponentService.loadQuestionComponent(question, this.questionContainer);
+          const component = this.questionComponentService.loadQuestionComponent(questionWithConversationId, this.questionContainer);
           // Assign the component instance
           this.currentQuestionComponent = component;
           // Subscribe to answer events
           component.answerSubmitted.subscribe(answer => 
           {
-            this.handleAnswer(answer, question);
+            this.handleAnswer(answer, questionWithConversationId);
             // console.log('anssswer', answer);
           });
         }

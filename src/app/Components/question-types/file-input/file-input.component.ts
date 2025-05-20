@@ -87,7 +87,7 @@ onFileDropped(event: DragEvent): void {
       (response) => {
         this.isUploading =false;
         const fileName = this.selectedFile!.name;
-        const answer = {type: 'file', text: `File uploaded: ${fileName}`, value: response.fileId, 
+        const answer = {type: 'file', text: `File uploaded: ${fileName}`, value: fileName, 
                         currentQID: this.question.questionId, nextQuestionId: this.question.nextQuestionId};
         this.submitAnswer(answer);
         this.selectedFile = null;

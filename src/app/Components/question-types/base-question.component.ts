@@ -24,4 +24,5 @@ export abstract class BaseQuestionComponent {
   }
   abstract onSubmitButtonClicked(): void;
   abstract canSubmit(): boolean;
+  abstract getValidationMsg(): string;
 }

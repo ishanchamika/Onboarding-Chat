@@ -22,7 +22,7 @@ export interface ValidationRule {
     },
     salary: {
         pattern: /^[0-9]{1,10}$/,
-        message: 'Please enter valid Mount'
+        message: 'Please enter valid amount'
     }
   };
   

@@ -60,7 +60,7 @@ export class ConversationService {
       }
       else
       {
-        this.conversation = await this.http.get<any>('https://localhost:44383/api/Conversation/' + conversationId).toPromise() ?? null;
+        this.conversation = await this.http.get<any>('http://localhost:5149/api/Conversation/' + conversationId).toPromise() ?? null;
         if(this.conversation) 
         {
           this.storeConversationInIndexedDB(this.conversation);
@@ -123,8 +123,10 @@ export class ConversationService {
       answerText = answer.text;
       nextQuestionId = answer.value[0].nextQuestionId || null;
     }else if(current.inputType === 'file' ){
-      answerText = 'helloooo';
+      answerText = answer.text;
       nextQuestionId = current.nextQuestionId || null;
+    }
+    else {
     }
     else {
       answerText = answer.text;

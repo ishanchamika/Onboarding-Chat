@@ -22,8 +22,8 @@ export class ChatComponent implements OnInit
   messages: { type: 'bot' | 'user', text: string }[] = [];
   isSubmitButton: any = false;
   private conversationId: string =
-  '8631d9f7-1d59-45d3-9566-c12263800746'
-      // '8631d9f7-1d59-45d3-9566';
+  // '8631d9f7-1d59-45d3-9566-c12263800746'
+      '8631d9f7-1d59-45d3-9566';
   
   constructor(
     private conversationService: ConversationService,
@@ -64,7 +64,7 @@ export class ChatComponent implements OnInit
         this.currentQuestionComponent = component;
         // Subscribe to answer events
         component.answerSubmitted.subscribe(answer => {
-          this.handleAnswer(answer);
+          this.handleAnswer(answer, question);
         });
       }
     });
@@ -93,6 +93,12 @@ export class ChatComponent implements OnInit
       answerText = answer.text;
     }
     else if(answer.type == 'checkbox'){
+      answerText = answer.text;
+    }
+    else if(answer.type == 'checkbox'){
+      answerText = answer.text;
+    }
+    else if(answer.type === 'file' ){
       answerText = answer.text;
     }
     else {

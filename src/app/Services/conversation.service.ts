@@ -85,80 +85,144 @@ export class ConversationService {
     }
   }
 
-  handleAnswer(answer: any, question:any): void 
-  {
+  handleAnswer(answer: any, question: any): void {
     this.storeAnswers(answer, question);
     const current = this.currentQuestion;
-    if(!current || !this.conversation) 
-    {
+    if (!current || !this.conversation) {
       console.error('Conversation or current question not loaded');
       return;
     }
     let answerText: string;
     let nextQuestionId: string | null = null;
 
-    // answerText = answer.toLocaleDateString();
-    // Handle different answer types
-    if(answer.type == 'dropdown') {
-      answerText = answer.text.text.toString()  ;
-      nextQuestionId = answer.text.nextQuestionId || null;
-    } 
-    else if(answer.type == 'calender') {
-      answerText = answer.text.toLocaleDateString();
+    if (answer.type === 'file') {
+      answerText = answer.text;
       nextQuestionId = answer.nextQuestionId || null;
-    }
-    else if (answer.type == 'input') {
-      answerText = answer.text.toString();
-      nextQuestionId = answer.nextQuestionId || null;
-    } 
-    else if (answer.type=='button') {
-      answerText = answer.text.text;
-      nextQuestionId = answer.text.nextQuestionId || null;
-    } 
-    else if (answer.type=='radio') {
-      answerText = answer.text.text;
-      nextQuestionId = answer.text.nextQuestionId || null;
-    } 
-    else if (answer.type=='checkbox') {
-      answerText = answer.text;
-      nextQuestionId = answer.value[0].nextQuestionId || null;
-    }else if(current.inputType === 'file' ){
-      answerText = answer.text;
-      nextQuestionId = current.nextQuestionId || null;
-    }
-    else {
-      answerText = answer.text;
-      nextQuestionId = answer.nextQuestionId;
+      const historyItems = this.historySubject.getValue();
+      historyItems.push({
+        question: current.questionText || '',
+        answer: answerText,
+      });
+      console.log("history", historyItems)
+      this.historySubject.next(historyItems);
+    } else {
+      // Existing logic for other answer types
+      if (answer.type === 'dropdown') {
+        answerText = answer.text.text.toString();
+        nextQuestionId = answer.text.nextQuestionId || null;
+      } else if (answer.type === 'calendar') {
+        answerText = answer.text.toLocaleDateString();
+        nextQuestionId = answer.nextQuestionId || null;
+      } else if (answer.type === 'input') {
+        answerText = answer.text.toString();
+        nextQuestionId = answer.nextQuestionId || null;
+      } else if (answer.type === 'button') {
+        answerText = answer.text.text;
+        nextQuestionId = answer.text.nextQuestionId || null;
+      } else if (answer.type === 'radio') {
+        answerText = answer.text.text;
+        nextQuestionId = answer.text.nextQuestionId || null;
+      } else if (answer.type === 'checkbox') {
+        answerText = answer.text;
+        nextQuestionId = answer.value[0].nextQuestionId || null;
+      } else {
+        answerText = answer.text;
+        nextQuestionId = answer.nextQuestionId;
+      }
+
+      const historyItems = this.historySubject.getValue();
+      historyItems.push({ question: current.questionText || '', answer: answerText });
+      this.historySubject.next(historyItems);
     }
 
-    // Add to history
-    const historyItems = this.historySubject.getValue();
-    historyItems.push({ question: current.questionText || '', answer: answerText });
-    this.historySubject.next(historyItems);
-
-    // Set next question if available
-    if(nextQuestionId && this.conversation?.conversationId) 
-    {
+    if (nextQuestionId && this.conversation?.conversationId) {
       this.loadQuestionFromIndexedDB(this.conversation.conversationId, nextQuestionId);
-    } 
-    else 
-    {
-      // End of conversation path
+    } else {
       const endQuestion: Question = {
         questionId: 'final',
         questionText: 'Conversation ended. Thank you!',
         inputType: 'buttons',
-        options: [
-          {
-            text: 'Start Over',
-            nextQuestionId: this.conversation.currentQuestionId,
-          },
-        ],
+        options: [{ text: 'Start Over', nextQuestionId: this.conversation.currentQuestionId }],
         requiresSubmitButton: false
       };
       this.currentQuestionSubject.next(endQuestion);
     }
   }
+
+  // handleAnswer(answer: any, question:any): void 
+  // {
+  //   this.storeAnswers(answer, question);
+  //   const current = this.currentQuestion;
+  //   if(!current || !this.conversation) 
+  //   {
+  //     console.error('Conversation or current question not loaded');
+  //     return;
+  //   }
+  //   let answerText: string;
+  //   let nextQuestionId: string | null = null;
+
+  //   // answerText = answer.toLocaleDateString();
+  //   // Handle different answer types
+  //   if(answer.type == 'dropdown') {
+  //     answerText = answer.text.text.toString()  ;
+  //     nextQuestionId = answer.text.nextQuestionId || null;
+  //   } 
+  //   else if(answer.type == 'calender') {
+  //     answerText = answer.text.toLocaleDateString();
+  //     nextQuestionId = answer.nextQuestionId || null;
+  //   }
+  //   else if (answer.type == 'input') {
+  //     answerText = answer.text.toString();
+  //     nextQuestionId = answer.nextQuestionId || null;
+  //   } 
+  //   else if (answer.type=='button') {
+  //     answerText = answer.text.text;
+  //     nextQuestionId = answer.text.nextQuestionId || null;
+  //   } 
+  //   else if (answer.type=='radio') {
+  //     answerText = answer.text.text;
+  //     nextQuestionId = answer.text.nextQuestionId || null;
+  //   } 
+  //   else if (answer.type=='checkbox') {
+  //     answerText = answer.text;
+  //     nextQuestionId = answer.value[0].nextQuestionId || null;
+  //   }else if(current.inputType === 'file' ){
+  //     answerText = answer.text;
+  //     nextQuestionId = current.nextQuestionId || null;
+  //   }
+  //   else {
+  //     answerText = answer.text;
+  //     nextQuestionId = answer.nextQuestionId;
+  //   }
+
+  //   // Add to history
+  //   const historyItems = this.historySubject.getValue();
+  //   historyItems.push({ question: current.questionText || '', answer: answerText });
+  //   this.historySubject.next(historyItems);
+
+  //   // Set next question if available
+  //   if(nextQuestionId && this.conversation?.conversationId) 
+  //   {
+  //     this.loadQuestionFromIndexedDB(this.conversation.conversationId, nextQuestionId);
+  //   } 
+  //   else 
+  //   {
+  //     // End of conversation path
+  //     const endQuestion: Question = {
+  //       questionId: 'final',
+  //       questionText: 'Conversation ended. Thank you!',
+  //       inputType: 'buttons',
+  //       options: [
+  //         {
+  //           text: 'Start Over',
+  //           nextQuestionId: this.conversation.currentQuestionId,
+  //         },
+  //       ],
+  //       requiresSubmitButton: false
+  //     };
+  //     this.currentQuestionSubject.next(endQuestion);
+  //   }
+  // }
 
   resetConversation(): void {
     if(!this.conversation) 
@@ -261,13 +325,23 @@ export class ConversationService {
       
       getAllRequest.onsuccess = () => {
         const storedAnswers = getAllRequest.result;
+        let fileData: { fileName: string; fileType: string; dataUrl: string } | undefined;
         const history: { question: string; answer: string }[] = storedAnswers.map((item: any) => 
         {
           let formattedAnswer: string;
         
           if(!item.value){
             formattedAnswer = '';
-          } 
+          }
+          else if(typeof item.value === 'object' && 'fileName' in item.value){
+              formattedAnswer = `File uploaded: ${item.value.fileName}`;
+              // fileData = {
+              // fileName: item.value.fileName,
+              // fileType: item.value.fileType,
+              // dataUrl: item.value.dataUrl
+              // }
+              console.log('qqwwee',formattedAnswer)
+            } 
           else if( typeof item.value === 'object' && 'text' in item.value){
             formattedAnswer = item.value.text;
           } 
@@ -280,6 +354,7 @@ export class ConversationService {
           else if (typeof item.value === 'object' && !(item.value instanceof Date)){
             formattedAnswer = Object.entries(item.value).map(([key, val]) => `${key.split('-').pop()}: ${val}`).join(', ');
           } 
+          
           else {
             formattedAnswer = String(item.value);
           }

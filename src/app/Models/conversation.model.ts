@@ -37,12 +37,23 @@ export interface Conversation {
   questions: { [key: string]: Question };
 }
 
+// export interface HistoryItem {
+//   question: string;
+//   answer: string;
+// }
+
+// export interface Answer {
+//   type: QuestionType;
+//   value: string | number | Option;
+// }
+
 export interface HistoryItem {
   question: string;
   answer: string;
+  fileData?: { fileName: string; fileType: string; dataUrl: string }; // Add fileData
 }
 
 export interface Answer {
   type: QuestionType;
-  value: string | number | Option;
+  value: string | number | Option | { fileName: string; fileType: string; dataUrl: string }; // Update to include file data
 }

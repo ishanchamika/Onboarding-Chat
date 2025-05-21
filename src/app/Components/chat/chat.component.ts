@@ -5,6 +5,7 @@ import { ConversationService } from '../../Services/conversation.service';
 import { QuestionComponentService } from '../../Services/question-component.service';
 import { BaseQuestionComponent } from '../question-types/base-question.component';
 
+
 @Component({
   selector: 'app-chat',
   standalone: false,
@@ -19,7 +20,7 @@ export class ChatComponent implements OnInit
   currentQuestion$: Observable<Question|null>;
   currentQuestion: Question | null = null; // Declare currentQuestion
   currentQuestionComponent: BaseQuestionComponent | null = null; // Declare currentQuestionComponent
-  messages: { type: 'bot' | 'user', text: string }[] = [];
+  messages: { type: 'bot' | 'user'; text: string; fileData?: {fileName: string; fileType: string; dataUrl: string} }[] = [];
   isSubmitButton: any = false;
   private conversationId: string =
   // '8631d9f7-1d59-45d3-9566-c12263800746'
@@ -71,50 +72,88 @@ export class ChatComponent implements OnInit
       });
     });
   }
-  
-  handleAnswer(answer: any, question:any): void {
+
+  handleAnswer(answer: any, question: any): void {
     let answerText: string;
 
-    if(answer.type == 'dropdown') {
-      answerText = answer.text.text.toString()  ;
-    } 
-    else if(answer.type == 'calender') {
-      answerText = answer.text.toLocaleDateString();
-    }
-    else if (answer.type == 'input') {
-      answerText = answer.text.toString();
-    } 
-    else if (answer.type=='button') {
-      answerText = answer.text.text;
-    } 
-    else if (answer.type=='radio') {
-      answerText = answer.text.text;
-    } 
-    else if(answer.type == 'secondary'){
+    if (answer.type === 'file') {
       answerText = answer.text;
+      console.log('asdasd',answer)
+      this.messages.push({
+        type: 'user',
+        text: answerText,
+        fileData: { fileName: answer.value.fileName, fileType: answer.value.fileType, dataUrl: answer.value.dataUrl }
+      });
+    } else {
+      if (answer.type === 'dropdown') {
+        answerText = answer.text.text.toString();
+      } else if (answer.type === 'calendar') {
+        answerText = answer.text.toLocaleDateString();
+      } else if (answer.type === 'input') {
+        answerText = answer.text.toString();
+      } else if (answer.type === 'button') {
+        answerText = answer.text.text;
+      } else if (answer.type === 'radio') {
+        answerText = answer.text.text;
+      } else if (answer.type === 'checkbox') {
+        answerText = answer.text;
+      } else {
+        answerText = answer.text;
+      }
+      this.messages.push({
+        type: 'user',
+        text: answerText
+      });
     }
-    else if(answer.type == 'checkbox'){
-      answerText = answer.text;
-    }
-    else if(answer.type == 'checkbox'){
-      answerText = answer.text;
-    }
-    else if(answer.type === 'file' ){
-      answerText = answer.text;
-    }
-    else {
-      answerText = 'Unknown answer';
-    }
-    
-    // Add user message
-    this.messages.push({
-      type: 'user',
-      text: answerText
-    });
-    
-    // Process the selection in conversation service
+
     this.conversationService.handleAnswer(answer, question);
   }
+
+  
+  
+  // handleAnswer(answer: any, question:any): void {
+  //   let answerText: string;
+
+  //   if(answer.type == 'dropdown') {
+  //     answerText = answer.text.text.toString()  ;
+  //   } 
+  //   else if(answer.type == 'calender') {
+  //     answerText = answer.text.toLocaleDateString();
+  //   }
+  //   else if (answer.type == 'input') {
+  //     answerText = answer.text.toString();
+  //   } 
+  //   else if (answer.type=='button') {
+  //     answerText = answer.text.text;
+  //   } 
+  //   else if (answer.type=='radio') {
+  //     answerText = answer.text.text;
+  //   } 
+  //   else if(answer.type == 'secondary'){
+  //     answerText = answer.text;
+  //   }
+  //   else if(answer.type == 'checkbox'){
+  //     answerText = answer.text;
+  //   }
+  //   else if(answer.type == 'checkbox'){
+  //     answerText = answer.text;
+  //   }
+  //   else if(answer.type === 'file' ){
+  //     answerText = answer.text;
+  //   }
+  //   else {
+  //     answerText = 'Unknown answer';
+  //   }
+    
+  //   // Add user message
+  //   this.messages.push({
+  //     type: 'user',
+  //     text: answerText
+  //   });
+    
+  //   // Process the selection in conversation service
+  //   this.conversationService.handleAnswer(answer, question);
+  // }
 
   submitCurrentAnswer(): void {
     if (this.currentQuestionComponent) {
@@ -141,13 +180,26 @@ export class ChatComponent implements OnInit
     
         getAllRequest.onsuccess = () => {
           const storedAnswers = getAllRequest.result;
+          
     
           storedAnswers.forEach((item: any) => {
             let formattedAnswer = '';
+            let fileData: { fileName: string; fileType: string; dataUrl: string } | undefined;
     
             if (!item.value) {
               formattedAnswer = '';
-            } 
+            }
+            else if(typeof item.value === 'object' && 'fileName' in item.value){
+              
+              fileData = {
+              fileName: item.value.fileName,
+              fileType: item.value.fileType,
+              dataUrl: item.value.dataUrl
+              
+              }
+              
+              formattedAnswer = `File uploaded: ${item.value.fileName}`;
+            }  
             else if (typeof item.value === 'object' && 'text' in item.value) {
               formattedAnswer = item.value.text;
             } 
@@ -164,15 +216,16 @@ export class ChatComponent implements OnInit
               formattedAnswer = Object.entries(item.value)
                 .map(([key, val]) => `${key.split('-').pop()}: ${val}`)
                 .join(', ');
-            } 
+            }
+            
             else {
-              formattedAnswer = String(item.value);
+              formattedAnswer = item.value;
             }
     
             // Push to chat-style messages array
             this.messages.push(
               { type: 'bot', text: item.Question },
-              { type: 'user', text: formattedAnswer }
+              { type: 'user', text: formattedAnswer, fileData }
             );
           });
         };

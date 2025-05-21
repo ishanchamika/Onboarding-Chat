@@ -1,23 +1,60 @@
+<link
+  href="https://fonts.googleapis.com/icon?family=Material+Icons"
+  rel="stylesheet"
+/>
+
 <div class="chat-container">
-  <div class="chat-header">
-    Interactive Conversation
-  </div>
-  
+  <div class="chat-header">Interactive Conversation</div>
+
   <div class="chat-messages">
-    <div class="message" 
-         *ngFor="let message of messages; trackBy: trackByFn" 
-         [ngClass]="message.type === 'bot' ? 'bot-message' : 'user-message'">
-      {{ message.text }}
+    <div
+      class="message"
+      *ngFor="let message of messages; trackBy: trackByFn"
+      [ngClass]="message.type === 'bot' ? 'bot-message' : 'user-message'"
+    >
+      <ng-container *ngIf="message.fileData; else textMessage">
+        <span>{{ message.text }}</span>
+        <div
+          *ngIf="
+            message.fileData.fileType === 'image/png' ||
+            message.fileData.fileType === 'image/jpeg'
+          "
+        >
+          <img
+            [src]="message.fileData.dataUrl"
+            alt="{{ message.fileData.fileName }}"
+            class="thumbnail"
+          />
+        </div>
+        <div
+          *ngIf="message.fileData.fileType === 'application/pdf'"
+          class="pdf-wrapper"
+        >
+          <a [href]="message.fileData.dataUrl" target="_blank" class="pdf-link">
+            <mat-icon
+              class="pdf-thumbnail"
+              style="vertical-align: middle; color: rgb(145, 1, 1)"
+              >picture_as_pdf</mat-icon
+            >
+            <span style="margin-left: 8px">{{
+              message.fileData.fileName
+            }}</span>
+          </a>
+        </div>
+      </ng-container>
+      <ng-template #textMessage>
+        {{ message.text }}
+      </ng-template>
     </div>
   </div>
-  
+
   <ng-template #questionContainer></ng-template>
-  
+
   <div class="chat-input" *ngIf="isSubmitButton">
-    <button 
-      (click)="submitCurrentAnswer()" 
-      [disabled]="!currentQuestionComponent?.canSubmit()">
-      <!-- {{!currentQuestionComponent?.canSubmit()}} -->
+    <button
+      (click)="submitCurrentAnswer()"
+      [disabled]="!currentQuestionComponent?.canSubmit()"
+    >
       Send
     </button>
   </div>

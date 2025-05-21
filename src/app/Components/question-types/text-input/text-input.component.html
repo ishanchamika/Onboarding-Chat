@@ -2,6 +2,10 @@
   <input 
     type="text" 
     [(ngModel)]="value" 
+    #inputRef="ngModel"
     [placeholder]="question.placeholder || 'Enter your answer...'" 
     class="text-input">
+</div>
+<div class="error-message" *ngIf="!isValid && inputRef.touched">
+  {{ misvalidatedmsg }}
 </div>

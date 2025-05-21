@@ -10,7 +10,8 @@ import { Option } from '../../../Models/conversation.model';
 })
 export class RadioInputComponent extends BaseQuestionComponent implements OnInit {
   selectedOption: Option | null = null;
-  
+  misvalidatedmsg: string = '';
+
   ngOnInit(): void {
     if (!this.question.options || this.question.options.length === 0) {
       console.error('Radio input requires options but none were provided');
@@ -30,6 +31,15 @@ export class RadioInputComponent extends BaseQuestionComponent implements OnInit
   }
 
   canSubmit(): boolean {
+    if(!this.selectOption)
+    {
+      this.misvalidatedmsg = 'Selection is required';
+    }
     return !!this.selectedOption;
+  }
+  
+  getValidationMsg(): string
+  {
+    return this.misvalidatedmsg;
   }
 }

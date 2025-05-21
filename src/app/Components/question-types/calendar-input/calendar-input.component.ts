@@ -11,6 +11,8 @@ export class CalendarInputComponent extends BaseQuestionComponent implements OnI
   selectedDate: Date | null = null;
   minDate!: Date | null;
   maxDate!: Date | null;
+  misvalidatedmsg: string = '';
+  touched: boolean = false;
 
   ngOnInit(): void 
   {
@@ -36,6 +38,7 @@ export class CalendarInputComponent extends BaseQuestionComponent implements OnI
 
   onDateSelected(date: Date): void 
   {
+    this.touched = true;
     this.selectedDate = date;
   }
   
@@ -43,14 +46,28 @@ export class CalendarInputComponent extends BaseQuestionComponent implements OnI
   {
     if(!this.selectedDate)
     { 
+      this.misvalidatedmsg = 'Date is required';
       return false;
     } 
     const selected = this.toDateOnly(this.selectedDate);
     const min = this.minDate ? this.toDateOnly(this.minDate) : null;
     const max = this.maxDate ? this.toDateOnly(this.maxDate) : null;
 
-    const afterMin = !min || selected.getTime() >= min.getTime();
+
+    const minFormatted = min ? this.formatDateToYMD(min) : '';
+    const maxFormatted = max ? this.formatDateToYMD(max) : '';
+
+    const afterMin = !min || selected.getTime() >= min.getTime();  //If min is null, set true
     const beforeMax = !max || selected.getTime() <= max.getTime();
+  
+    if(!afterMin)
+    {
+      this.misvalidatedmsg = `Minimum Date should be ${minFormatted}`;
+    }
+    if(!beforeMax)
+    {
+      this.misvalidatedmsg = `Maximum Date should be ${maxFormatted}`;
+    }
 
     return afterMin && beforeMax;
   }
@@ -59,6 +76,14 @@ export class CalendarInputComponent extends BaseQuestionComponent implements OnI
   toDateOnly(date: Date): Date 
   {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
+
+  formatDateToYMD(date: Date): string 
+  {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}/${month}/${day}`;
   }
 
   
@@ -72,4 +97,12 @@ export class CalendarInputComponent extends BaseQuestionComponent implements OnI
     }
   }
 
+  getValidationMsg(): string
+  {
+    return this.misvalidatedmsg;
+  }
+
+  onTouched(): void {
+    this.touched = true;
+  }
 }

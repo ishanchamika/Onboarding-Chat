@@ -20,6 +20,7 @@ export class SecondaryComponentInputComponent extends BaseQuestionComponent impl
   >;
   layoutColumns: number = 1;
   subQuestionRows: Question[][] = [];
+  misvalidatedmsg: string = '';
 
   ngOnInit(): void {
     if (this.question && this.question.subQuestion) {
@@ -175,4 +176,8 @@ export class SecondaryComponentInputComponent extends BaseQuestionComponent impl
 
   }
 
+  getValidationMsg(): string
+  {
+    return this.misvalidatedmsg;
+  }
 }

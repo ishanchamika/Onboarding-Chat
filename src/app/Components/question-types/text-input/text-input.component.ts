@@ -1,6 +1,7 @@
-import {  Component, Input, OnInit } from '@angular/core';
+import {  Component, Input, OnInit, ViewChild } from '@angular/core';
 import { BaseQuestionComponent } from '../base-question.component';
 import { ValidationRules, ValidationRule } from '../../validation-rules/validation-rules';
+import { NgModel } from '@angular/forms';
 
 @Component({
   standalone: false,
@@ -10,13 +11,15 @@ import { ValidationRules, ValidationRule } from '../../validation-rules/validati
 })
 export class TextInputComponent extends BaseQuestionComponent
 {
+  @ViewChild('inputRef', { static: false }) inputRef!: NgModel;
   value: string = '';
   validationRule?: ValidationRule;
   validRule: Boolean = true;
+  misvalidatedmsg: string = '';
 
   ngOnInit(): void {
     // Suppose your question object has a field like: { validationKey: 'identityNumber' }
-    const key = this.question?.validationKey;
+    const key = this.question?.validation?.pattern;
     if (key && ValidationRules[key]) {
       this.validationRule = ValidationRules[key];
     }
@@ -36,6 +39,7 @@ export class TextInputComponent extends BaseQuestionComponent
   {
     if(!this.value.trim())
     {
+      this.misvalidatedmsg = 'This is required';
       return false;
     } 
     if(this.validationRule) 
@@ -43,10 +47,11 @@ export class TextInputComponent extends BaseQuestionComponent
       this.validRule = this.validationRule.pattern.test(this.value);
       if(!this.validRule)
       {
+        this.misvalidatedmsg = this.validationRule.message;
         return false;
       }
     }
-    if(this.question.validation !== null && this.question.validation?.required === true)
+    if(this.question.validation !== null && this.question.validation?.required === true && (this.question.validation?.max || this.question.validation?.min))
     {
       const getValue = Number(this.value);
       const max = Number(this.question.validation.max) || Infinity;
@@ -57,6 +62,7 @@ export class TextInputComponent extends BaseQuestionComponent
       }
       else
       {
+        this.misvalidatedmsg = `Input range should between ${this.question.validation.max} and ${this.question.validation.min} `;
         return false;
       }
     }
@@ -71,5 +77,11 @@ export class TextInputComponent extends BaseQuestionComponent
     }
     return false;
     // return this.question.validation?.required ? !!this.value.trim() : true;  
+  }
+
+  getValidationMsg(): string
+  {
+    console.log('this_misvalidatedmsg', this.misvalidatedmsg);
+    return this.misvalidatedmsg;
   }
 }

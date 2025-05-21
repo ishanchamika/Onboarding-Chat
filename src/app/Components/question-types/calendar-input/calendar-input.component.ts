@@ -12,6 +12,8 @@ export class CalendarInputComponent extends BaseQuestionComponent implements OnI
   minDate!: Date | null;
   maxDate!: Date | null;
   misvalidatedmsg: string = '';
+  touched: boolean = false;
+
   ngOnInit(): void 
   {
     if(this.question?.minDate) 
@@ -36,6 +38,7 @@ export class CalendarInputComponent extends BaseQuestionComponent implements OnI
 
   onDateSelected(date: Date): void 
   {
+    this.touched = true;
     this.selectedDate = date;
   }
   
@@ -97,5 +100,9 @@ export class CalendarInputComponent extends BaseQuestionComponent implements OnI
   getValidationMsg(): string
   {
     return this.misvalidatedmsg;
+  }
+
+  onTouched(): void {
+    this.touched = true;
   }
 }

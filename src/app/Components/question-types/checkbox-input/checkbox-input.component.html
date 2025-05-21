@@ -8,7 +8,7 @@
         {{ option.text }}
       </label>
     </div>
-    <div class="error-message" *ngIf="!this.canSubmit()">
+    <div class="error-message" *ngIf="touched && !this.canSubmit()">
      {{ misvalidatedmsg }}
     </div> 
   </div>

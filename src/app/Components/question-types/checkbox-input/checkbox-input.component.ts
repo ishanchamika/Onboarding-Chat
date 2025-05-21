@@ -17,6 +17,7 @@ export class CheckboxInputComponent extends BaseQuestionComponent implements OnI
   dbMin!: number;
   selectedCount!: number;
   misvalidatedmsg: string = '';
+  touched: boolean = false;
 
   ngOnInit(): void {
     if(!this.question.options || this.question.options.length === 0) {
@@ -25,6 +26,7 @@ export class CheckboxInputComponent extends BaseQuestionComponent implements OnI
   }
 
   toggleOption(option: Option): void {
+    this.touched = true;
     const index = this.selectedOptions.indexOf(option);
     if(index > -1){
       this.selectedOptions.splice(index, 1);

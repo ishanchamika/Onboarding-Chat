@@ -8,7 +8,7 @@ import { ButtonsInputComponent } from '../buttons-input/buttons-input.component'
 import { CalendarInputComponent } from '../calendar-input/calendar-input.component';
 
 @Component({
-  selector: 'app-address-input',
+  selector: 'app-secondary-component-input',
   standalone: false,
   templateUrl: './secondaryComponent-input.component.html',
   styleUrls: ['./secondaryComponent-input.component.css'],
@@ -147,7 +147,26 @@ export class SecondaryComponentInputComponent
     const inputObject: { [key:string]: any} = {};
     this.inputComponents.toArray().forEach((component, index) => {
       const subQuestion = this.getSubQuestionByIndex(index);
-      inputObject[subQuestion.questionId] = component.getValue();
+      
+      let value: any;
+      if (component instanceof TextInputComponent) {
+          value = component.value || '';
+        } else if (component instanceof DropdownInputComponent) {
+          value = component.selectedOption?.text || '';
+        } else if (component instanceof RadioInputComponent) {
+          value = component.selectedOption?.text || '';
+        } else if (component instanceof CalendarInputComponent) {
+          const date = component.selectedDate;
+          value = date ? date.toISOString().split('T')[0] : null;
+        } else if (component instanceof SecondaryComponentInputComponent) {
+          value = this.getValue();
+        }
+        else {
+          value = '';
+          console.warn(`Unrecognized input type for subQuestion: ${subQuestion.questionId}`);
+        }
+
+      inputObject[subQuestion.questionId] = value
     });
 
     return inputObject;

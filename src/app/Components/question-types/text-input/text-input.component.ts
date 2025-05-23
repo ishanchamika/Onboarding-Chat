@@ -37,34 +37,91 @@ export class TextInputComponent extends BaseQuestionComponent
 
   get isValid(): boolean 
   {
-    if(!this.value.trim())
-    {
-      this.misvalidatedmsg = 'This is required';
-      return false;
-    } 
-    if(this.validationRule) 
-    {
-      this.validRule = this.validationRule.pattern.test(this.value);
-      if(!this.validRule)
-      {
-        this.misvalidatedmsg = this.validationRule.message;
-        return false;
-      }
-    }
-    if(this.question.validation !== null && this.question.validation?.required === true && (this.question.validation?.max || this.question.validation?.min))
+    if(this.question.validation?.required && (this.question.validation?.max || this.question.validation?.min))
     {
       const getValue = Number(this.value);
-      const max = Number(this.question.validation.max) || Infinity;
-      const min = Number(this.question.validation.min) || 0;
-      if(this.validRule && getValue <= max && getValue >= min)
+      const max = Number(this.question.validation?.max) || Infinity;
+      const min = Number(this.question.validation?.min) || 0;
+
+      if(getValue <= max && getValue >= min)
       {
         return true;
       }
       else
       {
-        this.misvalidatedmsg = `Input range should between ${this.question.validation.max} and ${this.question.validation.min} `;
+        this.misvalidatedmsg = `Input range should between ${min} and ${max} `;
         return false;
       }
+    }
+    if(this.question.validation?.pattern && !this.question.validation.required)
+    {
+      const key = this.question?.validation?.pattern;
+
+      if(key && ValidationRules[key])
+      {
+        this.validationRule = ValidationRules[key];
+        if(this.value)
+        {
+          const valid = this.validationRule?.pattern.test(this.value);
+          if(!valid){ 
+            this.misvalidatedmsg = this.validationRule.message;
+          }
+          return valid;
+        }
+        else
+        {
+          this.misvalidatedmsg = '';
+          return true;
+        }
+      }
+      else if(key && !ValidationRules[key])
+      {
+        console.warn("Validation pattern Not Found");
+        return false;
+      }
+    }
+    else if(this.question.validation?.pattern && this.question.validation.required)
+    {
+      const key = this.question?.validation?.pattern;
+
+      if(key && ValidationRules[key])
+      {
+        this.validationRule = ValidationRules[key];
+        if(this.value)
+        {
+          const valid = this.validationRule?.pattern.test(this.value);
+          if(!valid){ 
+            this.misvalidatedmsg = this.validationRule.message;
+          }
+          return valid;
+        }
+        else
+        {
+          this.misvalidatedmsg = "required field";
+          return false;
+        }
+      }
+      else if(key && !ValidationRules[key])
+      {
+        console.warn("Validation pattern Not Found");
+        return false;
+      }
+    }
+    else if((this.question.validation?.required) && !(this.question.validation?.pattern))
+    {
+      if(this.value)
+      {
+        return true;
+      }
+      else
+      {
+        this.misvalidatedmsg = "required field";
+        return false;
+      }
+    }
+    else
+    {
+      return true;
     }
     return true;
   }

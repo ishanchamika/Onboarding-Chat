@@ -65,7 +65,7 @@ canSubmit(): boolean {
   }
   else if(selectedCount > this.dbMax)
   {
-    this.misvalidatedmsg = `Maximum ${this.dbMin} should be checked`;
+    this.misvalidatedmsg = `Maximum ${this.dbMax} should be checked`;
   }
   return false;
 }

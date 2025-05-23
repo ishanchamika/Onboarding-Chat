@@ -5,8 +5,8 @@ export interface ValidationRule {
   
   export const ValidationRules: { [key: string]: ValidationRule } = {
     identityNumber: {
-      pattern: /^[0-9]{12}$/,
-      message: 'ID number must be exactly 12 digits.',
+      pattern: /^(?:\d{12}|\d{9}[VX])$/,
+      message: 'ID number must be 12 digits or 9 digits followed by "V" or "X".',
     },
     name: {
       pattern: /^[A-Za-z ]+$/,
@@ -23,6 +23,10 @@ export interface ValidationRule {
     salary: {
         pattern: /^[0-9]{1,10}$/,
         message: 'Please enter valid amount'
+    },
+    numbers: {
+        pattern: /^\d+$/,
+        message: 'Only numbers are allowed'
     }
   };
   

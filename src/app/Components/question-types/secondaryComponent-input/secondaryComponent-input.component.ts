@@ -6,6 +6,8 @@ import { DropdownInputComponent } from '../dropdown-input/dropdown-input.compone
 import { RadioInputComponent } from '../radio-input/radio-input.component';
 import { ButtonsInputComponent } from '../buttons-input/buttons-input.component';
 import { CalendarInputComponent } from '../calendar-input/calendar-input.component';
+import { ValidationRules, ValidationRule } from '../../validation-rules/validation-rules';
+
 
 @Component({
   selector: 'app-address-input',
@@ -21,6 +23,8 @@ export class SecondaryComponentInputComponent extends BaseQuestionComponent impl
   layoutColumns: number = 1;
   subQuestionRows: Question[][] = [];
   misvalidatedmsg: string = '';
+  validationRule?: ValidationRule;
+  validRule: Boolean = true;
 
   ngOnInit(): void {
     if (this.question && this.question.subQuestion) {
@@ -136,23 +140,99 @@ export class SecondaryComponentInputComponent extends BaseQuestionComponent impl
   canSubmit(): boolean 
   {
     if(!this.inputComponents) 
-      {
-        console.log('inputComponents not initialized');
-        return false;
-      }
+    {
+      console.log('inputComponents not initialized');
+      return false;
+    }
       const valid = this.inputComponents.toArray().every((component, index) => 
       {
-  
         if(component instanceof TextInputComponent) 
         { 
-          if(component.validationRule?.pattern)
+          if(component.question.validation?.required && (component.question.validation?.max || component.question.validation?.min))
           {
-            return component.validationRule?.pattern.test(component.value);
+            const getValue = Number(component.value);
+            const max = Number(component.question.validation?.max) || Infinity;
+            const min = Number(component.question.validation?.min) || 0;
+
+            if(getValue <= max && getValue >= min)
+            {
+              return true;
+            }
+            else
+            {
+              this.misvalidatedmsg = `Input range should between ${min} and ${max} `;
+              return false;
+            }
+          }
+          if(component.question.validation?.pattern && !component.question.validation.required)
+          {
+            const key = component.question?.validation?.pattern;
+
+            if(key && ValidationRules[key])
+            {
+              this.validationRule = ValidationRules[key];
+              if(component.value)
+              {
+                const valid = this.validationRule?.pattern.test(component.value);
+                if(!valid){ 
+                  this.misvalidatedmsg = this.validationRule.message;
+                }
+                return valid;
+              }
+              else
+              {
+                this.misvalidatedmsg = '';
+                return true;
+              }
+            }
+            else if(key && !ValidationRules[key])
+            {
+              console.warn("Validation pattern Not Found");
+              return false;
+            }
+          }
+          else if(component.question.validation?.pattern && component.question.validation.required)
+          {
+            const key = component.question?.validation?.pattern;
+
+            if(key && ValidationRules[key])
+            {
+              this.validationRule = ValidationRules[key];
+              if(component.value)
+              {
+                const valid = this.validationRule?.pattern.test(component.value);
+                if(!valid){ 
+                  this.misvalidatedmsg = this.validationRule.message;
+                }
+                return valid;
+              }
+              else
+              {
+                this.misvalidatedmsg = "required field";
+                return false;
+              }
+            }
+            else if(key && !ValidationRules[key])
+            {
+              console.warn("Validation pattern Not Found");
+              return false;
+            }
+          }
+          else if((component.question.validation?.required) && !(component.question.validation?.pattern))
+          {
+            if(component.value)
+            {
+              return true;
+            }
+            else
+            {
+              this.misvalidatedmsg = "required field";
+              return false;
+            }
           }
           else
           {
-            console.log('Not validation key found from validation rules');
-            return false;
+            return true;
           }
         } 
         else if(component instanceof DropdownInputComponent) 
@@ -173,7 +253,6 @@ export class SecondaryComponentInputComponent extends BaseQuestionComponent impl
         return true;
       });
       return valid;
-
   }
 
   getValidationMsg(): string

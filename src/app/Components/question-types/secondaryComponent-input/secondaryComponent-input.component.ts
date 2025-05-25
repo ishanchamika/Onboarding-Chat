@@ -26,6 +26,10 @@ export class SecondaryComponentInputComponent extends BaseQuestionComponent impl
   validationRule?: ValidationRule;
   validRule: Boolean = true;
 
+  selectedDate: Date | null = null;
+  minDate!: Date | null;
+  maxDate!: Date | null;
+
   ngOnInit(): void {
     if (this.question && this.question.subQuestion) {
       this.layoutColumns = this.question.layoutColumn || 1;
@@ -242,8 +246,9 @@ export class SecondaryComponentInputComponent extends BaseQuestionComponent impl
         }
         else if(component instanceof CalendarInputComponent)
         {
-          const valid = component.question.validation?.required ? !!component.selectedDate : true;
-          return valid;
+          return this.canSubmitDate(component);
+          // const valid = component.question.validation?.required ? !!component.selectedDate : true;
+          // return valid;
         }
         else if(component instanceof RadioInputComponent)
         {
@@ -253,6 +258,55 @@ export class SecondaryComponentInputComponent extends BaseQuestionComponent impl
         return true;
       });
       return valid;
+  }
+
+
+  canSubmitDate(component: any): boolean 
+  {
+    if(!component.selectedDate && component.question.validation?.required)
+    { 
+      return false;
+    } 
+    else if(!component.selectedDate && !component.question.validation?.required)
+    {
+      this.misvalidatedmsg = '';
+      return true;
+    }
+    else if(component.selectedDate && !component.question.validation?.required)
+    {
+      return this.checkMinAndMaxDateValidation(component);
+    }
+    else if(component.selectedDate && component.question.validation?.required)
+    {
+      return this.checkMinAndMaxDateValidation(component);
+    }
+    else
+    {
+      return true;
+    }
+  }
+
+
+  checkMinAndMaxDateValidation(component: any): boolean
+  {
+    if(!component.selectedDate)
+    {
+      return false;
+    }
+    const selected = this.toDateOnly(component.selectedDate);
+    
+    const min = component.question.minDate ? this.toDateOnly(new Date(component.question.minDate)) : null;
+    const max = component.question.maxDate ? this.toDateOnly(new Date(component.question.maxDate)) : null;
+
+    const isAfterMin = !min || selected.getTime() >= min.getTime();  //If min is null, set true
+    const isBeforeMax = !max || selected.getTime() <= max.getTime();
+
+    return isAfterMin && isBeforeMax;
+  }
+
+  toDateOnly(date: Date): Date 
+  {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
   }
 
   getValidationMsg(): string

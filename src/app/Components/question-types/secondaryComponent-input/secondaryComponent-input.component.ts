@@ -139,8 +139,16 @@ export class SecondaryComponentInputComponent
       });
     }
   }
-  flattenObject(inputObject: { [key: string]: any; }) {
-    throw new Error('Method not implemented.');
+  flattenObject(obj: any): string {
+    const parts: string[] = [];
+    for (const key in obj) {
+      if (typeof obj[key] === 'object' && obj[key] !== null) {
+        parts.push(`{ ${this.flattenObject(obj[key])}}`);
+      }else {
+        parts.push(`${obj[key]}`);
+      }
+    }
+    return parts.join(',');
   }
 
   getValue(): { [key: string]:any} {
@@ -159,7 +167,7 @@ export class SecondaryComponentInputComponent
           const date = component.selectedDate;
           value = date ? date.toISOString().split('T')[0] : null;
         } else if (component instanceof SecondaryComponentInputComponent) {
-          value = this.getValue();
+          value = component.getValue();
         }
         else {
           value = '';

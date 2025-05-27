@@ -7,6 +7,7 @@ import { RadioInputComponent } from '../radio-input/radio-input.component';
 import { ButtonsInputComponent } from '../buttons-input/buttons-input.component';
 import { CalendarInputComponent } from '../calendar-input/calendar-input.component';
 import { ValidationRules, ValidationRule } from '../../validation-rules/validation-rules';
+import { CheckboxInputComponent } from '../checkbox-input/checkbox-input.component';
 
 
 @Component({
@@ -17,7 +18,7 @@ import { ValidationRules, ValidationRule } from '../../validation-rules/validati
 })
 export class SecondaryComponentInputComponent extends BaseQuestionComponent implements OnInit {
   @ViewChildren('inputs') inputComponents!: QueryList<
-  TextInputComponent | DropdownInputComponent | RadioInputComponent | CalendarInputComponent
+  TextInputComponent | DropdownInputComponent | RadioInputComponent | CalendarInputComponent | CheckboxInputComponent
   // any
   >;
   layoutColumns: number = 1;
@@ -254,6 +255,19 @@ export class SecondaryComponentInputComponent extends BaseQuestionComponent impl
         {
           const valid = component.question.validation?.required ? !!component.selectedOption : true;
           return valid;
+        }
+        else if(component instanceof CheckboxInputComponent)
+        {
+          const dbMax = Number(component.question?.maxcheck) || Infinity;
+          const dbMin = Number(component.question?.mincheck) || 0;
+
+          const selectedCount = component.selectedOptions.length;
+
+          if(selectedCount >= dbMin && selectedCount <= dbMax)
+          {
+            return true;
+          }
+          return false;
         }
         return true;
       });

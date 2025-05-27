@@ -49,6 +49,10 @@ canSubmit(): boolean {
   this.dbMin = Number(this.question?.mincheck) || 0;
 
   const selectedCount = this.selectedOptions.length;
+  if(!this.selectedOptions && this.question.validation?.required)
+  {
+    this.misvalidatedmsg = `Selection should be required`;
+  }
 
   if(selectedCount >= this.dbMin && selectedCount <= this.dbMax)
   {

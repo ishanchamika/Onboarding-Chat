@@ -75,7 +75,6 @@ export class ChatComponent implements OnInit
 
   handleAnswer(answer: any, question: any): void {
     let answerText: string;
-
     if (answer.type === 'file') {
       answerText = answer.text;
       console.log('asdasd',answer)
@@ -87,7 +86,7 @@ export class ChatComponent implements OnInit
     } else {
       if (answer.type === 'dropdown') {
         answerText = answer.text.text.toString();
-      } else if (answer.type === 'calendar') {
+      } else if (answer.type === 'calender') {
         answerText = answer.text.toLocaleDateString();
       } else if (answer.type === 'input') {
         answerText = answer.text.toString();

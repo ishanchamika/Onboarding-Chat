@@ -44,11 +44,39 @@ export class CalendarInputComponent extends BaseQuestionComponent implements OnI
   
   canSubmit(): boolean 
   {
-    if(!this.selectedDate)
+    if(!this.selectedDate && this.question.validation?.required)
     { 
-      this.misvalidatedmsg = 'Date is required';
-      return false;
+        this.misvalidatedmsg = 'Date is required';
+        return false;
     } 
+    else if(!this.selectedDate && !this.question.validation?.required)
+    {
+      this.misvalidatedmsg = '';
+      return true;
+    }
+    else if(this.selectedDate && !this.question.validation?.required)
+    {
+      return this.checkMinAndMaxDateValidation();
+    }
+    else if(this.selectedDate && this.question.validation?.required)
+    {
+      return this.checkMinAndMaxDateValidation();
+    }
+    else
+    {
+      return true;
+    }
+  }
+
+
+  checkMinAndMaxDateValidation(): boolean
+  {
+    if(!this.selectedDate || !(this.selectedDate instanceof Date) || isNaN(this.selectedDate.getTime()))
+    {
+      this.misvalidatedmsg = 'Enter a valid date';
+      return false;
+    }
+
     const selected = this.toDateOnly(this.selectedDate);
     const min = this.minDate ? this.toDateOnly(this.minDate) : null;
     const max = this.maxDate ? this.toDateOnly(this.maxDate) : null;
@@ -57,21 +85,19 @@ export class CalendarInputComponent extends BaseQuestionComponent implements OnI
     const minFormatted = min ? this.formatDateToYMD(min) : '';
     const maxFormatted = max ? this.formatDateToYMD(max) : '';
 
-    const afterMin = !min || selected.getTime() >= min.getTime();  //If min is null, set true
-    const beforeMax = !max || selected.getTime() <= max.getTime();
+    const isAfterMin = !min || selected.getTime() >= min.getTime();  //If min is null, set true
+    const isBeforeMax = !max || selected.getTime() <= max.getTime();
   
-    if(!afterMin)
+    if(!isAfterMin)
     {
       this.misvalidatedmsg = `Minimum Date should be ${minFormatted}`;
     }
-    if(!beforeMax)
+    if(!isBeforeMax)
     {
       this.misvalidatedmsg = `Maximum Date should be ${maxFormatted}`;
     }
-
-    return afterMin && beforeMax;
+    return isAfterMin && isBeforeMax;
   }
-
 
   toDateOnly(date: Date): Date 
   {

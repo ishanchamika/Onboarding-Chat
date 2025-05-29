@@ -7,6 +7,7 @@ import { RadioInputComponent } from '../radio-input/radio-input.component';
 import { ButtonsInputComponent } from '../buttons-input/buttons-input.component';
 import { CalendarInputComponent } from '../calendar-input/calendar-input.component';
 import { ValidationRules, ValidationRule } from '../../validation-rules/validation-rules';
+import { CheckboxInputComponent } from '../checkbox-input/checkbox-input.component';
 
 
 @Component({
@@ -23,7 +24,7 @@ export class SecondaryComponentInputComponent
     | TextInputComponent
     | DropdownInputComponent
     | RadioInputComponent
-    | CalendarInputComponent
+    | CalendarInputComponent | CheckboxInputComponent
     | SecondaryComponentInputComponent
     // any
   >;
@@ -32,6 +33,10 @@ export class SecondaryComponentInputComponent
   misvalidatedmsg: string = '';
   validationRule?: ValidationRule;
   validRule: Boolean = true;
+
+  selectedDate: Date | null = null;
+  minDate!: Date | null;
+  maxDate!: Date | null;
 
   ngOnInit(): void {
     if (this.question && this.question.subQuestion) {
@@ -197,49 +202,189 @@ export class SecondaryComponentInputComponent
     throw new Error(`SubQuestion index not found : ${index}`);
   }
 
-  canSubmit(): boolean {
-    // if(!this.inputComponents)
-    //   {
-    //     console.log('inputComponents not initialized');
-    //     return false;
-    //   }
-    //   const valid = this.inputComponents.toArray().every((component, index) =>
-    //   {
+  canSubmit(): boolean 
+  {
+    if(!this.inputComponents) 
+    {
+      console.log('inputComponents not initialized');
+      return false;
+    }
+      const valid = this.inputComponents.toArray().every((component, index) => 
+      {
+        if(component instanceof TextInputComponent) 
+        { 
+          if(component.question.validation?.required && (component.question.validation?.max || component.question.validation?.min))
+          {
+            const getValue = Number(component.value);
+            const max = Number(component.question.validation?.max) || Infinity;
+            const min = Number(component.question.validation?.min) || 0;
 
-    //     if(component instanceof TextInputComponent)
-    //     {
-    //       if(component.validationRule?.pattern)
-    //       {
-    //         return component.validationRule?.pattern.test(component.value);
-    //       }
-    //       else
-    //       {
-    //         console.log('Not validation key found from validation rules');
-    //         return false;
-    //       }
-    //     }
-    //     else if(component instanceof DropdownInputComponent)
-    //     {
-    //       const valid = component.question.validation?.required ? !!component.selectedOption : true;
-    //       return valid;
-    //     }
-    //     else if(component instanceof CalendarInputComponent)
-    //     {
-    //       const valid = component.question.validation?.required ? !!component.selectedDate : true;
-    //       return valid;
-    //     }
-    //     else if(component instanceof RadioInputComponent)
-    //     {
-    //       const valid = component.question.validation?.required ? !!component.selectedOption : true;
-    //       return valid;
-    //     }
-    //     return true;
-    //   });
-    //   return valid;
-    return true;
+            if(getValue <= max && getValue >= min)
+            {
+              return true;
+            }
+            else
+            {
+              this.misvalidatedmsg = `Input range should between ${min} and ${max} `;
+              return false;
+            }
+          }
+          if(component.question.validation?.pattern && !component.question.validation.required)
+          {
+            const key = component.question?.validation?.pattern;
+
+            if(key && ValidationRules[key])
+            {
+              this.validationRule = ValidationRules[key];
+              if(component.value)
+              {
+                const valid = this.validationRule?.pattern.test(component.value);
+                if(!valid){ 
+                  this.misvalidatedmsg = this.validationRule.message;
+                }
+                return valid;
+              }
+              else
+              {
+                this.misvalidatedmsg = '';
+                return true;
+              }
+            }
+            else if(key && !ValidationRules[key])
+            {
+              console.warn("Validation pattern Not Found");
+              return false;
+            }
+          }
+          else if(component.question.validation?.pattern && component.question.validation.required)
+          {
+            const key = component.question?.validation?.pattern;
+
+            if(key && ValidationRules[key])
+            {
+              this.validationRule = ValidationRules[key];
+              if(component.value)
+              {
+                const valid = this.validationRule?.pattern.test(component.value);
+                if(!valid){ 
+                  this.misvalidatedmsg = this.validationRule.message;
+                }
+                return valid;
+              }
+              else
+              {
+                this.misvalidatedmsg = "required field";
+                return false;
+              }
+            }
+            else if(key && !ValidationRules[key])
+            {
+              console.warn("Validation pattern Not Found");
+              return false;
+            }
+          }
+          else if((component.question.validation?.required) && !(component.question.validation?.pattern))
+          {
+            if(component.value)
+            {
+              return true;
+            }
+            else
+            {
+              this.misvalidatedmsg = "required field";
+              return false;
+            }
+          }
+          else
+          {
+            return true;
+          }
+        } 
+        else if(component instanceof DropdownInputComponent) 
+        {
+          const valid = component.question.validation?.required ? !!component.selectedOption : true;
+          return valid;
+        }
+        else if(component instanceof CalendarInputComponent)
+        {
+          return this.canSubmitDate(component);
+          // const valid = component.question.validation?.required ? !!component.selectedDate : true;
+          // return valid;
+        }
+        else if(component instanceof RadioInputComponent)
+        {
+          const valid = component.question.validation?.required ? !!component.selectedOption : true;
+          return valid;
+        }
+        else if(component instanceof CheckboxInputComponent)
+        {
+          const dbMax = Number(component.question?.maxcheck) || Infinity;
+          const dbMin = Number(component.question?.mincheck) || 0;
+
+          const selectedCount = component.selectedOptions.length;
+
+          if(selectedCount >= dbMin && selectedCount <= dbMax)
+          {
+            return true;
+          }
+          return false;
+        }
+        return true;
+      });
+      return valid;
   }
 
-  getValidationMsg(): string {
+
+  canSubmitDate(component: any): boolean 
+  {
+    if(!component.selectedDate && component.question.validation?.required)
+    { 
+      return false;
+    } 
+    else if(!component.selectedDate && !component.question.validation?.required)
+    {
+      this.misvalidatedmsg = '';
+      return true;
+    }
+    else if(component.selectedDate && !component.question.validation?.required)
+    {
+      return this.checkMinAndMaxDateValidation(component);
+    }
+    else if(component.selectedDate && component.question.validation?.required)
+    {
+      return this.checkMinAndMaxDateValidation(component);
+    }
+    else
+    {
+      return true;
+    }
+  }
+
+
+  checkMinAndMaxDateValidation(component: any): boolean
+  {
+    if(!component.selectedDate)
+    {
+      return false;
+    }
+    const selected = this.toDateOnly(component.selectedDate);
+    
+    const min = component.question.minDate ? this.toDateOnly(new Date(component.question.minDate)) : null;
+    const max = component.question.maxDate ? this.toDateOnly(new Date(component.question.maxDate)) : null;
+
+    const isAfterMin = !min || selected.getTime() >= min.getTime();  //If min is null, set true
+    const isBeforeMax = !max || selected.getTime() <= max.getTime();
+
+    return isAfterMin && isBeforeMax;
+  }
+
+  toDateOnly(date: Date): Date 
+  {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
+
+  getValidationMsg(): string
+  {
     return this.misvalidatedmsg;
   }
 }

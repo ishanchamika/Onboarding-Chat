@@ -110,7 +110,7 @@ export class ConversationService {
       if (answer.type === 'dropdown') {
         answerText = answer.text.text.toString();
         nextQuestionId = answer.text.nextQuestionId || null;
-      } else if (answer.type === 'calendar') {
+      } else if (answer.type === 'calender') {
         answerText = answer.text.toLocaleDateString();
         nextQuestionId = answer.nextQuestionId || null;
       } else if (answer.type === 'input') {
@@ -291,7 +291,8 @@ export class ConversationService {
       const data = {
         currentQID: answer.currentQID,
         Question: question.questionText,
-        value: answer.value
+        value: answer.value,
+        type: answer.type
       };
   
       const addRequest = store.add(data); // put will add or update by key
@@ -333,7 +334,7 @@ export class ConversationService {
           if(!item.value){
             formattedAnswer = '';
           }
-          else if(typeof item.value === 'object' && 'fileName' in item.value){
+          else if(item.type === 'file'){
               formattedAnswer = `File uploaded: ${item.value.fileName}`;
               // fileData = {
               // fileName: item.value.fileName,
@@ -342,16 +343,16 @@ export class ConversationService {
               // }
               console.log('qqwwee',formattedAnswer)
             } 
-          else if( typeof item.value === 'object' && 'text' in item.value){
+          else if(item.type === 'radio' || item.type === 'dropdown' || item.type === 'button'){
             formattedAnswer = item.value.text;
           } 
-          else if (item.value instanceof Date) {
+          else if (item.type === 'calender') {
             formattedAnswer = item.value.toLocaleDateString();
           }
-          else if (Array.isArray(item.value) && item.value.every((v: { text: string }) => v && typeof v === 'object' && 'text' in v)) {
+          else if (item.type === 'checkbox') {
             formattedAnswer = item.value.map((opt: { text: string }) => opt.text).join(', ');
           }
-          else if (typeof item.value === 'object' && !(item.value instanceof Date)){
+          else if (item.type === 'secondary'){
             formattedAnswer = Object.entries(item.value).map(([key, val]) => `${key.split('-').pop()}: ${val}`).join(', ');
           } 
           

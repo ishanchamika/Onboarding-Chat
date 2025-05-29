@@ -4,7 +4,13 @@
 />
 
 <div class="chat-container">
-  <div class="chat-header">Interactive Conversation</div>
+  <div class="chat-header">Interactive Conversation
+     <div class="clear">
+    <button (click)="clearIndexedDb()">
+      <i class="ph ph-eraser"></i> Reset
+    </button>
+  </div>
+  </div>
 
   <div class="chat-messages">
     <div
@@ -61,7 +67,5 @@
   <!-- <div class="validationmsg" *ngIf="currentQuestionComponent?.getValidationMsg() !== ''">
       {{currentQuestionComponent?.getValidationMsg()}}
   </div> -->
-  <div class="clear">
-    <button (click)="clearIndexedDb()">Reset</button>
-  </div>
+ 
 </div>

@@ -6,6 +6,11 @@
   object-fit: cover;
 }
 
+.clear {
+  display: flex;
+  right: 1px;
+}
+
 .pdf-link {
   display: flex;
   align-items: center;

@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { BaseQuestionComponent } from '../base-question.component';
 import { HttpClient } from '@angular/common/http';
 import { ConversationService } from '../../../Services/conversation.service';
+import { ConfigService, CustomEnvironment } from '../../../config/config.service';
+import { config } from 'rxjs';
 
 @Component({
   selector: 'app-file-input',
@@ -16,21 +18,35 @@ export class FileInputComponent extends BaseQuestionComponent implements OnInit 
   isUploading = false;
   isDropZoneHovered = false;
   misvalidatedmsg: string = '';
+  private baseUrl: string = '';
 
   constructor(
     private http: HttpClient,
-    conversationService: ConversationService
+    conversationService: ConversationService,
+    private configService: ConfigService
   ) {
     super(conversationService);
   }
 
-  ngOnInit(): void {
-    if (!this.question.conversationId) {
-      this.uploadError = 'ConversationID is missing';
-    }
-    if (!this.question.questionId) {
-      this.uploadError = 'QuestionID is missing';
-    }
+  ngOnInit(): void 
+  {
+    this.configService.getConfig().subscribe({
+      next: (config: CustomEnvironment) =>
+      {
+        this.baseUrl = config.BASE_URL;
+        if (!this.question.conversationId) {
+          this.uploadError = 'ConversationID is missing';
+        }
+        if (!this.question.questionId) {
+          this.uploadError = 'QuestionID is missing';
+        }
+      },
+      error: (err) => 
+      {
+        this.uploadError = 'Failed to load config';
+        console.error('Error loading config:', err);
+      }
+    });
   }
 
   onDragOver(event: DragEvent): void {
@@ -167,7 +183,7 @@ export class FileInputComponent extends BaseQuestionComponent implements OnInit 
   private uploadFile(file: File, conversationId: string, questionId: string): Promise<any> {
     const formData = new FormData();
     formData.append('file', file);
-    const url = `http://localhost:5149/api/Upload?conversationId=${encodeURIComponent(conversationId)}&questionId=${encodeURIComponent(questionId)}`;
+    const url = `${this.baseUrl}Upload?conversationId=${encodeURIComponent(conversationId)}&questionId=${encodeURIComponent(questionId)}`;
     return this.http.post(url, formData).toPromise();
   }
 

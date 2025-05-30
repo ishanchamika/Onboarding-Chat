@@ -8,18 +8,18 @@ import {
   Conversation,
 } from '../Models/conversation.model';
 import { HttpClient } from '@angular/common/http';
-
+import { ConfigService, CustomEnvironment } from '../config/config.service';
 @Injectable({
   providedIn: 'root',
 })
 export class ConversationService {
-
+  private baseUrl: string = '';
   private pausedQuestionId: string | null = null;
   private conversation : Conversation | null = null;
   private currentQuestionSubject = new BehaviorSubject<Question|null>(null);
   private historySubject = new BehaviorSubject<HistoryItem[]>([]);
 
-  constructor(private http : HttpClient) 
+  constructor(private http : HttpClient, private configService: ConfigService) 
   {
   }
 
@@ -41,8 +41,11 @@ export class ConversationService {
 
     try 
     {
-      // this.initializeProgressDB();
-      // this.initializeAnswerDB();
+      if(!this.baseUrl) 
+      {
+        const config = await this.configService.getConfig().toPromise();
+        this.baseUrl = config?.BASE_URL || '';
+      }
       this.loadAnswersFromIndexedDB();
       this.conversation  = await this.getConversationFromIndexedDB(conversationId);
       this.pausedQuestionId = await this.getCurrentQuestionId(conversationId);
@@ -60,7 +63,8 @@ export class ConversationService {
       }
       else
       {
-        this.conversation = await this.http.get<any>('http://localhost:5149/api/Conversation/' + conversationId).toPromise() ?? null;
+        const url = `${this.baseUrl}Conversation/${conversationId}`;
+        this.conversation = await this.http.get<any>(url).toPromise() ?? null;
         if(this.conversation) 
         {
           this.storeConversationInIndexedDB(this.conversation);

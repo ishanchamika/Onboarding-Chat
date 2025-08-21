@@ -1,5 +1,5 @@
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, every, Observable } from 'rxjs';
 import {
   Question,
   HistoryItem,
@@ -13,11 +13,13 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class ConversationService {
-
+  
   private pausedQuestionId: string | null = null;
   private conversation : Conversation | null = null;
   private currentQuestionSubject = new BehaviorSubject<Question|null>(null);
   private historySubject = new BehaviorSubject<HistoryItem[]>([]);
+  private answerValues = new Map<string,any>();
+  private BaseUrl = 'http://localhost:5149/api';
 
   constructor(private http : HttpClient) 
   {
@@ -60,7 +62,7 @@ export class ConversationService {
       }
       else
       {
-        this.conversation = await this.http.get<any>('http://localhost:5149/api/Conversation/' + conversationId).toPromise() ?? null;
+        this.conversation = await this.http.get<any>('https://localhost:44383/api/Conversation/' + conversationId).toPromise() ?? null;
         if(this.conversation) 
         {
           this.storeConversationInIndexedDB(this.conversation);
@@ -85,8 +87,36 @@ export class ConversationService {
     }
   }
 
+  async fetchOptions(endpoint: string, params?: { [key:string]:string}, nextQuestionId?: string): Promise<Option[]> {
+    let url = `${this.BaseUrl}/${endpoint}`;
+    console.log("endpoint",endpoint);
+    if(params) {
+      if(Object.keys(params).length === 1) {
+        url += `/${Object.values(params)[0]}`;
+      } else {
+        const queryParams = new URLSearchParams(params).toString();
+        url += `?${queryParams}`;
+      }
+    }
+    console.log('Fetching options from:', url);
+    const response = await this.http.get<any[]>(url).toPromise();
+    if (!response) {
+      return [];
+    }
+    return response.map(item => ({
+      text: item.name || item.Text,
+      value: item.locationId || item.Value,
+      nextQuestionId: nextQuestionId || item.nextQuestionId || null
+    }));
+  }
+
+  getAnswerValueForQuestion(questionId: string): any {
+    return this.answerValues.get(questionId);
+  }
+
   handleAnswer(answer: any, question: any): void {
     this.storeAnswers(answer, question);
+    this.answerValues.set(question.questionId, answer.value);
     const current = this.currentQuestion;
     if (!current || !this.conversation) {
       console.error('Conversation or current question not loaded');
@@ -98,42 +128,32 @@ export class ConversationService {
     if (answer.type === 'file') {
       answerText = answer.text;
       nextQuestionId = answer.nextQuestionId || null;
-      const historyItems = this.historySubject.getValue();
-      historyItems.push({
-        question: current.questionText || '',
-        answer: answerText,
-      });
-      console.log("history", historyItems)
-      this.historySubject.next(historyItems);
+    } else if (answer.type === 'dropdown') {
+      answerText = answer.text.text.toString();
+      nextQuestionId = answer.text.nextQuestionId || null;
+    } else if (answer.type === 'calender') {
+      answerText = answer.text.toLocaleDateString();
+      nextQuestionId = answer.nextQuestionId || null;
+    } else if (answer.type === 'input') {
+      answerText = answer.text.toString();
+      nextQuestionId = answer.nextQuestionId || null;
+    } else if (answer.type === 'button') {
+      answerText = answer.text.text;
+      nextQuestionId = answer.text.nextQuestionId || null;
+    } else if (answer.type === 'radio') {
+      answerText = answer.text.text;
+      nextQuestionId = answer.text.nextQuestionId || null;
+    } else if (answer.type === 'checkbox') {
+      answerText = answer.text;
+      nextQuestionId = answer.value[0].nextQuestionId || null;
     } else {
-      // Existing logic for other answer types
-      if (answer.type === 'dropdown') {
-        answerText = answer.text.text.toString();
-        nextQuestionId = answer.text.nextQuestionId || null;
-      } else if (answer.type === 'calender') {
-        answerText = answer.text.toLocaleDateString();
-        nextQuestionId = answer.nextQuestionId || null;
-      } else if (answer.type === 'input') {
-        answerText = answer.text.toString();
-        nextQuestionId = answer.nextQuestionId || null;
-      } else if (answer.type === 'button') {
-        answerText = answer.text.text;
-        nextQuestionId = answer.text.nextQuestionId || null;
-      } else if (answer.type === 'radio') {
-        answerText = answer.text.text;
-        nextQuestionId = answer.text.nextQuestionId || null;
-      } else if (answer.type === 'checkbox') {
-        answerText = answer.text;
-        nextQuestionId = answer.value[0].nextQuestionId || null;
-      } else {
-        answerText = answer.text;
-        nextQuestionId = answer.nextQuestionId;
-      }
-
-      const historyItems = this.historySubject.getValue();
-      historyItems.push({ question: current.questionText || '', answer: answerText });
-      this.historySubject.next(historyItems);
+      answerText = answer.text;
+      nextQuestionId = answer.nextQuestionId;
     }
+
+    const historyItems = this.historySubject.getValue();
+    historyItems.push({ question: current.questionText || '', answer: answerText });
+    this.historySubject.next(historyItems);
 
     if (nextQuestionId && this.conversation?.conversationId) {
       this.loadQuestionFromIndexedDB(this.conversation.conversationId, nextQuestionId);
@@ -223,6 +243,41 @@ export class ConversationService {
   //     this.currentQuestionSubject.next(endQuestion);
   //   }
   // }
+
+  storeTemporarySelection(questionId: string, value: any): void {
+    const request = indexedDB.open('TemporarySelectionDB', 1);
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+      if(!db.objectStoreNames.contains('selections')) {
+        db.createObjectStore('selections', { keyPath: 'questionId'});
+      }
+    };
+    request.onsuccess = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+      const transaction = db.transaction(['selections'], 'readwrite');
+      const store = transaction.objectStore('selections');
+      store.put({questionId,value});
+    };
+  }
+
+  async getTemporarySelection(questionId: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open('TemporarySelectionDB', 1);
+      request.onupgradeneeded = (event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+        db.createObjectStore('selections', { keyPath: 'questionId'});
+      };
+      request.onsuccess = (event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+        const transaction = db.transaction(['selections'], 'readonly');
+        const store = transaction.objectStore('selections');
+        const getRequest = store.get(questionId);
+        getRequest.onsuccess = () => resolve(getRequest.result?.value || null);
+        getRequest.onerror = () => reject(getRequest.error);
+      };
+      request.onerror = () => reject(request.error);
+    })
+  }
 
   resetConversation(): void {
     if(!this.conversation) 
@@ -511,6 +566,52 @@ export class ConversationService {
       console.error('Error opening ProgressDB:', request.error);
     };
   }
+
+   //________Store current QuestionId for afterUse(getCurrentQuestionId)____________
+  // dropDownAnswers(questionId: string, answerid: string): void 
+  // {
+  //   const dbVersion = 2;
+  //   const request = indexedDB.open('DropdownAnswer', dbVersion);
+  
+  //   request.onupgradeneeded = (event) => 
+  //   {
+  //     const db = (event.target as IDBOpenDBRequest).result;
+  
+  //     if(!db.objectStoreNames.contains('DropdownAnswerTable')) 
+  //     {
+  //       const store = db.createObjectStore('DropdownAnswerTable', { keyPath: 'questionId' });
+  //       console.log('Created object store: progress');
+  //     }
+  //   };
+  
+  //   request.onsuccess = function (event) 
+  //   {
+  //     const db = (event.target as IDBOpenDBRequest).result;
+  
+  //     if(!db.objectStoreNames.contains('DropdownAnswerTable')) 
+  //     {
+  //       console.error("'progress' object store not found, even after upgrade.");
+  //       return;
+  //     }
+  
+  //     const transaction = db.transaction('progress', 'readwrite');
+  //     const store = transaction.objectStore('progress');
+
+  //     store.put({ questionId: questionId, answerid });
+  
+  //     transaction.oncomplete = () => {
+  //       console.log('Progress stored successfully.');
+  //     };
+  
+  //     transaction.onerror = () => {
+  //       console.error('Error storing progress:', transaction.error);
+  //     };
+  //   };
+  
+  //   request.onerror = () => {
+  //     console.error('Error opening ProgressDB:', request.error);
+  //   };
+  // }
   
   
   

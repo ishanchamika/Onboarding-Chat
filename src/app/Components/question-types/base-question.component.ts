@@ -14,7 +14,7 @@ export abstract class BaseQuestionComponent {
     currentQuestion: Question | null = null;
 
   constructor(
-      private conversationService: ConversationService
+      protected conversationService: ConversationService
     ) {
       this.currentQuestion$ = this.conversationService.currentQuestion$;
     }

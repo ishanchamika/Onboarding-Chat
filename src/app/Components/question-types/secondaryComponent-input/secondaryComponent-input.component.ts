@@ -6,9 +6,12 @@ import { DropdownInputComponent } from '../dropdown-input/dropdown-input.compone
 import { RadioInputComponent } from '../radio-input/radio-input.component';
 import { ButtonsInputComponent } from '../buttons-input/buttons-input.component';
 import { CalendarInputComponent } from '../calendar-input/calendar-input.component';
-import { ValidationRules, ValidationRule } from '../../validation-rules/validation-rules';
+import {
+  ValidationRules,
+  ValidationRule,
+} from '../../validation-rules/validation-rules';
 import { CheckboxInputComponent } from '../checkbox-input/checkbox-input.component';
-
+import { ConversationService } from '../../../Services/conversation.service';
 
 @Component({
   selector: 'app-secondary-component-input',
@@ -24,7 +27,8 @@ export class SecondaryComponentInputComponent
     | TextInputComponent
     | DropdownInputComponent
     | RadioInputComponent
-    | CalendarInputComponent | CheckboxInputComponent
+    | CalendarInputComponent
+    | CheckboxInputComponent
     | SecondaryComponentInputComponent
     // any
   >;
@@ -33,12 +37,18 @@ export class SecondaryComponentInputComponent
   misvalidatedmsg: string = '';
   validationRule?: ValidationRule;
   validRule: Boolean = true;
+  private answerValues: Map<string, any> = new Map();
+  private currentSelections: Map<string, any> = new Map();
 
   selectedDate: Date | null = null;
   minDate!: Date | null;
   maxDate!: Date | null;
 
-  ngOnInit(): void {
+  constructor(conversationService: ConversationService) {
+    super(conversationService);
+  }
+
+  async ngOnInit(): Promise<void> {
     if (this.question && this.question.subQuestion) {
       this.layoutColumns = this.question.layoutColumn || 1;
       const rowQuestions = Object.values(this.question.subQuestion);
@@ -46,13 +56,58 @@ export class SecondaryComponentInputComponent
         rowQuestions,
         this.layoutColumns
       );
+      this.loadSelectionFromIndexedDB();
     } else {
       console.error('Secondary input requires subQuestions');
     }
   }
-  // ngAfterViewInit(): void {
-  //   console.log('inputComponents after view init:', this.inputComponents.toArray());
+  ngAfterViewInit(): void {
+    this.inputComponents.forEach((component) => {
+      if (component instanceof DropdownInputComponent) {
+        component.currentSelections = this.currentSelections;
+        component.selectionChanged.subscribe((value) => {
+          this.onSelectionChange(component.question.questionId, value);
+        });
+      }
+    });
+  }
+
+  async loadSelectionFromIndexedDB(): Promise<void> {
+    if(!this.question.subQuestion) return;
+    const subQuestion = Object.values(this.question.subQuestion);
+    for (const subQ of subQuestion) {
+      const value = await this.conversationService.getTemporarySelection(subQ.questionId);
+      // if (value) {
+        this.currentSelections.set(subQ.questionId, value);
+      // }
+    }
+  }
+
+  onSelectionChange(questionId: string, value: any): void {
+    console.log(`Updating selection for ${questionId}:`, value);
+    this.currentSelections.set(questionId, value);
+    this.conversationService.storeTemporarySelection(questionId, value);
+    this.updateDependentDropdowns(questionId);
+    
+  }
+  // onDropdownSelectionChange(answer: any, question: Question): void {
+  //   this.answerValues.set(question.questionId, answer.value);
+  //   this.updateDependentDropdowns(question.questionId);
   // }
+  updateDependentDropdowns(changedQuestionId: string): void {
+    this.inputComponents.forEach((component) => {
+      if (
+        component instanceof DropdownInputComponent &&
+        component.question.optionsApi?.params
+      ) {
+        const dependentParams = component.question.optionsApi.params;
+       if (Object.values(dependentParams).includes(changedQuestionId)) {
+          component.loadDynamicOptions();
+        }
+      }
+    });
+  }
+
   groupIntoRows(questions: Question[], columns: number): Question[][] {
     const rows: Question[][] = [];
     for (let i = 0; i < questions.length; i += columns) {
@@ -153,37 +208,38 @@ export class SecondaryComponentInputComponent
     for (const key in obj) {
       if (typeof obj[key] === 'object' && obj[key] !== null) {
         parts.push(`{ ${this.flattenObject(obj[key])}}`);
-      }else {
+      } else {
         parts.push(`${obj[key]}`);
       }
     }
     return parts.join(',');
   }
 
-  getValue(): { [key: string]:any} {
-    const inputObject: { [key:string]: any} = {};
+  getValue(): { [key: string]: any } {
+    const inputObject: { [key: string]: any } = {};
     this.inputComponents.toArray().forEach((component, index) => {
       const subQuestion = this.getSubQuestionByIndex(index);
-      
+
       let value: any;
       if (component instanceof TextInputComponent) {
-          value = component.value || '';
-        } else if (component instanceof DropdownInputComponent) {
-          value = component.selectedOption?.text || '';
-        } else if (component instanceof RadioInputComponent) {
-          value = component.selectedOption?.text || '';
-        } else if (component instanceof CalendarInputComponent) {
-          const date = component.selectedDate;
-          value = date ? date.toISOString().split('T')[0] : null;
-        } else if (component instanceof SecondaryComponentInputComponent) {
-          value = component.getValue();
-        }
-        else {
-          value = '';
-          console.warn(`Unrecognized input type for subQuestion: ${subQuestion.questionId}`);
-        }
+        value = component.value || '';
+      } else if (component instanceof DropdownInputComponent) {
+        value = component.selectedOption?.text || '';
+      } else if (component instanceof RadioInputComponent) {
+        value = component.selectedOption?.text || '';
+      } else if (component instanceof CalendarInputComponent) {
+        const date = component.selectedDate;
+        value = date ? date.toISOString().split('T')[0] : null;
+      } else if (component instanceof SecondaryComponentInputComponent) {
+        value = component.getValue();
+      } else {
+        value = '';
+        console.warn(
+          `Unrecognized input type for subQuestion: ${subQuestion.questionId}`
+        );
+      }
 
-      inputObject[subQuestion.questionId] = value
+      inputObject[subQuestion.questionId] = value;
     });
 
     return inputObject;
@@ -202,189 +258,164 @@ export class SecondaryComponentInputComponent
     throw new Error(`SubQuestion index not found : ${index}`);
   }
 
-  canSubmit(): boolean 
-  {
-    if(!this.inputComponents) 
-    {
+  canSubmit(): boolean {
+    if (!this.inputComponents) {
       console.log('inputComponents not initialized');
       return false;
     }
-      const valid = this.inputComponents.toArray().every((component, index) => 
-      {
-        if(component instanceof TextInputComponent) 
-        { 
-          if(component.question.validation?.required && (component.question.validation?.max || component.question.validation?.min))
-          {
-            const getValue = Number(component.value);
-            const max = Number(component.question.validation?.max) || Infinity;
-            const min = Number(component.question.validation?.min) || 0;
+    const valid = this.inputComponents.toArray().every((component, index) => {
+      if (component instanceof TextInputComponent) {
+        if (
+          component.question.validation?.required &&
+          (component.question.validation?.max ||
+            component.question.validation?.min)
+        ) {
+          const getValue = Number(component.value);
+          const max = Number(component.question.validation?.max) || Infinity;
+          const min = Number(component.question.validation?.min) || 0;
 
-            if(getValue <= max && getValue >= min)
-            {
+          if (getValue <= max && getValue >= min) {
+            return true;
+          } else {
+            this.misvalidatedmsg = `Input range should between ${min} and ${max} `;
+            return false;
+          }
+        }
+        if (
+          component.question.validation?.pattern &&
+          !component.question.validation.required
+        ) {
+          const key = component.question?.validation?.pattern;
+
+          if (key && ValidationRules[key]) {
+            this.validationRule = ValidationRules[key];
+            if (component.value) {
+              const valid = this.validationRule?.pattern.test(component.value);
+              if (!valid) {
+                this.misvalidatedmsg = this.validationRule.message;
+              }
+              return valid;
+            } else {
+              this.misvalidatedmsg = '';
               return true;
             }
-            else
-            {
-              this.misvalidatedmsg = `Input range should between ${min} and ${max} `;
-              return false;
-            }
+          } else if (key && !ValidationRules[key]) {
+            console.warn('Validation pattern Not Found');
+            return false;
           }
-          if(component.question.validation?.pattern && !component.question.validation.required)
-          {
-            const key = component.question?.validation?.pattern;
+        } else if (
+          component.question.validation?.pattern &&
+          component.question.validation.required
+        ) {
+          const key = component.question?.validation?.pattern;
 
-            if(key && ValidationRules[key])
-            {
-              this.validationRule = ValidationRules[key];
-              if(component.value)
-              {
-                const valid = this.validationRule?.pattern.test(component.value);
-                if(!valid){ 
-                  this.misvalidatedmsg = this.validationRule.message;
-                }
-                return valid;
+          if (key && ValidationRules[key]) {
+            this.validationRule = ValidationRules[key];
+            if (component.value) {
+              const valid = this.validationRule?.pattern.test(component.value);
+              if (!valid) {
+                this.misvalidatedmsg = this.validationRule.message;
               }
-              else
-              {
-                this.misvalidatedmsg = '';
-                return true;
-              }
-            }
-            else if(key && !ValidationRules[key])
-            {
-              console.warn("Validation pattern Not Found");
+              return valid;
+            } else {
+              this.misvalidatedmsg = 'required field';
               return false;
             }
+          } else if (key && !ValidationRules[key]) {
+            console.warn('Validation pattern Not Found');
+            return false;
           }
-          else if(component.question.validation?.pattern && component.question.validation.required)
-          {
-            const key = component.question?.validation?.pattern;
-
-            if(key && ValidationRules[key])
-            {
-              this.validationRule = ValidationRules[key];
-              if(component.value)
-              {
-                const valid = this.validationRule?.pattern.test(component.value);
-                if(!valid){ 
-                  this.misvalidatedmsg = this.validationRule.message;
-                }
-                return valid;
-              }
-              else
-              {
-                this.misvalidatedmsg = "required field";
-                return false;
-              }
-            }
-            else if(key && !ValidationRules[key])
-            {
-              console.warn("Validation pattern Not Found");
-              return false;
-            }
-          }
-          else if((component.question.validation?.required) && !(component.question.validation?.pattern))
-          {
-            if(component.value)
-            {
-              return true;
-            }
-            else
-            {
-              this.misvalidatedmsg = "required field";
-              return false;
-            }
-          }
-          else
-          {
+        } else if (
+          component.question.validation?.required &&
+          !component.question.validation?.pattern
+        ) {
+          if (component.value) {
             return true;
+          } else {
+            this.misvalidatedmsg = 'required field';
+            return false;
           }
-        } 
-        else if(component instanceof DropdownInputComponent) 
-        {
-          const valid = component.question.validation?.required ? !!component.selectedOption : true;
-          return valid;
+        } else {
+          return true;
         }
-        else if(component instanceof CalendarInputComponent)
-        {
-          return this.canSubmitDate(component);
-          // const valid = component.question.validation?.required ? !!component.selectedDate : true;
-          // return valid;
-        }
-        else if(component instanceof RadioInputComponent)
-        {
-          const valid = component.question.validation?.required ? !!component.selectedOption : true;
-          return valid;
-        }
-        else if(component instanceof CheckboxInputComponent)
-        {
-          const dbMax = Number(component.question?.maxcheck) || Infinity;
-          const dbMin = Number(component.question?.mincheck) || 0;
+      } else if (component instanceof DropdownInputComponent) {
+        const valid = component.question.validation?.required
+          ? !!component.selectedOption
+          : true;
+        return valid;
+      } else if (component instanceof CalendarInputComponent) {
+        return this.canSubmitDate(component);
+        // const valid = component.question.validation?.required ? !!component.selectedDate : true;
+        // return valid;
+      } else if (component instanceof RadioInputComponent) {
+        const valid = component.question.validation?.required
+          ? !!component.selectedOption
+          : true;
+        return valid;
+      } else if (component instanceof CheckboxInputComponent) {
+        const dbMax = Number(component.question?.maxcheck) || Infinity;
+        const dbMin = Number(component.question?.mincheck) || 0;
 
-          const selectedCount = component.selectedOptions.length;
+        const selectedCount = component.selectedOptions.length;
 
-          if(selectedCount >= dbMin && selectedCount <= dbMax)
-          {
-            return true;
-          }
-          return false;
+        if (selectedCount >= dbMin && selectedCount <= dbMax) {
+          return true;
         }
-        return true;
-      });
-      return valid;
+        return false;
+      }
+      return true;
+    });
+    return valid;
   }
 
-
-  canSubmitDate(component: any): boolean 
-  {
-    if(!component.selectedDate && component.question.validation?.required)
-    { 
+  canSubmitDate(component: any): boolean {
+    if (!component.selectedDate && component.question.validation?.required) {
       return false;
-    } 
-    else if(!component.selectedDate && !component.question.validation?.required)
-    {
+    } else if (
+      !component.selectedDate &&
+      !component.question.validation?.required
+    ) {
       this.misvalidatedmsg = '';
       return true;
-    }
-    else if(component.selectedDate && !component.question.validation?.required)
-    {
+    } else if (
+      component.selectedDate &&
+      !component.question.validation?.required
+    ) {
       return this.checkMinAndMaxDateValidation(component);
-    }
-    else if(component.selectedDate && component.question.validation?.required)
-    {
+    } else if (
+      component.selectedDate &&
+      component.question.validation?.required
+    ) {
       return this.checkMinAndMaxDateValidation(component);
-    }
-    else
-    {
+    } else {
       return true;
     }
   }
 
-
-  checkMinAndMaxDateValidation(component: any): boolean
-  {
-    if(!component.selectedDate)
-    {
+  checkMinAndMaxDateValidation(component: any): boolean {
+    if (!component.selectedDate) {
       return false;
     }
     const selected = this.toDateOnly(component.selectedDate);
-    
-    const min = component.question.minDate ? this.toDateOnly(new Date(component.question.minDate)) : null;
-    const max = component.question.maxDate ? this.toDateOnly(new Date(component.question.maxDate)) : null;
 
-    const isAfterMin = !min || selected.getTime() >= min.getTime();  //If min is null, set true
+    const min = component.question.minDate
+      ? this.toDateOnly(new Date(component.question.minDate))
+      : null;
+    const max = component.question.maxDate
+      ? this.toDateOnly(new Date(component.question.maxDate))
+      : null;
+
+    const isAfterMin = !min || selected.getTime() >= min.getTime(); //If min is null, set true
     const isBeforeMax = !max || selected.getTime() <= max.getTime();
 
     return isAfterMin && isBeforeMax;
   }
 
-  toDateOnly(date: Date): Date 
-  {
+  toDateOnly(date: Date): Date {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
   }
 
-  getValidationMsg(): string
-  {
+  getValidationMsg(): string {
     return this.misvalidatedmsg;
   }
 }

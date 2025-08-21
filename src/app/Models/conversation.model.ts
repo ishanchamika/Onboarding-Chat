@@ -12,6 +12,10 @@ export interface Question {
   questionText?: string; 
   inputType: QuestionType; 
   options?: Option[]; 
+  optionsApi?:{
+    endpoint: string;
+    params?: { [key:string]: string};
+  };
   placeholder?: string;
   validation?: {
     required?: boolean;

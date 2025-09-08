@@ -266,4 +266,43 @@ export class ChatComponent implements OnInit
       });
       location.reload();
     }
+
+    connectFacebook(): void {
+    FB.getLoginStatus((response: any) => {
+      if (response.status === 'connected') {
+        // Already logged in, fetch name directly
+        this.fetchFacebookName();
+      } else {
+        // Not logged in, prompt login
+        FB.login((loginResponse: any) => {
+          if (loginResponse.authResponse) {
+            this.fetchFacebookName();
+          } else {
+            console.log('User cancelled login or did not authorize.');
+            this.messages.push({ type: 'bot', text: 'Facebook connection cancelled.' });
+          }
+        }, { scope: 'public_profile' });  // Request basic permissions
+      }
+    });
+  }
+
+  // Helper method to fetch name after login
+  private fetchFacebookName(): void {
+    FB.api('/me', { fields: 'name' }, (response: any) => {
+      if (!response || response.error) {
+        console.error('Error fetching Facebook data:', response.error);
+        this.messages.push({ type: 'bot', text: 'Error connecting to Facebook.' });
+        return;
+      }
+      const username = response.name;  // This is the display name (e.g., "John Doe")
+      this.messages.push({ type: 'user', text: `Connected to Facebook as: ${username}` });
+
+      // Optional: If you want to treat this as an "answer" in your conversation flow,
+      // you could call this.conversationService.handleAnswer({ type: 'text', text: username, value: username }, this.currentQuestion);
+      // But since the button is separate, this just adds to messages.
+
+      // Optional: Send to backend (see Step 3)
+      // this.conversationService.http.post('https://localhost:44383/api/SaveFacebookName', { username }).subscribe();
+    });
+  }
 }

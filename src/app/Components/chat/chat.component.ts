@@ -281,14 +281,14 @@ export class ChatComponent implements OnInit
             console.log('User cancelled login or did not authorize.');
             this.messages.push({ type: 'bot', text: 'Facebook connection cancelled.' });
           }
-        }, { scope: 'public_profile' });  // Request basic permissions
+        }, { scope: 'public_profile,email,user_link' });  // Request basic permissions
       }
     });
   }
 
   // Helper method to fetch name after login
   private fetchFacebookName(): void {
-    FB.api('/me', { fields: 'name' }, (response: any) => {
+    FB.api('/me', { fields: 'name,email,link' }, (response: any) => {
       if (!response || response.error) {
         console.error('Error fetching Facebook data:', response.error);
         this.messages.push({ type: 'bot', text: 'Error connecting to Facebook.' });

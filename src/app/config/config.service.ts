@@ -1,26 +1,26 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-// import * from '../assets/environment.json'
+// import { Injectable } from '@angular/core';
+// import { HttpClient } from '@angular/common/http';
+// import { Observable } from 'rxjs';
+// import * as environment from '../../assets/environment.json';
 
-export interface CustomEnvironment {
-  PORT: string;
-  CONVERSATION_ID: string;
-  BASE_URL: string;
-}
+// export interface CustomEnvironment {
+//   PORT: string;
+//   CONVERSATION_ID: string;
+//   BASE_URL: string;
+// }
 
 
-@Injectable({
-  providedIn: 'root'
-})
-export class ConfigService 
-{
-  private configUrl = 'assets/environment.json';
-  constructor(private http: HttpClient) { }
+// @Injectable({
+//   providedIn: 'root'
+// })
+// export class ConfigService 
+// {
+//   private configUrl = environment.BASE_URL;
+//   constructor(private http: HttpClient) { }
 
-  getConfig(): Observable<CustomEnvironment>
-  {
-    console.log('retun one', this.http.get<CustomEnvironment>(this.configUrl));
-    return this.http.get<CustomEnvironment>(this.configUrl);
-  }
-}
+//   getConfig(): Observable<CustomEnvironment>
+//   {
+//     console.log('retun one', this.http.get<CustomEnvironment>(this.configUrl));
+//     return this.http.get<CustomEnvironment>(this.configUrl);
+//   }
+// }

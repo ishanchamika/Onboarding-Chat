@@ -4,7 +4,7 @@ import { Question, Option } from '../../Models/conversation.model';
 import { ConversationService } from '../../Services/conversation.service';
 import { QuestionComponentService } from '../../Services/question-component.service';
 import { BaseQuestionComponent } from '../question-types/base-question.component';
-import { ConfigService, CustomEnvironment } from '../../config/config.service';
+
 
 @Component({
   selector: 'app-chat',
@@ -14,8 +14,6 @@ import { ConfigService, CustomEnvironment } from '../../config/config.service';
 })
 export class ChatComponent implements OnInit 
 {
-  port: string = '';
-  conversationId: string = '';
   @ViewChild('questionContainer', { read: ViewContainerRef, static: false }) 
   questionContainer!: ViewContainerRef;
   
@@ -24,32 +22,26 @@ export class ChatComponent implements OnInit
   currentQuestionComponent: BaseQuestionComponent | null = null; // Declare currentQuestionComponent
   messages: { type: 'bot' | 'user'; text: string; fileData?: {fileName: string; fileType: string; dataUrl: string} }[] = [];
   isSubmitButton: any = false;
+  private conversationId: string =
+  // '8631d9f7-1d59-45d3-9566-c12263800746'
+      '8631d9f7-1d59-45d3-95661';
   
   constructor(
     private conversationService: ConversationService,
-    private questionComponentService: QuestionComponentService,
-    private configService: ConfigService
+    private questionComponentService: QuestionComponentService
   ) {
     this.currentQuestion$ = this.conversationService.currentQuestion$;
   }
   
   async ngOnInit(): Promise<void> 
   {
-    this.configService.getConfig().subscribe(async (config: CustomEnvironment) => {
-    this.port = config.PORT;
-    this.conversationId = config.CONVERSATION_ID;
     this.conversationService.initializeAnswerDB();
     this.conversationService.initializeProgressDB();
     this.loadAnswersFromIndexedDB();
     this.currentQuestion$ = this.conversationService.currentQuestion$;
-
-    await this.conversationService.loadConversation(this.conversationId);
-    this.currentQuestion$.subscribe(question => 
-    {
-      if(!question)
-      {
-        return;
-      }
+    await this.conversationService.loadConversation( this.conversationId);
+    this.currentQuestion$.subscribe(question => {
+      if(!question) return;
 
       const questionWithConversationId: Question = { ...question, conversationId: this.conversationId }
       
@@ -58,7 +50,7 @@ export class ChatComponent implements OnInit
       {
         this.messages.push({
           type: 'bot',
-          text: question.questionText || ''
+          text: question.questionText || '' // Changed to questionText
         });
       }
 
@@ -79,23 +71,23 @@ export class ChatComponent implements OnInit
         }
       });
     });
-    });
   }
 
   handleAnswer(answer: any, question: any): void {
     let answerText: string;
-    if(answer.type === 'file') {
+
+    if (answer.type === 'file') {
       answerText = answer.text;
+      console.log('asdasd',answer)
       this.messages.push({
         type: 'user',
         text: answerText,
         fileData: { fileName: answer.value.fileName, fileType: answer.value.fileType, dataUrl: answer.value.dataUrl }
       });
-    } 
-    else {
+    } else {
       if (answer.type === 'dropdown') {
         answerText = answer.text.text.toString();
-      } else if (answer.type === 'calender') {
+      } else if (answer.type === 'calendar') {
         answerText = answer.text.toLocaleDateString();
       } else if (answer.type === 'input') {
         answerText = answer.text.toString();

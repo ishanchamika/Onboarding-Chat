@@ -8,12 +8,12 @@ import {
   Conversation,
 } from '../Models/conversation.model';
 import { HttpClient } from '@angular/common/http';
-import { ConfigService, CustomEnvironment } from '../config/config.service';
+
 @Injectable({
   providedIn: 'root',
 })
 export class ConversationService {
-  private baseUrl: string = '';
+  
   private pausedQuestionId: string | null = null;
   private conversation : Conversation | null = null;
   private currentQuestionSubject = new BehaviorSubject<Question|null>(null);
@@ -21,7 +21,7 @@ export class ConversationService {
   private answerValues = new Map<string,any>();
   private BaseUrl = 'http://localhost:44383/api';
 
-  constructor(private http : HttpClient, private configService: ConfigService) 
+  constructor(private http : HttpClient) 
   {
   }
 
@@ -43,11 +43,8 @@ export class ConversationService {
 
     try 
     {
-      if(!this.baseUrl) 
-      {
-        const config = await this.configService.getConfig().toPromise();
-        this.baseUrl = config?.BASE_URL || '';
-      }
+      // this.initializeProgressDB();
+      // this.initializeAnswerDB();
       this.loadAnswersFromIndexedDB();
       this.conversation  = await this.getConversationFromIndexedDB(conversationId);
       this.pausedQuestionId = await this.getCurrentQuestionId(conversationId);
@@ -65,8 +62,7 @@ export class ConversationService {
       }
       else
       {
-        const url = `${this.baseUrl}Conversation/${conversationId}`;
-        this.conversation = await this.http.get<any>(url).toPromise() ?? null;
+        this.conversation = await this.http.get<any>('http://localhost:5149/api/Conversation/' + conversationId).toPromise() ?? null;
         if(this.conversation) 
         {
           this.storeConversationInIndexedDB(this.conversation);
@@ -132,37 +128,28 @@ export class ConversationService {
     if (answer.type === 'file') {
       answerText = answer.text;
       nextQuestionId = answer.nextQuestionId || null;
-      const historyItems = this.historySubject.getValue();
-      historyItems.push({
-        question: current.questionText || '',
-        answer: answerText,
-      });
-      console.log("history", historyItems)
-      this.historySubject.next(historyItems);
+    } else if (answer.type === 'dropdown') {
+      answerText = answer.text.text.toString();
+      nextQuestionId = answer.text.nextQuestionId || null;
+    } else if (answer.type === 'calender') {
+      answerText = answer.text.toLocaleDateString();
+      nextQuestionId = answer.nextQuestionId || null;
+    } else if (answer.type === 'input') {
+      answerText = answer.text.toString();
+      nextQuestionId = answer.nextQuestionId || null;
+    } else if (answer.type === 'button') {
+      answerText = answer.text.text;
+      nextQuestionId = answer.text.nextQuestionId || null;
+    } else if (answer.type === 'radio') {
+      answerText = answer.text.text;
+      nextQuestionId = answer.text.nextQuestionId || null;
+    } else if (answer.type === 'checkbox') {
+      answerText = answer.text;
+      nextQuestionId = answer.value[0].nextQuestionId || null;
     } else {
-      // Existing logic for other answer types
-      if (answer.type === 'dropdown') {
-        answerText = answer.text.text.toString();
-        nextQuestionId = answer.text.nextQuestionId || null;
-      } else if (answer.type === 'calender') {
-        answerText = answer.text.toLocaleDateString();
-        nextQuestionId = answer.nextQuestionId || null;
-      } else if (answer.type === 'input') {
-        answerText = answer.text.toString();
-        nextQuestionId = answer.nextQuestionId || null;
-      } else if (answer.type === 'button') {
-        answerText = answer.text.text;
-        nextQuestionId = answer.text.nextQuestionId || null;
-      } else if (answer.type === 'radio') {
-        answerText = answer.text.text;
-        nextQuestionId = answer.text.nextQuestionId || null;
-      } else if (answer.type === 'checkbox') {
-        answerText = answer.text;
-        nextQuestionId = answer.value[0].nextQuestionId || null;
-      } else {
-        answerText = answer.text;
-        nextQuestionId = answer.nextQuestionId;
-      }
+      answerText = answer.text;
+      nextQuestionId = answer.nextQuestionId;
+    }
 
     const historyItems = this.historySubject.getValue();
     historyItems.push({ question: current.questionText || '', answer: answerText });
